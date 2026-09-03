@@ -82,9 +82,15 @@ class ReactionDiffusionEnvironment:
         m1 = min(self.modes, nx)
         m2 = min(self.modes, nt // 2 + 1)
         spec[:m1, :m2] = torch.complex(coeff[0, :m1, :m2], coeff[1, :m1, :m2])
-        delta = torch.fft.irfft2(spec, s=(nx, nt)).real
-        alpha = self.action_scale * torch.sigmoid(action[-1])
-        return alpha * delta
+        return torch.fft.irfft2(spec, s=(nx, nt)).real
+
+    def lowpass(self, delta: torch.Tensor) -> torch.Tensor:
+        spec = torch.fft.rfft2(delta)
+        filt = torch.zeros_like(spec)
+        m1 = min(self.modes, delta.shape[0])
+        m2 = min(self.modes, delta.shape[1] // 2 + 1)
+        filt[:m1, :m2] = spec[:m1, :m2]
+        return torch.fft.irfft2(filt, s=tuple(delta.shape)).real
 
     def encode_correction(self, delta: torch.Tensor) -> torch.Tensor:
         spec = torch.fft.rfft2(delta)
@@ -94,7 +100,7 @@ class ReactionDiffusionEnvironment:
         imag = torch.zeros_like(real)
         real[:m1, :m2] = spec[:m1, :m2].real
         imag[:m1, :m2] = spec[:m1, :m2].imag
-        vec = torch.cat([real.flatten(), imag.flatten(), torch.ones(1, device=delta.device)])
+        vec = torch.cat([real.flatten(), imag.flatten(), torch.zeros(1, device=delta.device)])
         return vec.to(torch.float32)
 
     def step(self, u: torch.Tensor, correction: torch.Tensor) -> torch.Tensor:

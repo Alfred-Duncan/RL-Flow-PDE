@@ -1,0 +1,13 @@
+Split,Quadrant,Count,Fraction
+train,physics better / accuracy better,2286,0.42146017699115046
+train,physics better / accuracy worse,809,0.14915191740412978
+train,physics worse / accuracy better,849,0.15652654867256638
+train,both worse,1480,0.2728613569321534
+val,physics better / accuracy better,682,0.5166666666666667
+val,physics better / accuracy worse,134,0.10151515151515152
+val,physics worse / accuracy better,142,0.10757575757575757
+val,both worse,362,0.27424242424242423
+test,physics better / accuracy better,989,0.4994949494949495
+test,physics better / accuracy worse,193,0.09747474747474748
+test,physics worse / accuracy better,256,0.1292929292929293
+test,both worse,542,0.2737373737373737

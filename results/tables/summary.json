@@ -2,13 +2,19 @@
   "mode": "paper",
   "device": "cuda",
   "prepared_data": "E:\\Alfred\\RL-Flow-PDE\\data\\processed\\reaction_diffusion_official.npz",
-  "stop_margin": 0.0,
+  "protocol_version": "protocol_v2",
+  "stop_margin": -0.278115451335907,
+  "validation_stop_rate": 0.375,
+  "codec_reconstruction_error": 0.0,
+  "spectral_energy_retention": 0.4512930102646351,
   "tables": [
     "ablation.csv",
+    "codec_diagnostics.csv",
     "convergence.csv",
     "critic_results.csv",
     "improvement_distribution.csv",
     "initialization_results.csv",
-    "main_results.csv"
+    "main_results.csv",
+    "residual_error_quadrants.csv"
   ]
 }

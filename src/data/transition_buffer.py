@@ -11,10 +11,13 @@ class Transition:
     case_id: int
     split: str
     kind: str
+    trajectory_id: int
+    step_idx: int
     state_fields: torch.Tensor
     state_scalars: torch.Tensor
     action: torch.Tensor
     reward: float
+    discounted_return: float
     next_fields: torch.Tensor
     next_scalars: torch.Tensor
     done: float
@@ -40,6 +43,7 @@ class TransitionDataset(Dataset):
             "state_scalars": tr.state_scalars,
             "action": tr.action,
             "reward": torch.tensor(tr.reward, dtype=torch.float32),
+            "discounted_return": torch.tensor(tr.discounted_return, dtype=torch.float32),
             "next_fields": tr.next_fields,
             "next_scalars": tr.next_scalars,
             "done": torch.tensor(tr.done, dtype=torch.float32),
