@@ -1,0 +1,14 @@
+{
+  "mode": "paper",
+  "device": "cuda",
+  "prepared_data": "E:\\Alfred\\RL-Flow-PDE\\data\\processed\\reaction_diffusion_official.npz",
+  "stop_margin": 0.0,
+  "tables": [
+    "ablation.csv",
+    "convergence.csv",
+    "critic_results.csv",
+    "improvement_distribution.csv",
+    "initialization_results.csv",
+    "main_results.csv"
+  ]
+}

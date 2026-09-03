@@ -1,0 +1,43 @@
+seed: 42
+device: cuda
+benchmark:
+  name: 2D_Reac_diffusion
+  official_mat: external/Laplace-Neural-Operator/2D_Reac_diffusion/Data/data.mat
+  prepared_npz: data/processed/reaction_diffusion_official.npz
+  fallback_cases: 128
+  nx: 40
+  nt: 20
+  diffusion: 0.903715091
+  reaction: 1.0
+paper:
+  train_cases: 96
+  val_cases: 24
+  test_cases: 36
+  lno_epochs: 80
+  fm_pretrain_epochs: 120
+  critic_epochs: 160
+  awfm_epochs: 100
+  deterministic_epochs: 100
+  policy_improvement_rounds: 2
+  rollout_add_cases: 24
+  batch_size: 32
+  lr: 0.001
+  modes: 8
+  hidden: 96
+  state_width: 32
+  state_dim: 96
+  action_scale: 0.16
+  fm_steps: 8
+  candidates: 4
+  rollout_steps: [1, 2, 5, 10]
+  eval_cases: 24
+  gamma: 0.95
+  expectile: 0.7
+  aw_beta: 1.0
+  aw_wmax: 20.0
+  stop_margin_quantile: 0.2
+reward:
+  lambda_gt: 1.0
+  lambda_phys: 0.25
+  lambda_action: 0.0005
+  lambda_step: 0.005
