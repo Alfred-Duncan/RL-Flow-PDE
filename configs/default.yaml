@@ -41,3 +41,41 @@ reward:
   lambda_phys: 0.25
   lambda_action: 0.0005
   lambda_step: 0.005
+solver_v2:
+  seeds: [42, 123, 2026]
+  train_cases: 96
+  val_cases: 24
+  test_cases: 36
+  eval_cases: 36
+  batch_size: 32
+  lr: 0.001
+  td3_actor_lr: 0.0005
+  td3_critic_lr: 0.001
+  initializer_epochs: 50
+  pretrain_epochs: 60
+  td3_epochs: 50
+  td3_scratch_epochs: 50
+  online_cycles: 2
+  online_rollout_cases: 24
+  horizon: 5
+  eval_steps: [1, 2, 5, 10]
+  width: 32
+  modes: 8
+  actor_depth: 3
+  critic_depth: 2
+  temperature: 1.0
+  step_bound_quantile: 0.99
+  step_bound_multiplier: 2.0
+  step_bound_min: 0.01
+  step_bound_max: 0.05
+  gamma: 1.0
+  tau: 0.005
+  policy_delay: 2
+  target_noise: 0.01
+  target_noise_clip: 0.02
+  lambda_action: 0.0005
+  lambda_q: 0.05
+  lambda_bc_start: 10.0
+  lambda_bc_end: 2.0
+  lambda_phys: 0.05
+  lambda_step: 0.0005

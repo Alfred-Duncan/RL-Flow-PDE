@@ -1,0 +1,17 @@
+source_policy,Quadrant,Count,Fraction
+gradient,Residual better / Accuracy better,340,0.18888888888888888
+gradient,Residual better / Accuracy worse,421,0.2338888888888889
+gradient,Residual worse / Accuracy better,144,0.08
+gradient,Both worse,895,0.49722222222222223
+gt_directed,Residual better / Accuracy better,696,0.38666666666666666
+gt_directed,Residual better / Accuracy worse,0,0.0
+gt_directed,Residual worse / Accuracy better,1104,0.6133333333333333
+gt_directed,Both worse,0,0.0
+online_actor_cycle0,Residual better / Accuracy better,20,0.05555555555555555
+online_actor_cycle0,Residual better / Accuracy worse,1,0.002777777777777778
+online_actor_cycle0,Residual worse / Accuracy better,151,0.41944444444444445
+online_actor_cycle0,Both worse,188,0.5222222222222223
+online_actor_cycle1,Residual better / Accuracy better,22,0.06111111111111111
+online_actor_cycle1,Residual better / Accuracy worse,1,0.002777777777777778
+online_actor_cycle1,Residual worse / Accuracy better,140,0.3888888888888889
+online_actor_cycle1,Both worse,197,0.5472222222222223

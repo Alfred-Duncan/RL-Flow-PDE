@@ -1,0 +1,3025 @@
+Seed,Method,Steps,Case,PDE residual norm,BC error,IC error
+42,Base FNO Initializer,1,0,108.76947784423828,0.0,0.0
+42,Gradient residual refinement,1,0,106.0252685546875,0.0,0.0
+42,PINN-style refinement,1,0,106.74589538574219,0.0,0.0
+42,Supervised Neural Operator Corrector,1,0,86.96247863769531,0.0,0.0
+42,TD3 from scratch,1,0,118.02498626708984,0.0,0.0
+42,TD3+BC without physics regularization,1,0,119.43712615966797,0.0,0.0
+42,RL Neural Operator Solver,1,0,86.96247863769531,0.0,0.0
+42,Base FNO Initializer,1,1,4145.19677734375,0.0,0.17247915267944336
+42,Gradient residual refinement,1,1,4037.07861328125,0.0,0.17247915267944336
+42,PINN-style refinement,1,1,4139.3388671875,0.0,0.17247915267944336
+42,Supervised Neural Operator Corrector,1,1,4064.714599609375,0.0,0.17247915267944336
+42,TD3 from scratch,1,1,4176.2626953125,0.0,0.17247915267944336
+42,TD3+BC without physics regularization,1,1,4148.24951171875,0.0,0.17247915267944336
+42,RL Neural Operator Solver,1,1,4064.714599609375,0.0,0.17247915267944336
+42,Base FNO Initializer,1,2,3044.205322265625,0.0,0.0
+42,Gradient residual refinement,1,2,2939.94140625,0.0,0.0
+42,PINN-style refinement,1,2,3038.48095703125,0.0,0.0
+42,Supervised Neural Operator Corrector,1,2,2957.8896484375,0.0,0.0
+42,TD3 from scratch,1,2,3047.728759765625,0.0,0.0
+42,TD3+BC without physics regularization,1,2,3040.106201171875,0.0,0.0
+42,RL Neural Operator Solver,1,2,2957.8896484375,0.0,0.0
+42,Base FNO Initializer,1,3,449.0837707519531,0.0,0.0
+42,Gradient residual refinement,1,3,421.6784362792969,0.0,0.0
+42,PINN-style refinement,1,3,446.2132568359375,0.0,0.0
+42,Supervised Neural Operator Corrector,1,3,403.5418395996094,0.0,0.0
+42,TD3 from scratch,1,3,462.9506530761719,0.0,0.0
+42,TD3+BC without physics regularization,1,3,455.38201904296875,0.0,0.0
+42,RL Neural Operator Solver,1,3,403.5418395996094,0.0,0.0
+42,Base FNO Initializer,1,4,2202.84765625,0.0,0.0
+42,Gradient residual refinement,1,4,2104.29931640625,0.0,0.0
+42,PINN-style refinement,1,4,2197.310791015625,0.0,0.0
+42,Supervised Neural Operator Corrector,1,4,2114.980224609375,0.0,0.0
+42,TD3 from scratch,1,4,2215.08984375,0.0,0.0
+42,TD3+BC without physics regularization,1,4,2203.209716796875,0.0,0.0
+42,RL Neural Operator Solver,1,4,2114.980224609375,0.0,0.0
+42,Base FNO Initializer,1,5,1123.4268798828125,0.0,0.0
+42,Gradient residual refinement,1,5,1054.59814453125,0.0,0.0
+42,PINN-style refinement,1,5,1119.023681640625,0.0,0.0
+42,Supervised Neural Operator Corrector,1,5,1050.76416015625,0.0,0.0
+42,TD3 from scratch,1,5,1142.7838134765625,0.0,0.0
+42,TD3+BC without physics regularization,1,5,1128.875244140625,0.0,0.0
+42,RL Neural Operator Solver,1,5,1050.76416015625,0.0,0.0
+42,Base FNO Initializer,1,6,1328.7618408203125,0.0,0.0
+42,Gradient residual refinement,1,6,1249.812744140625,0.0,0.0
+42,PINN-style refinement,1,6,1323.9781494140625,0.0,0.0
+42,Supervised Neural Operator Corrector,1,6,1250.1875,0.0,0.0
+42,TD3 from scratch,1,6,1349.0352783203125,0.0,0.0
+42,TD3+BC without physics regularization,1,6,1333.657958984375,0.0,0.0
+42,RL Neural Operator Solver,1,6,1250.1875,0.0,0.0
+42,Base FNO Initializer,1,7,300.79931640625,0.0,0.0
+42,Gradient residual refinement,1,7,277.1834411621094,0.0,0.0
+42,PINN-style refinement,1,7,298.2056884765625,0.0,0.0
+42,Supervised Neural Operator Corrector,1,7,261.9419860839844,0.0,0.0
+42,TD3 from scratch,1,7,313.2251281738281,0.0,0.0
+42,TD3+BC without physics regularization,1,7,306.7658996582031,0.0,0.0
+42,RL Neural Operator Solver,1,7,261.9419860839844,0.0,0.0
+42,Base FNO Initializer,1,8,1763.629638671875,0.0,0.0
+42,Gradient residual refinement,1,8,1671.942626953125,0.0,0.0
+42,PINN-style refinement,1,8,1758.3355712890625,0.0,0.0
+42,Supervised Neural Operator Corrector,1,8,1677.70556640625,0.0,0.0
+42,TD3 from scratch,1,8,1781.95751953125,0.0,0.0
+42,TD3+BC without physics regularization,1,8,1766.6602783203125,0.0,0.0
+42,RL Neural Operator Solver,1,8,1677.70556640625,0.0,0.0
+42,Base FNO Initializer,1,9,707.9194946289062,0.0,0.0
+42,Gradient residual refinement,1,9,666.5648803710938,0.0,0.0
+42,PINN-style refinement,1,9,704.5122680664062,0.0,0.0
+42,Supervised Neural Operator Corrector,1,9,652.6400146484375,0.0,0.0
+42,TD3 from scratch,1,9,723.4217529296875,0.0,0.0
+42,TD3+BC without physics regularization,1,9,709.5903930664062,0.0,0.0
+42,RL Neural Operator Solver,1,9,652.6400146484375,0.0,0.0
+42,Base FNO Initializer,1,10,1452.89404296875,0.0,0.0
+42,Gradient residual refinement,1,10,1369.4130859375,0.0,0.0
+42,PINN-style refinement,1,10,1447.9136962890625,0.0,0.0
+42,Supervised Neural Operator Corrector,1,10,1371.248779296875,0.0,0.0
+42,TD3 from scratch,1,10,1473.4849853515625,0.0,0.0
+42,TD3+BC without physics regularization,1,10,1457.31591796875,0.0,0.0
+42,RL Neural Operator Solver,1,10,1371.248779296875,0.0,0.0
+42,Base FNO Initializer,1,11,3547.599853515625,0.0,0.010925320908427238
+42,Gradient residual refinement,1,11,3441.00830078125,0.0,0.010925320908427238
+42,PINN-style refinement,1,11,3541.802490234375,0.0,0.010925320908427238
+42,Supervised Neural Operator Corrector,1,11,3464.40869140625,0.0,0.010925320908427238
+42,TD3 from scratch,1,11,3562.7978515625,0.0,0.010925320908427238
+42,TD3+BC without physics regularization,1,11,3546.201416015625,0.0,0.010925320908427238
+42,RL Neural Operator Solver,1,11,3464.40869140625,0.0,0.010925320908427238
+42,Base FNO Initializer,1,12,667.0895385742188,0.0,0.0
+42,Gradient residual refinement,1,12,627.1925048828125,0.0,0.0
+42,PINN-style refinement,1,12,663.786865234375,0.0,0.0
+42,Supervised Neural Operator Corrector,1,12,613.368408203125,0.0,0.0
+42,TD3 from scratch,1,12,682.22998046875,0.0,0.0
+42,TD3+BC without physics regularization,1,12,668.3005981445312,0.0,0.0
+42,RL Neural Operator Solver,1,12,613.368408203125,0.0,0.0
+42,Base FNO Initializer,1,13,3014.23095703125,0.0,0.0
+42,Gradient residual refinement,1,13,2909.99365234375,0.0,0.0
+42,PINN-style refinement,1,13,3008.510986328125,0.0,0.0
+42,Supervised Neural Operator Corrector,1,13,2927.71875,0.0,0.0
+42,TD3 from scratch,1,13,3017.550048828125,0.0,0.0
+42,TD3+BC without physics regularization,1,13,3010.278076171875,0.0,0.0
+42,RL Neural Operator Solver,1,13,2927.71875,0.0,0.0
+42,Base FNO Initializer,1,14,748.7984008789062,0.0,0.0
+42,Gradient residual refinement,1,14,705.6568603515625,0.0,0.0
+42,PINN-style refinement,1,14,745.2938232421875,0.0,0.0
+42,Supervised Neural Operator Corrector,1,14,691.837158203125,0.0,0.0
+42,TD3 from scratch,1,14,764.3208618164062,0.0,0.0
+42,TD3+BC without physics regularization,1,14,750.2745361328125,0.0,0.0
+42,RL Neural Operator Solver,1,14,691.837158203125,0.0,0.0
+42,Base FNO Initializer,1,15,2984.757080078125,0.0,0.0
+42,Gradient residual refinement,1,15,2880.782958984375,0.0,0.0
+42,PINN-style refinement,1,15,2979.039306640625,0.0,0.0
+42,Supervised Neural Operator Corrector,1,15,2898.122802734375,0.0,0.0
+42,TD3 from scratch,1,15,2988.284912109375,0.0,0.0
+42,TD3+BC without physics regularization,1,15,2980.86669921875,0.0,0.0
+42,RL Neural Operator Solver,1,15,2898.122802734375,0.0,0.0
+42,Base FNO Initializer,1,16,71.5908203125,0.0,0.0
+42,Gradient residual refinement,1,16,77.65450286865234,0.0,0.0
+42,PINN-style refinement,1,16,69.82122039794922,0.0,0.0
+42,Supervised Neural Operator Corrector,1,16,56.41191101074219,0.0,0.0
+42,TD3 from scratch,1,16,82.45064544677734,0.0,0.0
+42,TD3+BC without physics regularization,1,16,83.5901870727539,0.0,0.0
+42,RL Neural Operator Solver,1,16,56.41191101074219,0.0,0.0
+42,Base FNO Initializer,1,17,3419.184326171875,0.0,0.002559700980782509
+42,Gradient residual refinement,1,17,3312.9736328125,0.0,0.002559700980782509
+42,PINN-style refinement,1,17,3413.40869140625,0.0,0.002559700980782509
+42,Supervised Neural Operator Corrector,1,17,3334.9287109375,0.0,0.002559700980782509
+42,TD3 from scratch,1,17,3428.0771484375,0.0,0.002559700980782509
+42,TD3+BC without physics regularization,1,17,3416.385498046875,0.0,0.002559700980782509
+42,RL Neural Operator Solver,1,17,3334.9287109375,0.0,0.002559700980782509
+42,Base FNO Initializer,1,18,15.116594314575195,0.0,0.0
+42,Gradient residual refinement,1,18,45.748958587646484,0.0,0.0
+42,PINN-style refinement,1,18,14.110639572143555,0.0,0.0
+42,Supervised Neural Operator Corrector,1,18,16.10382080078125,0.0,0.0
+42,TD3 from scratch,1,18,35.116966247558594,0.0,0.0
+42,TD3+BC without physics regularization,1,18,31.892587661743164,0.0,0.0
+42,RL Neural Operator Solver,1,18,16.10382080078125,0.0,0.0
+42,Base FNO Initializer,1,19,527.154296875,0.0,0.0
+42,Gradient residual refinement,1,19,496.3068542480469,0.0,0.0
+42,PINN-style refinement,1,19,524.135009765625,0.0,0.0
+42,Supervised Neural Operator Corrector,1,19,478.6676940917969,0.0,0.0
+42,TD3 from scratch,1,19,541.2407836914062,0.0,0.0
+42,TD3+BC without physics regularization,1,19,530.0693359375,0.0,0.0
+42,RL Neural Operator Solver,1,19,478.6676940917969,0.0,0.0
+42,Base FNO Initializer,1,20,626.453125,0.0,0.0
+42,Gradient residual refinement,1,20,589.4100341796875,0.0,0.0
+42,PINN-style refinement,1,20,623.234375,0.0,0.0
+42,Supervised Neural Operator Corrector,1,20,574.301025390625,0.0,0.0
+42,TD3 from scratch,1,20,641.1889038085938,0.0,0.0
+42,TD3+BC without physics regularization,1,20,627.8893432617188,0.0,0.0
+42,RL Neural Operator Solver,1,20,574.301025390625,0.0,0.0
+42,Base FNO Initializer,1,21,1226.3023681640625,0.0,0.0
+42,Gradient residual refinement,1,21,1152.0567626953125,0.0,0.0
+42,PINN-style refinement,1,21,1221.6971435546875,0.0,0.0
+42,Supervised Neural Operator Corrector,1,21,1150.398681640625,0.0,0.0
+42,TD3 from scratch,1,21,1246.305908203125,0.0,0.0
+42,TD3+BC without physics regularization,1,21,1231.7239990234375,0.0,0.0
+42,RL Neural Operator Solver,1,21,1150.398681640625,0.0,0.0
+42,Base FNO Initializer,1,22,337.0725402832031,0.0,0.0
+42,Gradient residual refinement,1,22,312.21026611328125,0.0,0.0
+42,PINN-style refinement,1,22,334.4068298339844,0.0,0.0
+42,Supervised Neural Operator Corrector,1,22,296.1583557128906,0.0,0.0
+42,TD3 from scratch,1,22,349.7740478515625,0.0,0.0
+42,TD3+BC without physics regularization,1,22,343.0984802246094,0.0,0.0
+42,RL Neural Operator Solver,1,22,296.1583557128906,0.0,0.0
+42,Base FNO Initializer,1,23,3135.920654296875,0.0,0.0
+42,Gradient residual refinement,1,23,3031.165283203125,0.0,0.0
+42,PINN-style refinement,1,23,3130.189208984375,0.0,0.0
+42,Supervised Neural Operator Corrector,1,23,3050.176513671875,0.0,0.0
+42,TD3 from scratch,1,23,3138.7021484375,0.0,0.0
+42,TD3+BC without physics regularization,1,23,3131.263916015625,0.0,0.0
+42,RL Neural Operator Solver,1,23,3050.176513671875,0.0,0.0
+42,Base FNO Initializer,1,24,507.13226318359375,0.0,0.0
+42,Gradient residual refinement,1,24,477.3677978515625,0.0,0.0
+42,PINN-style refinement,1,24,504.1512145996094,0.0,0.0
+42,Supervised Neural Operator Corrector,1,24,459.4457702636719,0.0,0.0
+42,TD3 from scratch,1,24,521.1134643554688,0.0,0.0
+42,TD3+BC without physics regularization,1,24,510.8766174316406,0.0,0.0
+42,RL Neural Operator Solver,1,24,459.4457702636719,0.0,0.0
+42,Base FNO Initializer,1,25,956.8502197265625,0.0,0.0
+42,Gradient residual refinement,1,25,898.48583984375,0.0,0.0
+42,PINN-style refinement,1,25,952.8285522460938,0.0,0.0
+42,Supervised Neural Operator Corrector,1,25,890.766845703125,0.0,0.0
+42,TD3 from scratch,1,25,974.6533203125,0.0,0.0
+42,TD3+BC without physics regularization,1,25,961.2508544921875,0.0,0.0
+42,RL Neural Operator Solver,1,25,890.766845703125,0.0,0.0
+42,Base FNO Initializer,1,26,1805.510009765625,0.0,0.0
+42,Gradient residual refinement,1,26,1712.63525390625,0.0,0.0
+42,PINN-style refinement,1,26,1800.1849365234375,0.0,0.0
+42,Supervised Neural Operator Corrector,1,26,1719.336181640625,0.0,0.0
+42,TD3 from scratch,1,26,1823.1446533203125,0.0,0.0
+42,TD3+BC without physics regularization,1,26,1808.2730712890625,0.0,0.0
+42,RL Neural Operator Solver,1,26,1719.336181640625,0.0,0.0
+42,Base FNO Initializer,1,27,687.4254760742188,0.0,0.0
+42,Gradient residual refinement,1,27,647.1577758789062,0.0,0.0
+42,PINN-style refinement,1,27,684.0639038085938,0.0,0.0
+42,Supervised Neural Operator Corrector,1,27,632.8392333984375,0.0,0.0
+42,TD3 from scratch,1,27,702.8646850585938,0.0,0.0
+42,TD3+BC without physics regularization,1,27,688.8971557617188,0.0,0.0
+42,RL Neural Operator Solver,1,27,632.8392333984375,0.0,0.0
+42,Base FNO Initializer,1,28,789.942626953125,0.0,0.0
+42,Gradient residual refinement,1,28,744.543212890625,0.0,0.0
+42,PINN-style refinement,1,28,786.3257446289062,0.0,0.0
+42,Supervised Neural Operator Corrector,1,28,731.2357788085938,0.0,0.0
+42,TD3 from scratch,1,28,805.9119873046875,0.0,0.0
+42,TD3+BC without physics regularization,1,28,791.9900512695312,0.0,0.0
+42,RL Neural Operator Solver,1,28,731.2357788085938,0.0,0.0
+42,Base FNO Initializer,1,29,2518.362060546875,0.0,0.0
+42,Gradient residual refinement,1,29,2416.775146484375,0.0,0.0
+42,PINN-style refinement,1,29,2512.73291015625,0.0,0.0
+42,Supervised Neural Operator Corrector,1,29,2430.3720703125,0.0,0.0
+42,TD3 from scratch,1,29,2526.8603515625,0.0,0.0
+42,TD3+BC without physics regularization,1,29,2516.39990234375,0.0,0.0
+42,RL Neural Operator Solver,1,29,2430.3720703125,0.0,0.0
+42,Base FNO Initializer,1,30,3880.32177734375,0.0,0.07487307488918304
+42,Gradient residual refinement,1,30,3773.1142578125,0.0,0.07487307488918304
+42,PINN-style refinement,1,30,3874.498291015625,0.0,0.07487307488918304
+42,Supervised Neural Operator Corrector,1,30,3799.12109375,0.0,0.07487307488918304
+42,TD3 from scratch,1,30,3909.1767578125,0.0,0.07487307488918304
+42,TD3+BC without physics regularization,1,30,3882.885009765625,0.0,0.07487307488918304
+42,RL Neural Operator Solver,1,30,3799.12109375,0.0,0.07487307488918304
+42,Base FNO Initializer,1,31,1493.4486083984375,0.0,0.0
+42,Gradient residual refinement,1,31,1408.533447265625,0.0,0.0
+42,PINN-style refinement,1,31,1488.4320068359375,0.0,0.0
+42,Supervised Neural Operator Corrector,1,31,1411.2249755859375,0.0,0.0
+42,TD3 from scratch,1,31,1514.06591796875,0.0,0.0
+42,TD3+BC without physics regularization,1,31,1497.55126953125,0.0,0.0
+42,RL Neural Operator Solver,1,31,1411.2249755859375,0.0,0.0
+42,Base FNO Initializer,1,32,1163.959228515625,0.0,0.0
+42,Gradient residual refinement,1,32,1092.9197998046875,0.0,0.0
+42,PINN-style refinement,1,32,1159.473876953125,0.0,0.0
+42,Supervised Neural Operator Corrector,1,32,1090.183837890625,0.0,0.0
+42,TD3 from scratch,1,32,1183.265869140625,0.0,0.0
+42,TD3+BC without physics regularization,1,32,1169.20166015625,0.0,0.0
+42,RL Neural Operator Solver,1,32,1090.183837890625,0.0,0.0
+42,Base FNO Initializer,1,33,646.6305541992188,0.0,0.0
+42,Gradient residual refinement,1,33,608.7221069335938,0.0,0.0
+42,PINN-style refinement,1,33,643.36083984375,0.0,0.0
+42,Supervised Neural Operator Corrector,1,33,593.73828125,0.0,0.0
+42,TD3 from scratch,1,33,661.6724853515625,0.0,0.0
+42,TD3+BC without physics regularization,1,33,647.7340087890625,0.0,0.0
+42,RL Neural Operator Solver,1,33,593.73828125,0.0,0.0
+42,Base FNO Initializer,1,34,2811.921875,0.0,0.0
+42,Gradient residual refinement,1,34,2708.76171875,0.0,0.0
+42,PINN-style refinement,1,34,2806.230224609375,0.0,0.0
+42,Supervised Neural Operator Corrector,1,34,2724.615966796875,0.0,0.0
+42,TD3 from scratch,1,34,2817.219970703125,0.0,0.0
+42,TD3+BC without physics regularization,1,34,2808.9990234375,0.0,0.0
+42,RL Neural Operator Solver,1,34,2724.615966796875,0.0,0.0
+42,Base FNO Initializer,1,35,852.5907592773438,0.0,0.0
+42,Gradient residual refinement,1,35,802.5809326171875,0.0,0.0
+42,PINN-style refinement,1,35,848.8240356445312,0.0,0.0
+42,Supervised Neural Operator Corrector,1,35,791.0791015625,0.0,0.0
+42,TD3 from scratch,1,35,869.1239624023438,0.0,0.0
+42,TD3+BC without physics regularization,1,35,855.3645629882812,0.0,0.0
+42,RL Neural Operator Solver,1,35,791.0791015625,0.0,0.0
+42,Base FNO Initializer,2,0,108.76947784423828,0.0,0.0
+42,Gradient residual refinement,2,0,174.90093994140625,0.0,0.0
+42,PINN-style refinement,2,0,104.9195785522461,0.0,0.0
+42,Supervised Neural Operator Corrector,2,0,78.73967742919922,0.0,0.0
+42,TD3 from scratch,2,0,237.48655700683594,0.0,0.0
+42,TD3+BC without physics regularization,2,0,173.29641723632812,0.0,0.0
+42,RL Neural Operator Solver,2,0,78.73967742919922,0.0,0.0
+42,Base FNO Initializer,2,1,4145.19677734375,0.0,0.17247915267944336
+42,Gradient residual refinement,2,1,3975.48681640625,0.0,0.17247915267944336
+42,PINN-style refinement,2,1,4133.7353515625,0.0,0.17247915267944336
+42,Supervised Neural Operator Corrector,2,1,4006.2548828125,0.0,0.17247915267944336
+42,TD3 from scratch,2,1,4363.0869140625,0.0,0.17247915267944336
+42,TD3+BC without physics regularization,2,1,4229.69287109375,0.0,0.17247915267944336
+42,RL Neural Operator Solver,2,1,4006.2548828125,0.0,0.17247915267944336
+42,Base FNO Initializer,2,2,3044.205322265625,0.0,0.0
+42,Gradient residual refinement,2,2,2888.61083984375,0.0,0.0
+42,PINN-style refinement,2,2,3033.00927734375,0.0,0.0
+42,Supervised Neural Operator Corrector,2,2,2899.14404296875,0.0,0.0
+42,TD3 from scratch,2,2,3195.392333984375,0.0,0.0
+42,TD3+BC without physics regularization,2,2,3083.77490234375,0.0,0.0
+42,RL Neural Operator Solver,2,2,2899.14404296875,0.0,0.0
+42,Base FNO Initializer,2,3,449.0837707519531,0.0,0.0
+42,Gradient residual refinement,2,3,440.4273986816406,0.0,0.0
+42,PINN-style refinement,2,3,443.5539855957031,0.0,0.0
+42,Supervised Neural Operator Corrector,2,3,376.1578674316406,0.0,0.0
+42,TD3 from scratch,2,3,603.511962890625,0.0,0.0
+42,TD3+BC without physics regularization,2,3,493.1170349121094,0.0,0.0
+42,RL Neural Operator Solver,2,3,376.1578674316406,0.0,0.0
+42,Base FNO Initializer,2,4,2202.84765625,0.0,0.0
+42,Gradient residual refinement,2,4,2062.21484375,0.0,0.0
+42,PINN-style refinement,2,4,2192.0205078125,0.0,0.0
+42,Supervised Neural Operator Corrector,2,4,2059.1630859375,0.0,0.0
+42,TD3 from scratch,2,4,2380.434326171875,0.0,0.0
+42,TD3+BC without physics regularization,2,4,2266.859619140625,0.0,0.0
+42,RL Neural Operator Solver,2,4,2059.1630859375,0.0,0.0
+42,Base FNO Initializer,2,5,1123.4268798828125,0.0,0.0
+42,Gradient residual refinement,2,5,1055.675537109375,0.0,0.0
+42,PINN-style refinement,2,5,1114.8551025390625,0.0,0.0
+42,Supervised Neural Operator Corrector,2,5,1007.4595336914062,0.0,0.0
+42,TD3 from scratch,2,5,1306.7193603515625,0.0,0.0
+42,TD3+BC without physics regularization,2,5,1194.8905029296875,0.0,0.0
+42,RL Neural Operator Solver,2,5,1007.4595336914062,0.0,0.0
+42,Base FNO Initializer,2,6,1328.7618408203125,0.0,0.0
+42,Gradient residual refinement,2,6,1239.036376953125,0.0,0.0
+42,PINN-style refinement,2,6,1319.43310546875,0.0,0.0
+42,Supervised Neural Operator Corrector,2,6,1203.4195556640625,0.0,0.0
+42,TD3 from scratch,2,6,1518.0821533203125,0.0,0.0
+42,TD3+BC without physics regularization,2,6,1403.7862548828125,0.0,0.0
+42,RL Neural Operator Solver,2,6,1203.4195556640625,0.0,0.0
+42,Base FNO Initializer,2,7,300.79931640625,0.0,0.0
+42,Gradient residual refinement,2,7,324.6677551269531,0.0,0.0
+42,PINN-style refinement,2,7,295.8135986328125,0.0,0.0
+42,Supervised Neural Operator Corrector,2,7,240.36911010742188,0.0,0.0
+42,TD3 from scratch,2,7,445.84375,0.0,0.0
+42,TD3+BC without physics regularization,2,7,340.0423278808594,0.0,0.0
+42,RL Neural Operator Solver,2,7,240.36911010742188,0.0,0.0
+42,Base FNO Initializer,2,8,1763.629638671875,0.0,0.0
+42,Gradient residual refinement,2,8,1645.39111328125,0.0,0.0
+42,PINN-style refinement,2,8,1753.2862548828125,0.0,0.0
+42,Supervised Neural Operator Corrector,2,8,1625.1708984375,0.0,0.0
+42,TD3 from scratch,2,8,1952.8665771484375,0.0,0.0
+42,TD3+BC without physics regularization,2,8,1839.334228515625,0.0,0.0
+42,RL Neural Operator Solver,2,8,1625.1708984375,0.0,0.0
+42,Base FNO Initializer,2,9,707.9194946289062,0.0,0.0
+42,Gradient residual refinement,2,9,674.9314575195312,0.0,0.0
+42,PINN-style refinement,2,9,701.3253173828125,0.0,0.0
+42,Supervised Neural Operator Corrector,2,9,618.4362182617188,0.0,0.0
+42,TD3 from scratch,2,9,872.8148803710938,0.0,0.0
+42,TD3+BC without physics regularization,2,9,758.5059814453125,0.0,0.0
+42,RL Neural Operator Solver,2,9,618.4362182617188,0.0,0.0
+42,Base FNO Initializer,2,10,1452.89404296875,0.0,0.0
+42,Gradient residual refinement,2,10,1354.195068359375,0.0,0.0
+42,PINN-style refinement,2,10,1443.1759033203125,0.0,0.0
+42,Supervised Neural Operator Corrector,2,10,1322.4298095703125,0.0,0.0
+42,TD3 from scratch,2,10,1643.9755859375,0.0,0.0
+42,TD3+BC without physics regularization,2,10,1529.278564453125,0.0,0.0
+42,RL Neural Operator Solver,2,10,1322.4298095703125,0.0,0.0
+42,Base FNO Initializer,2,11,3547.599853515625,0.0,0.010925320908427238
+42,Gradient residual refinement,2,11,3384.421875,0.0,0.010925320908427238
+42,PINN-style refinement,2,11,3536.253662109375,0.0,0.010925320908427238
+42,Supervised Neural Operator Corrector,2,11,3406.24951171875,0.0,0.010925320908427238
+42,TD3 from scratch,2,11,3731.9365234375,0.0,0.010925320908427238
+42,TD3+BC without physics regularization,2,11,3602.42626953125,0.0,0.010925320908427238
+42,RL Neural Operator Solver,2,11,3406.24951171875,0.0,0.010925320908427238
+42,Base FNO Initializer,2,12,667.0895385742188,0.0,0.0
+42,Gradient residual refinement,2,12,637.1626586914062,0.0,0.0
+42,PINN-style refinement,2,12,660.6973266601562,0.0,0.0
+42,Supervised Neural Operator Corrector,2,12,580.1387329101562,0.0,0.0
+42,TD3 from scratch,2,12,830.9815673828125,0.0,0.0
+42,TD3+BC without physics regularization,2,12,713.5132446289062,0.0,0.0
+42,RL Neural Operator Solver,2,12,580.1387329101562,0.0,0.0
+42,Base FNO Initializer,2,13,3014.23095703125,0.0,0.0
+42,Gradient residual refinement,2,13,2857.482177734375,0.0,0.0
+42,PINN-style refinement,2,13,3003.041259765625,0.0,0.0
+42,Supervised Neural Operator Corrector,2,13,2868.97265625,0.0,0.0
+42,TD3 from scratch,2,13,3165.363037109375,0.0,0.0
+42,TD3+BC without physics regularization,2,13,3054.279296875,0.0,0.0
+42,RL Neural Operator Solver,2,13,2868.97265625,0.0,0.0
+42,Base FNO Initializer,2,14,748.7984008789062,0.0,0.0
+42,Gradient residual refinement,2,14,711.9698486328125,0.0,0.0
+42,PINN-style refinement,2,14,742.006103515625,0.0,0.0
+42,Supervised Neural Operator Corrector,2,14,656.6336669921875,0.0,0.0
+42,TD3 from scratch,2,14,913.9690551757812,0.0,0.0
+42,TD3+BC without physics regularization,2,14,801.5512084960938,0.0,0.0
+42,RL Neural Operator Solver,2,14,656.6336669921875,0.0,0.0
+42,Base FNO Initializer,2,15,2984.757080078125,0.0,0.0
+42,Gradient residual refinement,2,15,2830.654296875,0.0,0.0
+42,PINN-style refinement,2,15,2973.57177734375,0.0,0.0
+42,Supervised Neural Operator Corrector,2,15,2839.475830078125,0.0,0.0
+42,TD3 from scratch,2,15,3136.81298828125,0.0,0.0
+42,TD3+BC without physics regularization,2,15,3025.57763671875,0.0,0.0
+42,RL Neural Operator Solver,2,15,2839.475830078125,0.0,0.0
+42,Base FNO Initializer,2,16,71.5908203125,0.0,0.0
+42,Gradient residual refinement,2,16,164.25448608398438,0.0,0.0
+42,PINN-style refinement,2,16,68.24772644042969,0.0,0.0
+42,Supervised Neural Operator Corrector,2,16,51.0634765625,0.0,0.0
+42,TD3 from scratch,2,16,204.42095947265625,0.0,0.0
+42,TD3+BC without physics regularization,2,16,166.5396270751953,0.0,0.0
+42,RL Neural Operator Solver,2,16,51.0634765625,0.0,0.0
+42,Base FNO Initializer,2,17,3419.184326171875,0.0,0.002559700980782509
+42,Gradient residual refinement,2,17,3256.55908203125,0.0,0.002559700980782509
+42,PINN-style refinement,2,17,3407.8818359375,0.0,0.002559700980782509
+42,Supervised Neural Operator Corrector,2,17,3276.298095703125,0.0,0.002559700980782509
+42,TD3 from scratch,2,17,3585.771728515625,0.0,0.002559700980782509
+42,TD3+BC without physics regularization,2,17,3464.742431640625,0.0,0.002559700980782509
+42,RL Neural Operator Solver,2,17,3276.298095703125,0.0,0.002559700980782509
+42,Base FNO Initializer,2,18,15.116594314575195,0.0,0.0
+42,Gradient residual refinement,2,18,149.1385955810547,0.0,0.0
+42,PINN-style refinement,2,18,13.2860107421875,0.0,0.0
+42,Supervised Neural Operator Corrector,2,18,13.077372550964355,0.0,0.0
+42,TD3 from scratch,2,18,171.371826171875,0.0,0.0
+42,TD3+BC without physics regularization,2,18,171.57952880859375,0.0,0.0
+42,RL Neural Operator Solver,2,18,13.077372550964355,0.0,0.0
+42,Base FNO Initializer,2,19,527.154296875,0.0,0.0
+42,Gradient residual refinement,2,19,514.9851684570312,0.0,0.0
+42,PINN-style refinement,2,19,521.3271484375,0.0,0.0
+42,Supervised Neural Operator Corrector,2,19,448.87493896484375,0.0,0.0
+42,TD3 from scratch,2,19,685.1138305664062,0.0,0.0
+42,TD3+BC without physics regularization,2,19,565.0963134765625,0.0,0.0
+42,RL Neural Operator Solver,2,19,448.87493896484375,0.0,0.0
+42,Base FNO Initializer,2,20,626.453125,0.0,0.0
+42,Gradient residual refinement,2,20,604.8214721679688,0.0,0.0
+42,PINN-style refinement,2,20,620.2328491210938,0.0,0.0
+42,Supervised Neural Operator Corrector,2,20,542.0714111328125,0.0,0.0
+42,TD3 from scratch,2,20,788.8270874023438,0.0,0.0
+42,TD3+BC without physics regularization,2,20,669.3359375,0.0,0.0
+42,RL Neural Operator Solver,2,20,542.0714111328125,0.0,0.0
+42,Base FNO Initializer,2,21,1226.3023681640625,0.0,0.0
+42,Gradient residual refinement,2,21,1144.3939208984375,0.0,0.0
+42,PINN-style refinement,2,21,1217.32470703125,0.0,0.0
+42,Supervised Neural Operator Corrector,2,21,1105.305908203125,0.0,0.0
+42,TD3 from scratch,2,21,1413.3115234375,0.0,0.0
+42,TD3+BC without physics regularization,2,21,1299.8194580078125,0.0,0.0
+42,RL Neural Operator Solver,2,21,1105.305908203125,0.0,0.0
+42,Base FNO Initializer,2,22,337.0725402832031,0.0,0.0
+42,Gradient residual refinement,2,22,355.02349853515625,0.0,0.0
+42,PINN-style refinement,2,22,331.94171142578125,0.0,0.0
+42,Supervised Neural Operator Corrector,2,22,272.98046875,0.0,0.0
+42,TD3 from scratch,2,22,484.7903137207031,0.0,0.0
+42,TD3+BC without physics regularization,2,22,378.9781799316406,0.0,0.0
+42,RL Neural Operator Solver,2,22,272.98046875,0.0,0.0
+42,Base FNO Initializer,2,23,3135.920654296875,0.0,0.0
+42,Gradient residual refinement,2,23,2979.385498046875,0.0,0.0
+42,PINN-style refinement,2,23,3124.70703125,0.0,0.0
+42,Supervised Neural Operator Corrector,2,23,2991.5205078125,0.0,0.0
+42,TD3 from scratch,2,23,3284.7509765625,0.0,0.0
+42,TD3+BC without physics regularization,2,23,3172.848876953125,0.0,0.0
+42,RL Neural Operator Solver,2,23,2991.5205078125,0.0,0.0
+42,Base FNO Initializer,2,24,507.13226318359375,0.0,0.0
+42,Gradient residual refinement,2,24,491.79913330078125,0.0,0.0
+42,PINN-style refinement,2,24,501.3838195800781,0.0,0.0
+42,Supervised Neural Operator Corrector,2,24,430.32232666015625,0.0,0.0
+42,TD3 from scratch,2,24,664.0043334960938,0.0,0.0
+42,TD3+BC without physics regularization,2,24,545.9801635742188,0.0,0.0
+42,RL Neural Operator Solver,2,24,430.32232666015625,0.0,0.0
+42,Base FNO Initializer,2,25,956.8502197265625,0.0,0.0
+42,Gradient residual refinement,2,25,902.0615234375,0.0,0.0
+42,PINN-style refinement,2,25,949.0343627929688,0.0,0.0
+42,Supervised Neural Operator Corrector,2,25,850.9345092773438,0.0,0.0
+42,TD3 from scratch,2,25,1131.6566162109375,0.0,0.0
+42,TD3+BC without physics regularization,2,25,1021.7969970703125,0.0,0.0
+42,RL Neural Operator Solver,2,25,850.9345092773438,0.0,0.0
+42,Base FNO Initializer,2,26,1805.510009765625,0.0,0.0
+42,Gradient residual refinement,2,26,1680.8197021484375,0.0,0.0
+42,PINN-style refinement,2,26,1795.106689453125,0.0,0.0
+42,Supervised Neural Operator Corrector,2,26,1666.420166015625,0.0,0.0
+42,TD3 from scratch,2,26,1993.4168701171875,0.0,0.0
+42,TD3+BC without physics regularization,2,26,1880.2608642578125,0.0,0.0
+42,RL Neural Operator Solver,2,26,1666.420166015625,0.0,0.0
+42,Base FNO Initializer,2,27,687.4254760742188,0.0,0.0
+42,Gradient residual refinement,2,27,656.7757568359375,0.0,0.0
+42,PINN-style refinement,2,27,680.9215698242188,0.0,0.0
+42,Supervised Neural Operator Corrector,2,27,599.0515747070312,0.0,0.0
+42,TD3 from scratch,2,27,852.1710815429688,0.0,0.0
+42,TD3+BC without physics regularization,2,27,736.146240234375,0.0,0.0
+42,RL Neural Operator Solver,2,27,599.0515747070312,0.0,0.0
+42,Base FNO Initializer,2,28,789.942626953125,0.0,0.0
+42,Gradient residual refinement,2,28,749.5274658203125,0.0,0.0
+42,PINN-style refinement,2,28,782.9385986328125,0.0,0.0
+42,Supervised Neural Operator Corrector,2,28,695.1144409179688,0.0,0.0
+42,TD3 from scratch,2,28,956.5763549804688,0.0,0.0
+42,TD3+BC without physics regularization,2,28,845.7947998046875,0.0,0.0
+42,RL Neural Operator Solver,2,28,695.1144409179688,0.0,0.0
+42,Base FNO Initializer,2,29,2518.362060546875,0.0,0.0
+42,Gradient residual refinement,2,29,2370.357666015625,0.0,0.0
+42,PINN-style refinement,2,29,2507.349365234375,0.0,0.0
+42,Supervised Neural Operator Corrector,2,29,2372.9921875,0.0,0.0
+42,TD3 from scratch,2,29,2685.0537109375,0.0,0.0
+42,TD3+BC without physics regularization,2,29,2571.05517578125,0.0,0.0
+42,RL Neural Operator Solver,2,29,2372.9921875,0.0,0.0
+42,Base FNO Initializer,2,30,3880.32177734375,0.0,0.07487307488918304
+42,Gradient residual refinement,2,30,3714.37939453125,0.0,0.07487307488918304
+42,PINN-style refinement,2,30,3868.924560546875,0.0,0.07487307488918304
+42,Supervised Neural Operator Corrector,2,30,3741.19580078125,0.0,0.07487307488918304
+42,TD3 from scratch,2,30,4096.6494140625,0.0,0.07487307488918304
+42,TD3+BC without physics regularization,2,30,3961.1142578125,0.0,0.07487307488918304
+42,RL Neural Operator Solver,2,30,3741.19580078125,0.0,0.07487307488918304
+42,Base FNO Initializer,2,31,1493.4486083984375,0.0,0.0
+42,Gradient residual refinement,2,31,1390.566650390625,0.0,0.0
+42,PINN-style refinement,2,31,1483.653564453125,0.0,0.0
+42,Supervised Neural Operator Corrector,2,31,1361.9366455078125,0.0,0.0
+42,TD3 from scratch,2,31,1685.107421875,0.0,0.0
+42,TD3+BC without physics regularization,2,31,1570.4024658203125,0.0,0.0
+42,RL Neural Operator Solver,2,31,1361.9366455078125,0.0,0.0
+42,Base FNO Initializer,2,32,1163.959228515625,0.0,0.0
+42,Gradient residual refinement,2,32,1088.267578125,0.0,0.0
+42,PINN-style refinement,2,32,1155.2242431640625,0.0,0.0
+42,Supervised Neural Operator Corrector,2,32,1046.313232421875,0.0,0.0
+42,TD3 from scratch,2,32,1347.8253173828125,0.0,0.0
+42,TD3+BC without physics regularization,2,32,1235.5679931640625,0.0,0.0
+42,RL Neural Operator Solver,2,32,1046.313232421875,0.0,0.0
+42,Base FNO Initializer,2,33,646.6305541992188,0.0,0.0
+42,Gradient residual refinement,2,33,625.9656982421875,0.0,0.0
+42,PINN-style refinement,2,33,640.3052978515625,0.0,0.0
+42,Supervised Neural Operator Corrector,2,33,561.0341796875,0.0,0.0
+42,TD3 from scratch,2,33,809.6664428710938,0.0,0.0
+42,TD3+BC without physics regularization,2,33,691.0153198242188,0.0,0.0
+42,RL Neural Operator Solver,2,33,561.0341796875,0.0,0.0
+42,Base FNO Initializer,2,34,2811.921875,0.0,0.0
+42,Gradient residual refinement,2,34,2660.99951171875,0.0,0.0
+42,PINN-style refinement,2,34,2800.786865234375,0.0,0.0
+42,Supervised Neural Operator Corrector,2,34,2666.2705078125,0.0,0.0
+42,TD3 from scratch,2,34,2969.36376953125,0.0,0.0
+42,TD3+BC without physics regularization,2,34,2857.4912109375,0.0,0.0
+42,RL Neural Operator Solver,2,34,2666.2705078125,0.0,0.0
+42,Base FNO Initializer,2,35,852.5907592773438,0.0,0.0
+42,Gradient residual refinement,2,35,806.6139526367188,0.0,0.0
+42,PINN-style refinement,2,35,845.2866821289062,0.0,0.0
+42,Supervised Neural Operator Corrector,2,35,753.4617309570312,0.0,0.0
+42,TD3 from scratch,2,35,1021.8507690429688,0.0,0.0
+42,TD3+BC without physics regularization,2,35,911.8262329101562,0.0,0.0
+42,RL Neural Operator Solver,2,35,753.4617309570312,0.0,0.0
+42,Base FNO Initializer,5,0,108.76947784423828,0.0,0.0
+42,Gradient residual refinement,5,0,179.3630828857422,0.0,0.0
+42,PINN-style refinement,5,0,100.22834014892578,0.0,0.0
+42,Supervised Neural Operator Corrector,5,0,105.85916137695312,0.0,0.0
+42,TD3 from scratch,5,0,1562.7025146484375,0.0,0.0
+42,TD3+BC without physics regularization,5,0,1219.9554443359375,0.0,0.0
+42,RL Neural Operator Solver,5,0,105.85916137695312,0.0,0.0
+42,Base FNO Initializer,5,1,4145.19677734375,0.0,0.17247915267944336
+42,Gradient residual refinement,5,1,3899.229248046875,0.0,0.17247915267944336
+42,PINN-style refinement,5,1,4117.9951171875,0.0,0.17247915267944336
+42,Supervised Neural Operator Corrector,5,1,3892.675537109375,0.0,0.17247915267944336
+42,TD3 from scratch,5,1,6040.701171875,0.0,0.17247915267944336
+42,TD3+BC without physics regularization,5,1,5140.7958984375,0.0,0.17247915267944336
+42,RL Neural Operator Solver,5,1,3892.675537109375,0.0,0.17247915267944336
+42,Base FNO Initializer,5,2,3044.205322265625,0.0,0.0
+42,Gradient residual refinement,5,2,2823.57763671875,0.0,0.0
+42,PINN-style refinement,5,2,3017.654052734375,0.0,0.0
+42,Supervised Neural Operator Corrector,5,2,2783.31005859375,0.0,0.0
+42,TD3 from scratch,5,2,4744.6962890625,0.0,0.0
+42,TD3+BC without physics regularization,5,2,3668.318359375,0.0,0.0
+42,RL Neural Operator Solver,5,2,2783.31005859375,0.0,0.0
+42,Base FNO Initializer,5,3,449.0837707519531,0.0,0.0
+42,Gradient residual refinement,5,3,445.1812438964844,0.0,0.0
+42,PINN-style refinement,5,3,436.42864990234375,0.0,0.0
+42,Supervised Neural Operator Corrector,5,3,349.01123046875,0.0,0.0
+42,TD3 from scratch,5,3,2023.4002685546875,0.0,0.0
+42,TD3+BC without physics regularization,5,3,1383.2440185546875,0.0,0.0
+42,RL Neural Operator Solver,5,3,349.01123046875,0.0,0.0
+42,Base FNO Initializer,5,4,2202.84765625,0.0,0.0
+42,Gradient residual refinement,5,4,2006.363037109375,0.0,0.0
+42,PINN-style refinement,5,4,2177.201904296875,0.0,0.0
+42,Supervised Neural Operator Corrector,5,4,1945.000244140625,0.0,0.0
+42,TD3 from scratch,5,4,3994.597412109375,0.0,0.0
+42,TD3+BC without physics regularization,5,4,3063.291748046875,0.0,0.0
+42,RL Neural Operator Solver,5,4,1945.000244140625,0.0,0.0
+42,Base FNO Initializer,5,5,1123.4268798828125,0.0,0.0
+42,Gradient residual refinement,5,5,1004.5293579101562,0.0,0.0
+42,PINN-style refinement,5,5,1103.3135986328125,0.0,0.0
+42,Supervised Neural Operator Corrector,5,5,923.3766479492188,0.0,0.0
+42,TD3 from scratch,5,5,2898.032470703125,0.0,0.0
+42,TD3+BC without physics regularization,5,5,2190.560791015625,0.0,0.0
+42,RL Neural Operator Solver,5,5,923.3766479492188,0.0,0.0
+42,Base FNO Initializer,5,6,1328.7618408203125,0.0,0.0
+42,Gradient residual refinement,5,6,1188.271484375,0.0,0.0
+42,PINN-style refinement,5,6,1306.8023681640625,0.0,0.0
+42,Supervised Neural Operator Corrector,5,6,1107.6492919921875,0.0,0.0
+42,TD3 from scratch,5,6,3126.66015625,0.0,0.0
+42,TD3+BC without physics regularization,5,6,2387.61865234375,0.0,0.0
+42,RL Neural Operator Solver,5,6,1107.6492919921875,0.0,0.0
+42,Base FNO Initializer,5,7,300.79931640625,0.0,0.0
+42,Gradient residual refinement,5,7,321.8316650390625,0.0,0.0
+42,PINN-style refinement,5,7,289.4172058105469,0.0,0.0
+42,Supervised Neural Operator Corrector,5,7,236.01402282714844,0.0,0.0
+42,TD3 from scratch,5,7,1787.935302734375,0.0,0.0
+42,TD3+BC without physics regularization,5,7,1215.0775146484375,0.0,0.0
+42,RL Neural Operator Solver,5,7,236.01402282714844,0.0,0.0
+42,Base FNO Initializer,5,8,1763.629638671875,0.0,0.0
+42,Gradient residual refinement,5,8,1589.2867431640625,0.0,0.0
+42,PINN-style refinement,5,8,1739.179931640625,0.0,0.0
+42,Supervised Neural Operator Corrector,5,8,1516.411865234375,0.0,0.0
+42,TD3 from scratch,5,8,3576.603759765625,0.0,0.0
+42,TD3+BC without physics regularization,5,8,2745.005615234375,0.0,0.0
+42,RL Neural Operator Solver,5,8,1516.411865234375,0.0,0.0
+42,Base FNO Initializer,5,9,707.9194946289062,0.0,0.0
+42,Gradient residual refinement,5,9,660.391845703125,0.0,0.0
+42,PINN-style refinement,5,9,692.6651611328125,0.0,0.0
+42,Supervised Neural Operator Corrector,5,9,563.1620483398438,0.0,0.0
+42,TD3 from scratch,5,9,2390.818603515625,0.0,0.0
+42,TD3+BC without physics regularization,5,9,1704.54931640625,0.0,0.0
+42,RL Neural Operator Solver,5,9,563.1620483398438,0.0,0.0
+42,Base FNO Initializer,5,10,1452.89404296875,0.0,0.0
+42,Gradient residual refinement,5,10,1298.139404296875,0.0,0.0
+42,PINN-style refinement,5,10,1429.99658203125,0.0,0.0
+42,Supervised Neural Operator Corrector,5,10,1221.849609375,0.0,0.0
+42,TD3 from scratch,5,10,3259.052734375,0.0,0.0
+42,TD3+BC without physics regularization,5,10,2498.324951171875,0.0,0.0
+42,RL Neural Operator Solver,5,10,1221.849609375,0.0,0.0
+42,Base FNO Initializer,5,11,3547.599853515625,0.0,0.010925320908427238
+42,Gradient residual refinement,5,11,3310.918701171875,0.0,0.010925320908427238
+42,PINN-style refinement,5,11,3520.682373046875,0.0,0.010925320908427238
+42,Supervised Neural Operator Corrector,5,11,3291.762451171875,0.0,0.010925320908427238
+42,TD3 from scratch,5,11,5354.076171875,0.0,0.010925320908427238
+42,TD3+BC without physics regularization,5,11,4321.1513671875,0.0,0.010925320908427238
+42,RL Neural Operator Solver,5,11,3291.762451171875,0.0,0.010925320908427238
+42,Base FNO Initializer,5,12,667.0895385742188,0.0,0.0
+42,Gradient residual refinement,5,12,628.995361328125,0.0,0.0
+42,PINN-style refinement,5,12,652.29345703125,0.0,0.0
+42,Supervised Neural Operator Corrector,5,12,532.046875,0.0,0.0
+42,TD3 from scratch,5,12,2337.3359375,0.0,0.0
+42,TD3+BC without physics regularization,5,12,1649.4696044921875,0.0,0.0
+42,RL Neural Operator Solver,5,12,532.046875,0.0,0.0
+42,Base FNO Initializer,5,13,3014.23095703125,0.0,0.0
+42,Gradient residual refinement,5,13,2787.94873046875,0.0,0.0
+42,PINN-style refinement,5,13,2987.691162109375,0.0,0.0
+42,Supervised Neural Operator Corrector,5,13,2753.17431640625,0.0,0.0
+42,TD3 from scratch,5,13,4716.0791015625,0.0,0.0
+42,TD3+BC without physics regularization,5,13,3644.80615234375,0.0,0.0
+42,RL Neural Operator Solver,5,13,2753.17431640625,0.0,0.0
+42,Base FNO Initializer,5,14,748.7984008789062,0.0,0.0
+42,Gradient residual refinement,5,14,696.8450927734375,0.0,0.0
+42,PINN-style refinement,5,14,733.0567626953125,0.0,0.0
+42,Supervised Neural Operator Corrector,5,14,598.4483032226562,0.0,0.0
+42,TD3 from scratch,5,14,2440.71826171875,0.0,0.0
+42,TD3+BC without physics regularization,5,14,1755.001220703125,0.0,0.0
+42,RL Neural Operator Solver,5,14,598.4483032226562,0.0,0.0
+42,Base FNO Initializer,5,15,2984.757080078125,0.0,0.0
+42,Gradient residual refinement,5,15,2764.195556640625,0.0,0.0
+42,PINN-style refinement,5,15,2958.231689453125,0.0,0.0
+42,Supervised Neural Operator Corrector,5,15,2723.561767578125,0.0,0.0
+42,TD3 from scratch,5,15,4689.60791015625,0.0,0.0
+42,TD3+BC without physics regularization,5,15,3622.1826171875,0.0,0.0
+42,RL Neural Operator Solver,5,15,2723.561767578125,0.0,0.0
+42,Base FNO Initializer,5,16,71.5908203125,0.0,0.0
+42,Gradient residual refinement,5,16,146.90892028808594,0.0,0.0
+42,PINN-style refinement,5,16,64.29894256591797,0.0,0.0
+42,Supervised Neural Operator Corrector,5,16,86.99697875976562,0.0,0.0
+42,TD3 from scratch,5,16,1545.4644775390625,0.0,0.0
+42,TD3+BC without physics regularization,5,16,1303.9642333984375,0.0,0.0
+42,RL Neural Operator Solver,5,16,86.99697875976562,0.0,0.0
+42,Base FNO Initializer,5,17,3419.184326171875,0.0,0.002559700980782509
+42,Gradient residual refinement,5,17,3182.234375,0.0,0.002559700980782509
+42,PINN-style refinement,5,17,3392.356201171875,0.0,0.002559700980782509
+42,Supervised Neural Operator Corrector,5,17,3161.484375,0.0,0.002559700980782509
+42,TD3 from scratch,5,17,5167.62841796875,0.0,0.002559700980782509
+42,TD3+BC without physics regularization,5,17,4092.974853515625,0.0,0.002559700980782509
+42,RL Neural Operator Solver,5,17,3161.484375,0.0,0.002559700980782509
+42,Base FNO Initializer,5,18,15.116594314575195,0.0,0.0
+42,Gradient residual refinement,5,18,96.8304672241211,0.0,0.0
+42,PINN-style refinement,5,18,11.500527381896973,0.0,0.0
+42,Supervised Neural Operator Corrector,5,18,41.89037322998047,0.0,0.0
+42,TD3 from scratch,5,18,1564.564697265625,0.0,0.0
+42,TD3+BC without physics regularization,5,18,1435.9320068359375,0.0,0.0
+42,RL Neural Operator Solver,5,18,41.89037322998047,0.0,0.0
+42,Base FNO Initializer,5,19,527.154296875,0.0,0.0
+42,Gradient residual refinement,5,19,510.5426940917969,0.0,0.0
+42,PINN-style refinement,5,19,513.7628173828125,0.0,0.0
+42,Supervised Neural Operator Corrector,5,19,414.36029052734375,0.0,0.0
+42,TD3 from scratch,5,19,2141.955810546875,0.0,0.0
+42,TD3+BC without physics regularization,5,19,1464.3843994140625,0.0,0.0
+42,RL Neural Operator Solver,5,19,414.36029052734375,0.0,0.0
+42,Base FNO Initializer,5,20,626.453125,0.0,0.0
+42,Gradient residual refinement,5,20,588.1585693359375,0.0,0.0
+42,PINN-style refinement,5,20,612.080322265625,0.0,0.0
+42,Supervised Neural Operator Corrector,5,20,493.4934387207031,0.0,0.0
+42,TD3 from scratch,5,20,2282.86279296875,0.0,0.0
+42,TD3+BC without physics regularization,5,20,1595.320556640625,0.0,0.0
+42,RL Neural Operator Solver,5,20,493.4934387207031,0.0,0.0
+42,Base FNO Initializer,5,21,1226.3023681640625,0.0,0.0
+42,Gradient residual refinement,5,21,1101.493408203125,0.0,0.0
+42,PINN-style refinement,5,21,1205.198974609375,0.0,0.0
+42,Supervised Neural Operator Corrector,5,21,1014.5260009765625,0.0,0.0
+42,TD3 from scratch,5,21,3013.6025390625,0.0,0.0
+42,TD3+BC without physics regularization,5,21,2290.814208984375,0.0,0.0
+42,RL Neural Operator Solver,5,21,1014.5260009765625,0.0,0.0
+42,Base FNO Initializer,5,22,337.0725402832031,0.0,0.0
+42,Gradient residual refinement,5,22,350.71044921875,0.0,0.0
+42,PINN-style refinement,5,22,325.33392333984375,0.0,0.0
+42,Supervised Neural Operator Corrector,5,22,261.0892639160156,0.0,0.0
+42,TD3 from scratch,5,22,1843.43310546875,0.0,0.0
+42,TD3+BC without physics regularization,5,22,1254.9632568359375,0.0,0.0
+42,RL Neural Operator Solver,5,22,261.0892639160156,0.0,0.0
+42,Base FNO Initializer,5,23,3135.920654296875,0.0,0.0
+42,Gradient residual refinement,5,23,2912.75439453125,0.0,0.0
+42,PINN-style refinement,5,23,3109.322998046875,0.0,0.0
+42,Supervised Neural Operator Corrector,5,23,2875.7744140625,0.0,0.0
+42,TD3 from scratch,5,23,4826.875,0.0,0.0
+42,TD3+BC without physics regularization,5,23,3736.456787109375,0.0,0.0
+42,RL Neural Operator Solver,5,23,2875.7744140625,0.0,0.0
+42,Base FNO Initializer,5,24,507.13226318359375,0.0,0.0
+42,Gradient residual refinement,5,24,497.8603820800781,0.0,0.0
+42,PINN-style refinement,5,24,493.9303283691406,0.0,0.0
+42,Supervised Neural Operator Corrector,5,24,396.9982604980469,0.0,0.0
+42,TD3 from scratch,5,24,2110.190673828125,0.0,0.0
+42,TD3+BC without physics regularization,5,24,1437.96337890625,0.0,0.0
+42,RL Neural Operator Solver,5,24,396.9982604980469,0.0,0.0
+42,Base FNO Initializer,5,25,956.8502197265625,0.0,0.0
+42,Gradient residual refinement,5,25,867.193115234375,0.0,0.0
+42,PINN-style refinement,5,25,938.6017456054688,0.0,0.0
+42,Supervised Neural Operator Corrector,5,25,775.5803833007812,0.0,0.0
+42,TD3 from scratch,5,25,2700.45068359375,0.0,0.0
+42,TD3+BC without physics regularization,5,25,2010.23779296875,0.0,0.0
+42,RL Neural Operator Solver,5,25,775.5803833007812,0.0,0.0
+42,Base FNO Initializer,5,26,1805.510009765625,0.0,0.0
+42,Gradient residual refinement,5,26,1628.2796630859375,0.0,0.0
+42,PINN-style refinement,5,26,1780.9202880859375,0.0,0.0
+42,Supervised Neural Operator Corrector,5,26,1556.873046875,0.0,0.0
+42,TD3 from scratch,5,26,3616.342041015625,0.0,0.0
+42,TD3+BC without physics regularization,5,26,2776.485595703125,0.0,0.0
+42,RL Neural Operator Solver,5,26,1556.873046875,0.0,0.0
+42,Base FNO Initializer,5,27,687.4254760742188,0.0,0.0
+42,Gradient residual refinement,5,27,643.2860107421875,0.0,0.0
+42,PINN-style refinement,5,27,672.3829345703125,0.0,0.0
+42,Supervised Neural Operator Corrector,5,27,544.5438842773438,0.0,0.0
+42,TD3 from scratch,5,27,2365.75048828125,0.0,0.0
+42,TD3+BC without physics regularization,5,27,1677.99609375,0.0,0.0
+42,RL Neural Operator Solver,5,27,544.5438842773438,0.0,0.0
+42,Base FNO Initializer,5,28,789.942626953125,0.0,0.0
+42,Gradient residual refinement,5,28,727.8455810546875,0.0,0.0
+42,PINN-style refinement,5,28,773.7218017578125,0.0,0.0
+42,Supervised Neural Operator Corrector,5,28,635.6396484375,0.0,0.0
+42,TD3 from scratch,5,28,2493.08154296875,0.0,0.0
+42,TD3+BC without physics regularization,5,28,1808.66455078125,0.0,0.0
+42,RL Neural Operator Solver,5,28,635.6396484375,0.0,0.0
+42,Base FNO Initializer,5,29,2518.362060546875,0.0,0.0
+42,Gradient residual refinement,5,29,2307.49951171875,0.0,0.0
+42,PINN-style refinement,5,29,2492.256591796875,0.0,0.0
+42,Supervised Neural Operator Corrector,5,29,2257.38623046875,0.0,0.0
+42,TD3 from scratch,5,29,4280.20556640625,0.0,0.0
+42,TD3+BC without physics regularization,5,29,3285.5126953125,0.0,0.0
+42,RL Neural Operator Solver,5,29,2257.38623046875,0.0,0.0
+42,Base FNO Initializer,5,30,3880.32177734375,0.0,0.07487307488918304
+42,Gradient residual refinement,5,30,3636.70556640625,0.0,0.07487307488918304
+42,PINN-style refinement,5,30,3853.258544921875,0.0,0.07487307488918304
+42,Supervised Neural Operator Corrector,5,30,3627.96484375,0.0,0.07487307488918304
+42,TD3 from scratch,5,30,5780.447265625,0.0,0.07487307488918304
+42,TD3+BC without physics regularization,5,30,4869.51708984375,0.0,0.07487307488918304
+42,RL Neural Operator Solver,5,30,3627.96484375,0.0,0.07487307488918304
+42,Base FNO Initializer,5,31,1493.4486083984375,0.0,0.0
+42,Gradient residual refinement,5,31,1336.257568359375,0.0,0.0
+42,PINN-style refinement,5,31,1470.3477783203125,0.0,0.0
+42,Supervised Neural Operator Corrector,5,31,1260.083740234375,0.0,0.0
+42,TD3 from scratch,5,31,3302.6455078125,0.0,0.0
+42,TD3+BC without physics regularization,5,31,2536.85400390625,0.0,0.0
+42,RL Neural Operator Solver,5,31,1260.083740234375,0.0,0.0
+42,Base FNO Initializer,5,32,1163.959228515625,0.0,0.0
+42,Gradient residual refinement,5,32,1045.75634765625,0.0,0.0
+42,PINN-style refinement,5,32,1143.4505615234375,0.0,0.0
+42,Supervised Neural Operator Corrector,5,32,958.9403076171875,0.0,0.0
+42,TD3 from scratch,5,32,2942.389404296875,0.0,0.0
+42,TD3+BC without physics regularization,5,32,2227.25830078125,0.0,0.0
+42,RL Neural Operator Solver,5,32,958.9403076171875,0.0,0.0
+42,Base FNO Initializer,5,33,646.6305541992188,0.0,0.0
+42,Gradient residual refinement,5,33,608.6521606445312,0.0,0.0
+42,PINN-style refinement,5,33,632.0159912109375,0.0,0.0
+42,Supervised Neural Operator Corrector,5,33,512.6791381835938,0.0,0.0
+42,TD3 from scratch,5,33,2309.63818359375,0.0,0.0
+42,TD3+BC without physics regularization,5,33,1619.7388916015625,0.0,0.0
+42,RL Neural Operator Solver,5,33,512.6791381835938,0.0,0.0
+42,Base FNO Initializer,5,34,2811.921875,0.0,0.0
+42,Gradient residual refinement,5,34,2597.15771484375,0.0,0.0
+42,PINN-style refinement,5,34,2785.529052734375,0.0,0.0
+42,Supervised Neural Operator Corrector,5,34,2550.25146484375,0.0,0.0
+42,TD3 from scratch,5,34,4538.7451171875,0.0,0.0
+42,TD3+BC without physics regularization,5,34,3497.0771484375,0.0,0.0
+42,RL Neural Operator Solver,5,34,2550.25146484375,0.0,0.0
+42,Base FNO Initializer,5,35,852.5907592773438,0.0,0.0
+42,Gradient residual refinement,5,35,787.439697265625,0.0,0.0
+42,PINN-style refinement,5,35,835.6234130859375,0.0,0.0
+42,Supervised Neural Operator Corrector,5,35,687.2718505859375,0.0,0.0
+42,TD3 from scratch,5,35,2571.79345703125,0.0,0.0
+42,TD3+BC without physics regularization,5,35,1884.1431884765625,0.0,0.0
+42,RL Neural Operator Solver,5,35,687.2718505859375,0.0,0.0
+42,Base FNO Initializer,10,0,108.76947784423828,0.0,0.0
+42,Gradient residual refinement,10,0,195.7299346923828,0.0,0.0
+42,PINN-style refinement,10,0,94.22310638427734,0.0,0.0
+42,Supervised Neural Operator Corrector,10,0,140.43588256835938,0.0,0.0
+42,TD3 from scratch,10,0,6786.77490234375,0.0,0.0
+42,TD3+BC without physics regularization,10,0,5766.08837890625,0.0,0.0
+42,RL Neural Operator Solver,10,0,140.43588256835938,0.0,0.0
+42,Base FNO Initializer,10,1,4145.19677734375,0.0,0.17247915267944336
+42,Gradient residual refinement,10,1,3802.265625,0.0,0.17247915267944336
+42,PINN-style refinement,10,1,4094.1015625,0.0,0.17247915267944336
+42,Supervised Neural Operator Corrector,10,1,3778.4091796875,0.0,0.17247915267944336
+42,TD3 from scratch,10,1,11861.2119140625,0.0,0.17247915267944336
+42,TD3+BC without physics regularization,10,1,9461.9384765625,0.0,0.17247915267944336
+42,RL Neural Operator Solver,10,1,3778.4091796875,0.0,0.17247915267944336
+42,Base FNO Initializer,10,2,3044.205322265625,0.0,0.0
+42,Gradient residual refinement,10,2,2735.366455078125,0.0,0.0
+42,PINN-style refinement,10,2,2994.35546875,0.0,0.0
+42,Supervised Neural Operator Corrector,10,2,2659.54638671875,0.0,0.0
+42,TD3 from scratch,10,2,10300.953125,0.0,0.0
+42,TD3+BC without physics regularization,10,2,7444.51318359375,0.0,0.0
+42,RL Neural Operator Solver,10,2,2659.54638671875,0.0,0.0
+42,Base FNO Initializer,10,3,449.0837707519531,0.0,0.0
+42,Gradient residual refinement,10,3,424.33349609375,0.0,0.0
+42,PINN-style refinement,10,3,426.1627502441406,0.0,0.0
+42,Supervised Neural Operator Corrector,10,3,344.3653869628906,0.0,0.0
+42,TD3 from scratch,10,3,7305.26123046875,0.0,0.0
+42,TD3+BC without physics regularization,10,3,5845.7373046875,0.0,0.0
+42,RL Neural Operator Solver,10,3,344.3653869628906,0.0,0.0
+42,Base FNO Initializer,10,4,2202.84765625,0.0,0.0
+42,Gradient residual refinement,10,4,1921.084228515625,0.0,0.0
+42,PINN-style refinement,10,4,2154.86865234375,0.0,0.0
+42,Supervised Neural Operator Corrector,10,4,1819.4012451171875,0.0,0.0
+42,TD3 from scratch,10,4,9678.59765625,0.0,0.0
+42,TD3+BC without physics regularization,10,4,7275.16162109375,0.0,0.0
+42,RL Neural Operator Solver,10,4,1819.4012451171875,0.0,0.0
+42,Base FNO Initializer,10,5,1123.4268798828125,0.0,0.0
+42,Gradient residual refinement,10,5,967.29052734375,0.0,0.0
+42,PINN-style refinement,10,5,1086.2745361328125,0.0,0.0
+42,Supervised Neural Operator Corrector,10,5,850.0514526367188,0.0,0.0
+42,TD3 from scratch,10,5,8536.9892578125,0.0,0.0
+42,TD3+BC without physics regularization,10,5,6735.14501953125,0.0,0.0
+42,RL Neural Operator Solver,10,5,850.0514526367188,0.0,0.0
+42,Base FNO Initializer,10,6,1328.7618408203125,0.0,0.0
+42,Gradient residual refinement,10,6,1136.447509765625,0.0,0.0
+42,PINN-style refinement,10,6,1288.03125,0.0,0.0
+42,Supervised Neural Operator Corrector,10,6,1019.090576171875,0.0,0.0
+42,TD3 from scratch,10,6,8816.123046875,0.0,0.0
+42,TD3+BC without physics regularization,10,6,6891.71533203125,0.0,0.0
+42,RL Neural Operator Solver,10,6,1019.090576171875,0.0,0.0
+42,Base FNO Initializer,10,7,300.79931640625,0.0,0.0
+42,Gradient residual refinement,10,7,321.1145324707031,0.0,0.0
+42,PINN-style refinement,10,7,280.408203125,0.0,0.0
+42,Supervised Neural Operator Corrector,10,7,253.25099182128906,0.0,0.0
+42,TD3 from scratch,10,7,7008.55029296875,0.0,0.0
+42,TD3+BC without physics regularization,10,7,5702.04248046875,0.0,0.0
+42,RL Neural Operator Solver,10,7,253.25099182128906,0.0,0.0
+42,Base FNO Initializer,10,8,1763.629638671875,0.0,0.0
+42,Gradient residual refinement,10,8,1515.31103515625,0.0,0.0
+42,PINN-style refinement,10,8,1718.027099609375,0.0,0.0
+42,Supervised Neural Operator Corrector,10,8,1401.7210693359375,0.0,0.0
+42,TD3 from scratch,10,8,9292.8798828125,0.0,0.0
+42,TD3+BC without physics regularization,10,8,7129.75,0.0,0.0
+42,RL Neural Operator Solver,10,8,1401.7210693359375,0.0,0.0
+42,Base FNO Initializer,10,9,707.9194946289062,0.0,0.0
+42,Gradient residual refinement,10,9,625.4545288085938,0.0,0.0
+42,PINN-style refinement,10,9,680.1996459960938,0.0,0.0
+42,Supervised Neural Operator Corrector,10,9,528.0585327148438,0.0,0.0
+42,TD3 from scratch,10,9,7815.79248046875,0.0,0.0
+42,TD3+BC without physics regularization,10,9,6232.8837890625,0.0,0.0
+42,RL Neural Operator Solver,10,9,528.0585327148438,0.0,0.0
+42,Base FNO Initializer,10,10,1452.89404296875,0.0,0.0
+42,Gradient residual refinement,10,10,1240.1875,0.0,0.0
+42,PINN-style refinement,10,10,1410.352783203125,0.0,0.0
+42,Supervised Neural Operator Corrector,10,10,1125.3974609375,0.0,0.0
+42,TD3 from scratch,10,10,8967.0009765625,0.0,0.0
+42,TD3+BC without physics regularization,10,10,6978.83349609375,0.0,0.0
+42,RL Neural Operator Solver,10,10,1125.3974609375,0.0,0.0
+42,Base FNO Initializer,10,11,3547.599853515625,0.0,0.010925320908427238
+42,Gradient residual refinement,10,11,3222.8330078125,0.0,0.010925320908427238
+42,PINN-style refinement,10,11,3497.060791015625,0.0,0.010925320908427238
+42,Supervised Neural Operator Corrector,10,11,3171.78857421875,0.0,0.010925320908427238
+42,TD3 from scratch,10,11,11039.419921875,0.0,0.010925320908427238
+42,TD3+BC without physics regularization,10,11,8353.9111328125,0.0,0.010925320908427238
+42,RL Neural Operator Solver,10,11,3171.78857421875,0.0,0.010925320908427238
+42,Base FNO Initializer,10,12,667.0895385742188,0.0,0.0
+42,Gradient residual refinement,10,12,588.4194946289062,0.0,0.0
+42,PINN-style refinement,10,12,640.1917114257812,0.0,0.0
+42,Supervised Neural Operator Corrector,10,12,497.75579833984375,0.0,0.0
+42,TD3 from scratch,10,12,7735.65625,0.0,0.0
+42,TD3+BC without physics regularization,10,12,6167.99462890625,0.0,0.0
+42,RL Neural Operator Solver,10,12,497.75579833984375,0.0,0.0
+42,Base FNO Initializer,10,13,3014.23095703125,0.0,0.0
+42,Gradient residual refinement,10,13,2710.463623046875,0.0,0.0
+42,PINN-style refinement,10,13,2964.408447265625,0.0,0.0
+42,Supervised Neural Operator Corrector,10,13,2629.186767578125,0.0,0.0
+42,TD3 from scratch,10,13,10275.4794921875,0.0,0.0
+42,TD3+BC without physics regularization,10,13,7434.84130859375,0.0,0.0
+42,RL Neural Operator Solver,10,13,2629.186767578125,0.0,0.0
+42,Base FNO Initializer,10,14,748.7984008789062,0.0,0.0
+42,Gradient residual refinement,10,14,661.3753051757812,0.0,0.0
+42,PINN-style refinement,10,14,720.1820068359375,0.0,0.0
+42,Supervised Neural Operator Corrector,10,14,556.2704467773438,0.0,0.0
+42,TD3 from scratch,10,14,7887.7197265625,0.0,0.0
+42,TD3+BC without physics regularization,10,14,6290.26611328125,0.0,0.0
+42,RL Neural Operator Solver,10,14,556.2704467773438,0.0,0.0
+42,Base FNO Initializer,10,15,2984.757080078125,0.0,0.0
+42,Gradient residual refinement,10,15,2674.18408203125,0.0,0.0
+42,PINN-style refinement,10,15,2934.943115234375,0.0,0.0
+42,Supervised Neural Operator Corrector,10,15,2599.22021484375,0.0,0.0
+42,TD3 from scratch,10,15,10253.263671875,0.0,0.0
+42,TD3+BC without physics regularization,10,15,7430.1552734375,0.0,0.0
+42,RL Neural Operator Solver,10,15,2599.22021484375,0.0,0.0
+42,Base FNO Initializer,10,16,71.5908203125,0.0,0.0
+42,Gradient residual refinement,10,16,189.816162109375,0.0,0.0
+42,PINN-style refinement,10,16,59.50675582885742,0.0,0.0
+42,Supervised Neural Operator Corrector,10,16,126.46314239501953,0.0,0.0
+42,TD3 from scratch,10,16,6779.7724609375,0.0,0.0
+42,TD3+BC without physics regularization,10,16,6002.50439453125,0.0,0.0
+42,RL Neural Operator Solver,10,16,126.46314239501953,0.0,0.0
+42,Base FNO Initializer,10,17,3419.184326171875,0.0,0.002559700980782509
+42,Gradient residual refinement,10,17,3094.806396484375,0.0,0.002559700980782509
+42,PINN-style refinement,10,17,3368.782958984375,0.0,0.002559700980782509
+42,Supervised Neural Operator Corrector,10,17,3040.824951171875,0.0,0.002559700980782509
+42,TD3 from scratch,10,17,10781.9072265625,0.0,0.002559700980782509
+42,TD3+BC without physics regularization,10,17,7955.36376953125,0.0,0.002559700980782509
+42,RL Neural Operator Solver,10,17,3040.824951171875,0.0,0.002559700980782509
+42,Base FNO Initializer,10,18,15.116594314575195,0.0,0.0
+42,Gradient residual refinement,10,18,177.958740234375,0.0,0.0
+42,PINN-style refinement,10,18,9.98177433013916,0.0,0.0
+42,Supervised Neural Operator Corrector,10,18,105.06539916992188,0.0,0.0
+42,TD3 from scratch,10,18,6863.60400390625,0.0,0.0
+42,TD3+BC without physics regularization,10,18,6318.05615234375,0.0,0.0
+42,RL Neural Operator Solver,10,18,105.06539916992188,0.0,0.0
+42,Base FNO Initializer,10,19,527.154296875,0.0,0.0
+42,Gradient residual refinement,10,19,487.1471862792969,0.0,0.0
+42,PINN-style refinement,10,19,502.886474609375,0.0,0.0
+42,Supervised Neural Operator Corrector,10,19,398.3920593261719,0.0,0.0
+42,TD3 from scratch,10,19,7460.5390625,0.0,0.0
+42,TD3+BC without physics regularization,10,19,5934.39501953125,0.0,0.0
+42,RL Neural Operator Solver,10,19,398.3920593261719,0.0,0.0
+42,Base FNO Initializer,10,20,626.453125,0.0,0.0
+42,Gradient residual refinement,10,20,566.7901611328125,0.0,0.0
+42,PINN-style refinement,10,20,600.3407592773438,0.0,0.0
+42,Supervised Neural Operator Corrector,10,20,467.0275573730469,0.0,0.0
+42,TD3 from scratch,10,20,7658.6796875,0.0,0.0
+42,TD3+BC without physics regularization,10,20,6100.04248046875,0.0,0.0
+42,RL Neural Operator Solver,10,20,467.0275573730469,0.0,0.0
+42,Base FNO Initializer,10,21,1226.3023681640625,0.0,0.0
+42,Gradient residual refinement,10,21,1042.9510498046875,0.0,0.0
+42,PINN-style refinement,10,21,1187.2371826171875,0.0,0.0
+42,Supervised Neural Operator Corrector,10,21,932.7454223632812,0.0,0.0
+42,TD3 from scratch,10,21,8681.5458984375,0.0,0.0
+42,TD3+BC without physics regularization,10,21,6815.76611328125,0.0,0.0
+42,RL Neural Operator Solver,10,21,932.7454223632812,0.0,0.0
+42,Base FNO Initializer,10,22,337.0725402832031,0.0,0.0
+42,Gradient residual refinement,10,22,347.5639343261719,0.0,0.0
+42,PINN-style refinement,10,22,315.9745178222656,0.0,0.0
+42,Supervised Neural Operator Corrector,10,22,274.96441650390625,0.0,0.0
+42,TD3 from scratch,10,22,7078.51611328125,0.0,0.0
+42,TD3+BC without physics regularization,10,22,5733.59716796875,0.0,0.0
+42,RL Neural Operator Solver,10,22,274.96441650390625,0.0,0.0
+42,Base FNO Initializer,10,23,3135.920654296875,0.0,0.0
+42,Gradient residual refinement,10,23,2826.329345703125,0.0,0.0
+42,PINN-style refinement,10,23,3085.966064453125,0.0,0.0
+42,Supervised Neural Operator Corrector,10,23,2752.782470703125,0.0,0.0
+42,TD3 from scratch,10,23,10370.4853515625,0.0,0.0
+42,TD3+BC without physics regularization,10,23,7460.70849609375,0.0,0.0
+42,RL Neural Operator Solver,10,23,2752.782470703125,0.0,0.0
+42,Base FNO Initializer,10,24,507.13226318359375,0.0,0.0
+42,Gradient residual refinement,10,24,465.5819396972656,0.0,0.0
+42,PINN-style refinement,10,24,483.20855712890625,0.0,0.0
+42,Supervised Neural Operator Corrector,10,24,382.8524169921875,0.0,0.0
+42,TD3 from scratch,10,24,7416.919921875,0.0,0.0
+42,TD3+BC without physics regularization,10,24,5900.58544921875,0.0,0.0
+42,RL Neural Operator Solver,10,24,382.8524169921875,0.0,0.0
+42,Base FNO Initializer,10,25,956.8502197265625,0.0,0.0
+42,Gradient residual refinement,10,25,828.4088745117188,0.0,0.0
+42,PINN-style refinement,10,25,923.3607788085938,0.0,0.0
+42,Supervised Neural Operator Corrector,10,25,716.3904418945312,0.0,0.0
+42,TD3 from scratch,10,25,8265.921875,0.0,0.0
+42,TD3+BC without physics regularization,10,25,6561.2587890625,0.0,0.0
+42,RL Neural Operator Solver,10,25,716.3904418945312,0.0,0.0
+42,Base FNO Initializer,10,26,1805.510009765625,0.0,0.0
+42,Gradient residual refinement,10,26,1554.03125,0.0,0.0
+42,PINN-style refinement,10,26,1759.626220703125,0.0,0.0
+42,Supervised Neural Operator Corrector,10,26,1440.546875,0.0,0.0
+42,TD3 from scratch,10,26,9334.3466796875,0.0,0.0
+42,TD3+BC without physics regularization,10,26,7144.8447265625,0.0,0.0
+42,RL Neural Operator Solver,10,26,1440.546875,0.0,0.0
+42,Base FNO Initializer,10,27,687.4254760742188,0.0,0.0
+42,Gradient residual refinement,10,27,611.2752075195312,0.0,0.0
+42,PINN-style refinement,10,27,660.0896606445312,0.0,0.0
+42,Supervised Neural Operator Corrector,10,27,510.6900634765625,0.0,0.0
+42,TD3 from scratch,10,27,7779.4599609375,0.0,0.0
+42,TD3+BC without physics regularization,10,27,6202.51123046875,0.0,0.0
+42,RL Neural Operator Solver,10,27,510.6900634765625,0.0,0.0
+42,Base FNO Initializer,10,28,789.942626953125,0.0,0.0
+42,Gradient residual refinement,10,28,692.3037109375,0.0,0.0
+42,PINN-style refinement,10,28,760.410400390625,0.0,0.0
+42,Supervised Neural Operator Corrector,10,28,589.1883544921875,0.0,0.0
+42,TD3 from scratch,10,28,7968.546875,0.0,0.0
+42,TD3+BC without physics regularization,10,28,6352.0009765625,0.0,0.0
+42,RL Neural Operator Solver,10,28,589.1883544921875,0.0,0.0
+42,Base FNO Initializer,10,29,2518.362060546875,0.0,0.0
+42,Gradient residual refinement,10,29,2226.218994140625,0.0,0.0
+42,PINN-style refinement,10,29,2469.420166015625,0.0,0.0
+42,Supervised Neural Operator Corrector,10,29,2130.6328125,0.0,0.0
+42,TD3 from scratch,10,29,9922.8642578125,0.0,0.0
+42,TD3+BC without physics regularization,10,29,7342.63720703125,0.0,0.0
+42,RL Neural Operator Solver,10,29,2130.6328125,0.0,0.0
+42,Base FNO Initializer,10,30,3880.32177734375,0.0,0.07487307488918304
+42,Gradient residual refinement,10,30,3544.516845703125,0.0,0.07487307488918304
+42,PINN-style refinement,10,30,3829.490234375,0.0,0.07487307488918304
+42,Supervised Neural Operator Corrector,10,30,3511.685546875,0.0,0.07487307488918304
+42,TD3 from scratch,10,30,11597.5751953125,0.0,0.07487307488918304
+42,TD3+BC without physics regularization,10,30,9225.6689453125,0.0,0.07487307488918304
+42,RL Neural Operator Solver,10,30,3511.685546875,0.0,0.07487307488918304
+42,Base FNO Initializer,10,31,1493.4486083984375,0.0,0.0
+42,Gradient residual refinement,10,31,1276.143798828125,0.0,0.0
+42,PINN-style refinement,10,31,1450.4935302734375,0.0,0.0
+42,Supervised Neural Operator Corrector,10,31,1159.303466796875,0.0,0.0
+42,TD3 from scratch,10,31,9016.4697265625,0.0,0.0
+42,TD3+BC without physics regularization,10,31,7009.48486328125,0.0,0.0
+42,RL Neural Operator Solver,10,31,1159.303466796875,0.0,0.0
+42,Base FNO Initializer,10,32,1163.959228515625,0.0,0.0
+42,Gradient residual refinement,10,32,994.0060424804688,0.0,0.0
+42,PINN-style refinement,10,32,1126.0426025390625,0.0,0.0
+42,Supervised Neural Operator Corrector,10,32,882.4837036132812,0.0,0.0
+42,TD3 from scratch,10,32,8591.240234375,0.0,0.0
+42,TD3+BC without physics regularization,10,32,6762.19921875,0.0,0.0
+42,RL Neural Operator Solver,10,32,882.4837036132812,0.0,0.0
+42,Base FNO Initializer,10,33,646.6305541992188,0.0,0.0
+42,Gradient residual refinement,10,33,582.6038818359375,0.0,0.0
+42,PINN-style refinement,10,33,620.1104736328125,0.0,0.0
+42,Supervised Neural Operator Corrector,10,33,481.97357177734375,0.0,0.0
+42,TD3 from scratch,10,33,7696.03857421875,0.0,0.0
+42,TD3+BC without physics regularization,10,33,6131.23193359375,0.0,0.0
+42,RL Neural Operator Solver,10,33,481.97357177734375,0.0,0.0
+42,Base FNO Initializer,10,34,2811.921875,0.0,0.0
+42,Gradient residual refinement,10,34,2508.55224609375,0.0,0.0
+42,PINN-style refinement,10,34,2762.398681640625,0.0,0.0
+42,Supervised Neural Operator Corrector,10,34,2424.72900390625,0.0,0.0
+42,TD3 from scratch,10,34,10129.2783203125,0.0,0.0
+42,TD3+BC without physics regularization,10,34,7400.2548828125,0.0,0.0
+42,RL Neural Operator Solver,10,34,2424.72900390625,0.0,0.0
+42,Base FNO Initializer,10,35,852.5907592773438,0.0,0.0
+42,Gradient residual refinement,10,35,739.154541015625,0.0,0.0
+42,PINN-style refinement,10,35,821.6027221679688,0.0,0.0
+42,Supervised Neural Operator Corrector,10,35,637.7702026367188,0.0,0.0
+42,TD3 from scratch,10,35,8080.103515625,0.0,0.0
+42,TD3+BC without physics regularization,10,35,6429.638671875,0.0,0.0
+42,RL Neural Operator Solver,10,35,637.7702026367188,0.0,0.0
+123,Base FNO Initializer,1,0,48.1470832824707,0.0,0.0
+123,Gradient residual refinement,1,0,86.9710922241211,0.0,0.0
+123,PINN-style refinement,1,0,47.45158004760742,0.0,0.0
+123,Supervised Neural Operator Corrector,1,0,53.88041687011719,0.0,0.0
+123,TD3 from scratch,1,0,67.96240234375,0.0,0.0
+123,TD3+BC without physics regularization,1,0,102.03227233886719,0.0,0.0
+123,RL Neural Operator Solver,1,0,53.88041687011719,0.0,0.0
+123,Base FNO Initializer,1,1,4245.99560546875,0.0,0.17247915267944336
+123,Gradient residual refinement,1,1,4079.3173828125,0.0,0.17247915267944336
+123,PINN-style refinement,1,1,4237.7236328125,0.0,0.17247915267944336
+123,Supervised Neural Operator Corrector,1,1,4109.01513671875,0.0,0.17247915267944336
+123,TD3 from scratch,1,1,4319.009765625,0.0,0.17247915267944336
+123,TD3+BC without physics regularization,1,1,4295.9248046875,0.0,0.17247915267944336
+123,RL Neural Operator Solver,1,1,4109.01513671875,0.0,0.17247915267944336
+123,Base FNO Initializer,1,2,3159.231201171875,0.0,0.0
+123,Gradient residual refinement,1,2,3010.979248046875,0.0,0.0
+123,PINN-style refinement,1,2,3151.625,0.0,0.0
+123,Supervised Neural Operator Corrector,1,2,3031.6015625,0.0,0.0
+123,TD3 from scratch,1,2,3238.2626953125,0.0,0.0
+123,TD3+BC without physics regularization,1,2,3200.10498046875,0.0,0.0
+123,RL Neural Operator Solver,1,2,3031.6015625,0.0,0.0
+123,Base FNO Initializer,1,3,226.77752685546875,0.0,0.0
+123,Gradient residual refinement,1,3,262.19390869140625,0.0,0.0
+123,PINN-style refinement,1,3,225.4766387939453,0.0,0.0
+123,Supervised Neural Operator Corrector,1,3,226.6184844970703,0.0,0.0
+123,TD3 from scratch,1,3,273.985107421875,0.0,0.0
+123,TD3+BC without physics regularization,1,3,286.0003967285156,0.0,0.0
+123,RL Neural Operator Solver,1,3,226.6184844970703,0.0,0.0
+123,Base FNO Initializer,1,4,2268.3505859375,0.0,0.0
+123,Gradient residual refinement,1,4,2155.460205078125,0.0,0.0
+123,PINN-style refinement,1,4,2261.935546875,0.0,0.0
+123,Supervised Neural Operator Corrector,1,4,2166.681884765625,0.0,0.0
+123,TD3 from scratch,1,4,2370.055908203125,0.0,0.0
+123,TD3+BC without physics regularization,1,4,2315.109375,0.0,0.0
+123,RL Neural Operator Solver,1,4,2166.681884765625,0.0,0.0
+123,Base FNO Initializer,1,5,862.6002807617188,0.0,0.0
+123,Gradient residual refinement,1,5,848.4727783203125,0.0,0.0
+123,PINN-style refinement,1,5,859.5,0.0,0.0
+123,Supervised Neural Operator Corrector,1,5,831.44091796875,0.0,0.0
+123,TD3 from scratch,1,5,948.1828002929688,0.0,0.0
+123,TD3+BC without physics regularization,1,5,904.13671875,0.0,0.0
+123,RL Neural Operator Solver,1,5,831.44091796875,0.0,0.0
+123,Base FNO Initializer,1,6,1131.1239013671875,0.0,0.0
+123,Gradient residual refinement,1,6,1094.149658203125,0.0,0.0
+123,PINN-style refinement,1,6,1127.297607421875,0.0,0.0
+123,Supervised Neural Operator Corrector,1,6,1085.2060546875,0.0,0.0
+123,TD3 from scratch,1,6,1229.09619140625,0.0,0.0
+123,TD3+BC without physics regularization,1,6,1176.4627685546875,0.0,0.0
+123,RL Neural Operator Solver,1,6,1085.2060546875,0.0,0.0
+123,Base FNO Initializer,1,7,139.532470703125,0.0,0.0
+123,Gradient residual refinement,1,7,175.4799041748047,0.0,0.0
+123,PINN-style refinement,1,7,138.46267700195312,0.0,0.0
+123,Supervised Neural Operator Corrector,1,7,141.11114501953125,0.0,0.0
+123,TD3 from scratch,1,7,180.3129119873047,0.0,0.0
+123,TD3+BC without physics regularization,1,7,197.3335723876953,0.0,0.0
+123,RL Neural Operator Solver,1,7,141.11114501953125,0.0,0.0
+123,Base FNO Initializer,1,8,1722.603515625,0.0,0.0
+123,Gradient residual refinement,1,8,1642.7730712890625,0.0,0.0
+123,PINN-style refinement,1,8,1717.3394775390625,0.0,0.0
+123,Supervised Neural Operator Corrector,1,8,1647.136474609375,0.0,0.0
+123,TD3 from scratch,1,8,1831.62255859375,0.0,0.0
+123,TD3+BC without physics regularization,1,8,1772.8980712890625,0.0,0.0
+123,RL Neural Operator Solver,1,8,1647.136474609375,0.0,0.0
+123,Base FNO Initializer,1,9,421.8193664550781,0.0,0.0
+123,Gradient residual refinement,1,9,445.743896484375,0.0,0.0
+123,PINN-style refinement,1,9,419.9966735839844,0.0,0.0
+123,Supervised Neural Operator Corrector,1,9,413.8299255371094,0.0,0.0
+123,TD3 from scratch,1,9,485.4830627441406,0.0,0.0
+123,TD3+BC without physics regularization,1,9,478.7027282714844,0.0,0.0
+123,RL Neural Operator Solver,1,9,413.8299255371094,0.0,0.0
+123,Base FNO Initializer,1,10,1299.241943359375,0.0,0.0
+123,Gradient residual refinement,1,10,1250.10986328125,0.0,0.0
+123,PINN-style refinement,1,10,1294.9827880859375,0.0,0.0
+123,Supervised Neural Operator Corrector,1,10,1244.331787109375,0.0,0.0
+123,TD3 from scratch,1,10,1402.291259765625,0.0,0.0
+123,TD3+BC without physics regularization,1,10,1347.5196533203125,0.0,0.0
+123,RL Neural Operator Solver,1,10,1244.331787109375,0.0,0.0
+123,Base FNO Initializer,1,11,3659.13232421875,0.0,0.010925320908427238
+123,Gradient residual refinement,1,11,3501.1923828125,0.0,0.010925320908427238
+123,PINN-style refinement,1,11,3651.17431640625,0.0,0.010925320908427238
+123,Supervised Neural Operator Corrector,1,11,3525.964599609375,0.0,0.010925320908427238
+123,TD3 from scratch,1,11,3734.144287109375,0.0,0.010925320908427238
+123,TD3+BC without physics regularization,1,11,3694.407470703125,0.0,0.010925320908427238
+123,RL Neural Operator Solver,1,11,3525.964599609375,0.0,0.010925320908427238
+123,Base FNO Initializer,1,12,387.0725402832031,0.0,0.0
+123,Gradient residual refinement,1,12,413.0339660644531,0.0,0.0
+123,PINN-style refinement,1,12,385.3475646972656,0.0,0.0
+123,Supervised Neural Operator Corrector,1,12,380.47210693359375,0.0,0.0
+123,TD3 from scratch,1,12,448.5480041503906,0.0,0.0
+123,TD3+BC without physics regularization,1,12,444.888671875,0.0,0.0
+123,RL Neural Operator Solver,1,12,380.47210693359375,0.0,0.0
+123,Base FNO Initializer,1,13,3128.87060546875,0.0,0.0
+123,Gradient residual refinement,1,13,2981.46484375,0.0,0.0
+123,PINN-style refinement,1,13,3121.287353515625,0.0,0.0
+123,Supervised Neural Operator Corrector,1,13,3001.70751953125,0.0,0.0
+123,TD3 from scratch,1,13,3209.0712890625,0.0,0.0
+123,TD3+BC without physics regularization,1,13,3169.887451171875,0.0,0.0
+123,RL Neural Operator Solver,1,13,3001.70751953125,0.0,0.0
+123,Base FNO Initializer,1,14,458.3894958496094,0.0,0.0
+123,Gradient residual refinement,1,14,478.8033447265625,0.0,0.0
+123,PINN-style refinement,1,14,456.45904541015625,0.0,0.0
+123,Supervised Neural Operator Corrector,1,14,448.5256042480469,0.0,0.0
+123,TD3 from scratch,1,14,523.9840698242188,0.0,0.0
+123,TD3+BC without physics regularization,1,14,514.6996459960938,0.0,0.0
+123,RL Neural Operator Solver,1,14,448.5256042480469,0.0,0.0
+123,Base FNO Initializer,1,15,3098.84619140625,0.0,0.0
+123,Gradient residual refinement,1,15,2952.308349609375,0.0,0.0
+123,PINN-style refinement,1,15,3091.301513671875,0.0,0.0
+123,Supervised Neural Operator Corrector,1,15,2972.320556640625,0.0,0.0
+123,TD3 from scratch,1,15,3179.721435546875,0.0,0.0
+123,TD3+BC without physics regularization,1,15,3139.8994140625,0.0,0.0
+123,RL Neural Operator Solver,1,15,2972.320556640625,0.0,0.0
+123,Base FNO Initializer,1,16,32.568233489990234,0.0,0.0
+123,Gradient residual refinement,1,16,72.77946472167969,0.0,0.0
+123,PINN-style refinement,1,16,31.9832706451416,0.0,0.0
+123,Supervised Neural Operator Corrector,1,16,39.59526443481445,0.0,0.0
+123,TD3 from scratch,1,16,48.32777404785156,0.0,0.0
+123,TD3+BC without physics regularization,1,16,86.36531066894531,0.0,0.0
+123,RL Neural Operator Solver,1,16,39.59526443481445,0.0,0.0
+123,Base FNO Initializer,1,17,3531.842529296875,0.0,0.002559700980782509
+123,Gradient residual refinement,1,17,3376.037353515625,0.0,0.002559700980782509
+123,PINN-style refinement,1,17,3523.963134765625,0.0,0.002559700980782509
+123,Supervised Neural Operator Corrector,1,17,3399.497802734375,0.0,0.002559700980782509
+123,TD3 from scratch,1,17,3608.137451171875,0.0,0.002559700980782509
+123,TD3+BC without physics regularization,1,17,3567.867431640625,0.0,0.002559700980782509
+123,RL Neural Operator Solver,1,17,3399.497802734375,0.0,0.002559700980782509
+123,Base FNO Initializer,1,18,8.283108711242676,0.0,0.0
+123,Gradient residual refinement,1,18,57.16710662841797,0.0,0.0
+123,PINN-style refinement,1,18,7.934408187866211,0.0,0.0
+123,Supervised Neural Operator Corrector,1,18,17.136709213256836,0.0,0.0
+123,TD3 from scratch,1,18,17.51396942138672,0.0,0.0
+123,TD3+BC without physics regularization,1,18,74.01522064208984,0.0,0.0
+123,RL Neural Operator Solver,1,18,17.136709213256836,0.0,0.0
+123,Base FNO Initializer,1,19,279.2883605957031,0.0,0.0
+123,Gradient residual refinement,1,19,311.98681640625,0.0,0.0
+123,PINN-style refinement,1,19,277.86090087890625,0.0,0.0
+123,Supervised Neural Operator Corrector,1,19,277.143310546875,0.0,0.0
+123,TD3 from scratch,1,19,331.7151184082031,0.0,0.0
+123,TD3+BC without physics regularization,1,19,336.39752197265625,0.0,0.0
+123,RL Neural Operator Solver,1,19,277.143310546875,0.0,0.0
+123,Base FNO Initializer,1,20,354.12811279296875,0.0,0.0
+123,Gradient residual refinement,1,20,381.5780029296875,0.0,0.0
+123,PINN-style refinement,1,20,352.49810791015625,0.0,0.0
+123,Supervised Neural Operator Corrector,1,20,349.0746765136719,0.0,0.0
+123,TD3 from scratch,1,20,413.2153015136719,0.0,0.0
+123,TD3+BC without physics regularization,1,20,412.63311767578125,0.0,0.0
+123,RL Neural Operator Solver,1,20,349.0746765136719,0.0,0.0
+123,Base FNO Initializer,1,21,994.3232421875,0.0,0.0
+123,Gradient residual refinement,1,21,968.5742797851562,0.0,0.0
+123,PINN-style refinement,1,21,990.8638916015625,0.0,0.0
+123,Supervised Neural Operator Corrector,1,21,955.80419921875,0.0,0.0
+123,TD3 from scratch,1,21,1086.0882568359375,0.0,0.0
+123,TD3+BC without physics regularization,1,21,1036.56982421875,0.0,0.0
+123,RL Neural Operator Solver,1,21,955.80419921875,0.0,0.0
+123,Base FNO Initializer,1,22,159.24810791015625,0.0,0.0
+123,Gradient residual refinement,1,22,194.83949279785156,0.0,0.0
+123,PINN-style refinement,1,22,158.1199188232422,0.0,0.0
+123,Supervised Neural Operator Corrector,1,22,160.46714782714844,0.0,0.0
+123,TD3 from scratch,1,22,203.1725616455078,0.0,0.0
+123,TD3+BC without physics regularization,1,22,215.7841033935547,0.0,0.0
+123,RL Neural Operator Solver,1,22,160.46714782714844,0.0,0.0
+123,Base FNO Initializer,1,23,3251.320556640625,0.0,0.0
+123,Gradient residual refinement,1,23,3100.8095703125,0.0,0.0
+123,PINN-style refinement,1,23,3243.630859375,0.0,0.0
+123,Supervised Neural Operator Corrector,1,23,3122.201171875,0.0,0.0
+123,TD3 from scratch,1,23,3327.827392578125,0.0,0.0
+123,TD3+BC without physics regularization,1,23,3292.369873046875,0.0,0.0
+123,RL Neural Operator Solver,1,23,3122.201171875,0.0,0.0
+123,Base FNO Initializer,1,24,265.5368347167969,0.0,0.0
+123,Gradient residual refinement,1,24,299.28753662109375,0.0,0.0
+123,PINN-style refinement,1,24,264.1463623046875,0.0,0.0
+123,Supervised Neural Operator Corrector,1,24,263.88287353515625,0.0,0.0
+123,TD3 from scratch,1,24,316.3514404296875,0.0,0.0
+123,TD3+BC without physics regularization,1,24,322.32574462890625,0.0,0.0
+123,RL Neural Operator Solver,1,24,263.88287353515625,0.0,0.0
+123,Base FNO Initializer,1,25,667.3829345703125,0.0,0.0
+123,Gradient residual refinement,1,25,670.522705078125,0.0,0.0
+123,PINN-style refinement,1,25,664.8543701171875,0.0,0.0
+123,Supervised Neural Operator Corrector,1,25,646.869140625,0.0,0.0
+123,TD3 from scratch,1,25,743.2149658203125,0.0,0.0
+123,TD3+BC without physics regularization,1,25,713.7457885742188,0.0,0.0
+123,RL Neural Operator Solver,1,25,646.869140625,0.0,0.0
+123,Base FNO Initializer,1,26,1778.3543701171875,0.0,0.0
+123,Gradient residual refinement,1,26,1695.2890625,0.0,0.0
+123,PINN-style refinement,1,26,1772.9678955078125,0.0,0.0
+123,Supervised Neural Operator Corrector,1,26,1700.213134765625,0.0,0.0
+123,TD3 from scratch,1,26,1887.015625,0.0,0.0
+123,TD3+BC without physics regularization,1,26,1827.3270263671875,0.0,0.0
+123,RL Neural Operator Solver,1,26,1700.213134765625,0.0,0.0
+123,Base FNO Initializer,1,27,404.16497802734375,0.0,0.0
+123,Gradient residual refinement,1,27,428.6484680175781,0.0,0.0
+123,PINN-style refinement,1,27,402.4002380371094,0.0,0.0
+123,Supervised Neural Operator Corrector,1,27,396.90631103515625,0.0,0.0
+123,TD3 from scratch,1,27,466.7073059082031,0.0,0.0
+123,TD3+BC without physics regularization,1,27,461.0909423828125,0.0,0.0
+123,RL Neural Operator Solver,1,27,396.90631103515625,0.0,0.0
+123,Base FNO Initializer,1,28,496.6219482421875,0.0,0.0
+123,Gradient residual refinement,1,28,513.4557495117188,0.0,0.0
+123,PINN-style refinement,1,28,494.5865173339844,0.0,0.0
+123,Supervised Neural Operator Corrector,1,28,484.841552734375,0.0,0.0
+123,TD3 from scratch,1,28,564.00341796875,0.0,0.0
+123,TD3+BC without physics regularization,1,28,552.6693115234375,0.0,0.0
+123,RL Neural Operator Solver,1,28,484.841552734375,0.0,0.0
+123,Base FNO Initializer,1,29,2617.43017578125,0.0,0.0
+123,Gradient residual refinement,1,29,2487.61474609375,0.0,0.0
+123,PINN-style refinement,1,29,2610.45458984375,0.0,0.0
+123,Supervised Neural Operator Corrector,1,29,2502.412353515625,0.0,0.0
+123,TD3 from scratch,1,29,2710.40625,0.0,0.0
+123,TD3+BC without physics regularization,1,29,2659.11962890625,0.0,0.0
+123,RL Neural Operator Solver,1,29,2502.412353515625,0.0,0.0
+123,Base FNO Initializer,1,30,3986.75732421875,0.0,0.07487307488918304
+123,Gradient residual refinement,1,30,3823.742431640625,0.0,0.07487307488918304
+123,PINN-style refinement,1,30,3978.61962890625,0.0,0.07487307488918304
+123,Supervised Neural Operator Corrector,1,30,3851.774658203125,0.0,0.07487307488918304
+123,TD3 from scratch,1,30,4062.473388671875,0.0,0.07487307488918304
+123,TD3+BC without physics regularization,1,30,4023.579833984375,0.0,0.07487307488918304
+123,RL Neural Operator Solver,1,30,3851.774658203125,0.0,0.07487307488918304
+123,Base FNO Initializer,1,31,1355.7099609375,0.0,0.0
+123,Gradient residual refinement,1,31,1301.633544921875,0.0,0.0
+123,PINN-style refinement,1,31,1351.3140869140625,0.0,0.0
+123,Supervised Neural Operator Corrector,1,31,1297.8773193359375,0.0,0.0
+123,TD3 from scratch,1,31,1460.5924072265625,0.0,0.0
+123,TD3+BC without physics regularization,1,31,1404.7027587890625,0.0,0.0
+123,RL Neural Operator Solver,1,31,1297.8773193359375,0.0,0.0
+123,Base FNO Initializer,1,32,914.642822265625,0.0,0.0
+123,Gradient residual refinement,1,32,895.8012084960938,0.0,0.0
+123,PINN-style refinement,1,32,911.400146484375,0.0,0.0
+123,Supervised Neural Operator Corrector,1,32,880.60498046875,0.0,0.0
+123,TD3 from scratch,1,32,1002.9436645507812,0.0,0.0
+123,TD3+BC without physics regularization,1,32,956.1396484375,0.0,0.0
+123,RL Neural Operator Solver,1,32,880.60498046875,0.0,0.0
+123,Base FNO Initializer,1,33,370.3553161621094,0.0,0.0
+123,Gradient residual refinement,1,33,396.9249572753906,0.0,0.0
+123,PINN-style refinement,1,33,368.6789855957031,0.0,0.0
+123,Supervised Neural Operator Corrector,1,33,364.50537109375,0.0,0.0
+123,TD3 from scratch,1,33,430.5286865234375,0.0,0.0
+123,TD3+BC without physics regularization,1,33,428.3970642089844,0.0,0.0
+123,RL Neural Operator Solver,1,33,364.50537109375,0.0,0.0
+123,Base FNO Initializer,1,34,2923.20751953125,0.0,0.0
+123,Gradient residual refinement,1,34,2781.928466796875,0.0,0.0
+123,PINN-style refinement,1,34,2915.846923828125,0.0,0.0
+123,Supervised Neural Operator Corrector,1,34,2800.188720703125,0.0,0.0
+123,TD3 from scratch,1,34,3008.534912109375,0.0,0.0
+123,TD3+BC without physics regularization,1,34,2964.015625,0.0,0.0
+123,RL Neural Operator Solver,1,34,2800.188720703125,0.0,0.0
+123,Base FNO Initializer,1,35,557.515380859375,0.0,0.0
+123,Gradient residual refinement,1,35,569.3375854492188,0.0,0.0
+123,PINN-style refinement,1,35,555.2987060546875,0.0,0.0
+123,Supervised Neural Operator Corrector,1,35,542.58984375,0.0,0.0
+123,TD3 from scratch,1,35,628.392822265625,0.0,0.0
+123,TD3+BC without physics regularization,1,35,610.373046875,0.0,0.0
+123,RL Neural Operator Solver,1,35,542.58984375,0.0,0.0
+123,Base FNO Initializer,2,0,48.1470832824707,0.0,0.0
+123,Gradient residual refinement,2,0,145.79962158203125,0.0,0.0
+123,PINN-style refinement,2,0,46.90187072753906,0.0,0.0
+123,Supervised Neural Operator Corrector,2,0,53.03029251098633,0.0,0.0
+123,TD3 from scratch,2,0,144.08802795410156,0.0,0.0
+123,TD3+BC without physics regularization,2,0,161.38232421875,0.0,0.0
+123,RL Neural Operator Solver,2,0,53.03029251098633,0.0,0.0
+123,Base FNO Initializer,2,1,4245.99560546875,0.0,0.17247915267944336
+123,Gradient residual refinement,2,1,3978.891845703125,0.0,0.17247915267944336
+123,PINN-style refinement,2,1,4229.71630859375,0.0,0.17247915267944336
+123,Supervised Neural Operator Corrector,2,1,4022.891845703125,0.0,0.17247915267944336
+123,TD3 from scratch,2,1,4509.71435546875,0.0,0.17247915267944336
+123,TD3+BC without physics regularization,2,1,4381.955078125,0.0,0.17247915267944336
+123,RL Neural Operator Solver,2,1,4022.891845703125,0.0,0.17247915267944336
+123,Base FNO Initializer,2,2,3159.231201171875,0.0,0.0
+123,Gradient residual refinement,2,2,2941.255126953125,0.0,0.0
+123,PINN-style refinement,2,2,3144.296142578125,0.0,0.0
+123,Supervised Neural Operator Corrector,2,2,2958.272216796875,0.0,0.0
+123,TD3 from scratch,2,2,3406.78271484375,0.0,0.0
+123,TD3+BC without physics regularization,2,2,3276.185546875,0.0,0.0
+123,RL Neural Operator Solver,2,2,2958.272216796875,0.0,0.0
+123,Base FNO Initializer,2,3,226.77752685546875,0.0,0.0
+123,Gradient residual refinement,2,3,319.8136901855469,0.0,0.0
+123,PINN-style refinement,2,3,224.36233520507812,0.0,0.0
+123,Supervised Neural Operator Corrector,2,3,231.11203002929688,0.0,0.0
+123,TD3 from scratch,2,3,418.4200439453125,0.0,0.0
+123,TD3+BC without physics regularization,2,3,350.34124755859375,0.0,0.0
+123,RL Neural Operator Solver,2,3,231.11203002929688,0.0,0.0
+123,Base FNO Initializer,2,4,2268.3505859375,0.0,0.0
+123,Gradient residual refinement,2,4,2141.089599609375,0.0,0.0
+123,PINN-style refinement,2,4,2255.8115234375,0.0,0.0
+123,Supervised Neural Operator Corrector,2,4,2115.76806640625,0.0,0.0
+123,TD3 from scratch,2,4,2581.8447265625,0.0,0.0
+123,TD3+BC without physics regularization,2,4,2362.66845703125,0.0,0.0
+123,RL Neural Operator Solver,2,4,2115.76806640625,0.0,0.0
+123,Base FNO Initializer,2,5,862.6002807617188,0.0,0.0
+123,Gradient residual refinement,2,5,917.3538208007812,0.0,0.0
+123,PINN-style refinement,2,5,856.662353515625,0.0,0.0
+123,Supervised Neural Operator Corrector,2,5,818.7446899414062,0.0,0.0
+123,TD3 from scratch,2,5,1144.5906982421875,0.0,0.0
+123,TD3+BC without physics regularization,2,5,974.5620727539062,0.0,0.0
+123,RL Neural Operator Solver,2,5,818.7446899414062,0.0,0.0
+123,Base FNO Initializer,2,6,1131.1239013671875,0.0,0.0
+123,Gradient residual refinement,2,6,1145.086669921875,0.0,0.0
+123,PINN-style refinement,2,6,1123.74658203125,0.0,0.0
+123,Supervised Neural Operator Corrector,2,6,1063.5018310546875,0.0,0.0
+123,TD3 from scratch,2,6,1448.3037109375,0.0,0.0
+123,TD3+BC without physics regularization,2,6,1241.9296875,0.0,0.0
+123,RL Neural Operator Solver,2,6,1063.5018310546875,0.0,0.0
+123,Base FNO Initializer,2,7,139.532470703125,0.0,0.0
+123,Gradient residual refinement,2,7,238.5447235107422,0.0,0.0
+123,PINN-style refinement,2,7,137.56314086914062,0.0,0.0
+123,Supervised Neural Operator Corrector,2,7,143.63497924804688,0.0,0.0
+123,TD3 from scratch,2,7,319.77301025390625,0.0,0.0
+123,TD3+BC without physics regularization,2,7,265.9720153808594,0.0,0.0
+123,RL Neural Operator Solver,2,7,143.63497924804688,0.0,0.0
+123,Base FNO Initializer,2,8,1722.603515625,0.0,0.0
+123,Gradient residual refinement,2,8,1667.8193359375,0.0,0.0
+123,PINN-style refinement,2,8,1712.3616943359375,0.0,0.0
+123,Supervised Neural Operator Corrector,2,8,1609.0477294921875,0.0,0.0
+123,TD3 from scratch,2,8,2060.694091796875,0.0,0.0
+123,TD3+BC without physics regularization,2,8,1815.5374755859375,0.0,0.0
+123,RL Neural Operator Solver,2,8,1609.0477294921875,0.0,0.0
+123,Base FNO Initializer,2,9,421.8193664550781,0.0,0.0
+123,Gradient residual refinement,2,9,511.9007263183594,0.0,0.0
+123,PINN-style refinement,2,9,418.3891296386719,0.0,0.0
+123,Supervised Neural Operator Corrector,2,9,416.20123291015625,0.0,0.0
+123,TD3 from scratch,2,9,649.754150390625,0.0,0.0
+123,TD3+BC without physics regularization,2,9,544.4292602539062,0.0,0.0
+123,RL Neural Operator Solver,2,9,416.20123291015625,0.0,0.0
+123,Base FNO Initializer,2,10,1299.241943359375,0.0,0.0
+123,Gradient residual refinement,2,10,1299.53369140625,0.0,0.0
+123,PINN-style refinement,2,10,1291.0,0.0,0.0
+123,Supervised Neural Operator Corrector,2,10,1217.7711181640625,0.0,0.0
+123,TD3 from scratch,2,10,1627.982421875,0.0,0.0
+123,TD3+BC without physics regularization,2,10,1407.1278076171875,0.0,0.0
+123,RL Neural Operator Solver,2,10,1217.7711181640625,0.0,0.0
+123,Base FNO Initializer,2,11,3659.13232421875,0.0,0.010925320908427238
+123,Gradient residual refinement,2,11,3411.6162109375,0.0,0.010925320908427238
+123,PINN-style refinement,2,11,3643.481689453125,0.0,0.010925320908427238
+123,Supervised Neural Operator Corrector,2,11,3445.309326171875,0.0,0.010925320908427238
+123,TD3 from scratch,2,11,3910.79296875,0.0,0.010925320908427238
+123,TD3+BC without physics regularization,2,11,3774.336181640625,0.0,0.010925320908427238
+123,RL Neural Operator Solver,2,11,3445.309326171875,0.0,0.010925320908427238
+123,Base FNO Initializer,2,12,387.0725402832031,0.0,0.0
+123,Gradient residual refinement,2,12,482.9159240722656,0.0,0.0
+123,PINN-style refinement,2,12,383.8346862792969,0.0,0.0
+123,Supervised Neural Operator Corrector,2,12,384.1383972167969,0.0,0.0
+123,TD3 from scratch,2,12,609.3533935546875,0.0,0.0
+123,TD3+BC without physics regularization,2,12,515.6206665039062,0.0,0.0
+123,RL Neural Operator Solver,2,12,384.1383972167969,0.0,0.0
+123,Base FNO Initializer,2,13,3128.87060546875,0.0,0.0
+123,Gradient residual refinement,2,13,2911.53076171875,0.0,0.0
+123,PINN-style refinement,2,13,3113.982421875,0.0,0.0
+123,Supervised Neural Operator Corrector,2,13,2929.016845703125,0.0,0.0
+123,TD3 from scratch,2,13,3378.824951171875,0.0,0.0
+123,TD3+BC without physics regularization,2,13,3245.1806640625,0.0,0.0
+123,RL Neural Operator Solver,2,13,2929.016845703125,0.0,0.0
+123,Base FNO Initializer,2,14,458.3894958496094,0.0,0.0
+123,Gradient residual refinement,2,14,538.6094970703125,0.0,0.0
+123,PINN-style refinement,2,14,454.7447814941406,0.0,0.0
+123,Supervised Neural Operator Corrector,2,14,450.2205505371094,0.0,0.0
+123,TD3 from scratch,2,14,690.7385864257812,0.0,0.0
+123,TD3+BC without physics regularization,2,14,578.98779296875,0.0,0.0
+123,RL Neural Operator Solver,2,14,450.2205505371094,0.0,0.0
+123,Base FNO Initializer,2,15,3098.84619140625,0.0,0.0
+123,Gradient residual refinement,2,15,2885.184326171875,0.0,0.0
+123,PINN-style refinement,2,15,3084.029541015625,0.0,0.0
+123,Supervised Neural Operator Corrector,2,15,2900.266845703125,0.0,0.0
+123,TD3 from scratch,2,15,3350.13232421875,0.0,0.0
+123,TD3+BC without physics regularization,2,15,3214.956298828125,0.0,0.0
+123,RL Neural Operator Solver,2,15,2900.266845703125,0.0,0.0
+123,Base FNO Initializer,2,16,32.568233489990234,0.0,0.0
+123,Gradient residual refinement,2,16,133.16351318359375,0.0,0.0
+123,PINN-style refinement,2,16,31.53631019592285,0.0,0.0
+123,Supervised Neural Operator Corrector,2,16,38.25567626953125,0.0,0.0
+123,TD3 from scratch,2,16,114.14803314208984,0.0,0.0
+123,TD3+BC without physics regularization,2,16,143.39291381835938,0.0,0.0
+123,RL Neural Operator Solver,2,16,38.25567626953125,0.0,0.0
+123,Base FNO Initializer,2,17,3531.842529296875,0.0,0.002559700980782509
+123,Gradient residual refinement,2,17,3290.835205078125,0.0,0.002559700980782509
+123,PINN-style refinement,2,17,3516.353759765625,0.0,0.002559700980782509
+123,Supervised Neural Operator Corrector,2,17,3320.209228515625,0.0,0.002559700980782509
+123,TD3 from scratch,2,17,3778.314697265625,0.0,0.002559700980782509
+123,TD3+BC without physics regularization,2,17,3645.81689453125,0.0,0.002559700980782509
+123,RL Neural Operator Solver,2,17,3320.209228515625,0.0,0.002559700980782509
+123,Base FNO Initializer,2,18,8.283108711242676,0.0,0.0
+123,Gradient residual refinement,2,18,126.50167846679688,0.0,0.0
+123,PINN-style refinement,2,18,7.713553428649902,0.0,0.0
+123,Supervised Neural Operator Corrector,2,18,16.106510162353516,0.0,0.0
+123,TD3 from scratch,2,18,84.89273071289062,0.0,0.0
+123,TD3+BC without physics regularization,2,18,129.05152893066406,0.0,0.0
+123,RL Neural Operator Solver,2,18,16.106510162353516,0.0,0.0
+123,Base FNO Initializer,2,19,279.2883605957031,0.0,0.0
+123,Gradient residual refinement,2,19,382.2139892578125,0.0,0.0
+123,PINN-style refinement,2,19,276.62579345703125,0.0,0.0
+123,Supervised Neural Operator Corrector,2,19,282.3140563964844,0.0,0.0
+123,TD3 from scratch,2,19,480.21575927734375,0.0,0.0
+123,TD3+BC without physics regularization,2,19,402.3771667480469,0.0,0.0
+123,RL Neural Operator Solver,2,19,282.3140563964844,0.0,0.0
+123,Base FNO Initializer,2,20,354.12811279296875,0.0,0.0
+123,Gradient residual refinement,2,20,447.7961730957031,0.0,0.0
+123,PINN-style refinement,2,20,351.0711364746094,0.0,0.0
+123,Supervised Neural Operator Corrector,2,20,353.6106872558594,0.0,0.0
+123,TD3 from scratch,2,20,569.0343017578125,0.0,0.0
+123,TD3+BC without physics regularization,2,20,480.9930114746094,0.0,0.0
+123,RL Neural Operator Solver,2,20,353.6106872558594,0.0,0.0
+123,Base FNO Initializer,2,21,994.3232421875,0.0,0.0
+123,Gradient residual refinement,2,21,1028.1280517578125,0.0,0.0
+123,PINN-style refinement,2,21,987.6728515625,0.0,0.0
+123,Supervised Neural Operator Corrector,2,21,938.5266723632812,0.0,0.0
+123,TD3 from scratch,2,21,1293.3443603515625,0.0,0.0
+123,TD3+BC without physics regularization,2,21,1102.6441650390625,0.0,0.0
+123,RL Neural Operator Solver,2,21,938.5266723632812,0.0,0.0
+123,Base FNO Initializer,2,22,159.24810791015625,0.0,0.0
+123,Gradient residual refinement,2,22,252.00140380859375,0.0,0.0
+123,PINN-style refinement,2,22,157.17080688476562,0.0,0.0
+123,Supervised Neural Operator Corrector,2,22,163.17681884765625,0.0,0.0
+123,TD3 from scratch,2,22,349.3009033203125,0.0,0.0
+123,TD3+BC without physics regularization,2,22,285.3074951171875,0.0,0.0
+123,RL Neural Operator Solver,2,22,163.17681884765625,0.0,0.0
+123,Base FNO Initializer,2,23,3251.320556640625,0.0,0.0
+123,Gradient residual refinement,2,23,3026.19091796875,0.0,0.0
+123,PINN-style refinement,2,23,3236.2158203125,0.0,0.0
+123,Supervised Neural Operator Corrector,2,23,3047.127197265625,0.0,0.0
+123,TD3 from scratch,2,23,3493.1826171875,0.0,0.0
+123,TD3+BC without physics regularization,2,23,3369.197021484375,0.0,0.0
+123,RL Neural Operator Solver,2,23,3047.127197265625,0.0,0.0
+123,Base FNO Initializer,2,24,265.5368347167969,0.0,0.0
+123,Gradient residual refinement,2,24,362.0569152832031,0.0,0.0
+123,PINN-style refinement,2,24,262.94976806640625,0.0,0.0
+123,Supervised Neural Operator Corrector,2,24,269.23712158203125,0.0,0.0
+123,TD3 from scratch,2,24,463.7789306640625,0.0,0.0
+123,TD3+BC without physics regularization,2,24,389.12225341796875,0.0,0.0
+123,RL Neural Operator Solver,2,24,269.23712158203125,0.0,0.0
+123,Base FNO Initializer,2,25,667.3829345703125,0.0,0.0
+123,Gradient residual refinement,2,25,730.9442138671875,0.0,0.0
+123,PINN-style refinement,2,25,662.5623168945312,0.0,0.0
+123,Supervised Neural Operator Corrector,2,25,641.1101684570312,0.0,0.0
+123,TD3 from scratch,2,25,924.0626220703125,0.0,0.0
+123,TD3+BC without physics regularization,2,25,786.0234375,0.0,0.0
+123,RL Neural Operator Solver,2,25,641.1101684570312,0.0,0.0
+123,Base FNO Initializer,2,26,1778.3543701171875,0.0,0.0
+123,Gradient residual refinement,2,26,1716.6256103515625,0.0,0.0
+123,PINN-style refinement,2,26,1767.875244140625,0.0,0.0
+123,Supervised Neural Operator Corrector,2,26,1660.95166015625,0.0,0.0
+123,TD3 from scratch,2,26,2114.948974609375,0.0,0.0
+123,TD3+BC without physics regularization,2,26,1871.580322265625,0.0,0.0
+123,RL Neural Operator Solver,2,26,1660.95166015625,0.0,0.0
+123,Base FNO Initializer,2,27,404.16497802734375,0.0,0.0
+123,Gradient residual refinement,2,27,494.9806823730469,0.0,0.0
+123,PINN-style refinement,2,27,400.8440856933594,0.0,0.0
+123,Supervised Neural Operator Corrector,2,27,400.0325012207031,0.0,0.0
+123,TD3 from scratch,2,27,628.9537353515625,0.0,0.0
+123,TD3+BC without physics regularization,2,27,528.7237548828125,0.0,0.0
+123,RL Neural Operator Solver,2,27,400.0325012207031,0.0,0.0
+123,Base FNO Initializer,2,28,496.6219482421875,0.0,0.0
+123,Gradient residual refinement,2,28,576.645751953125,0.0,0.0
+123,PINN-style refinement,2,28,492.77142333984375,0.0,0.0
+123,Supervised Neural Operator Corrector,2,28,485.0633544921875,0.0,0.0
+123,TD3 from scratch,2,28,732.98193359375,0.0,0.0
+123,TD3+BC without physics regularization,2,28,617.7307739257812,0.0,0.0
+123,RL Neural Operator Solver,2,28,485.0633544921875,0.0,0.0
+123,Base FNO Initializer,2,29,2617.43017578125,0.0,0.0
+123,Gradient residual refinement,2,29,2443.958984375,0.0,0.0
+123,PINN-style refinement,2,29,2603.756103515625,0.0,0.0
+123,Supervised Neural Operator Corrector,2,29,2442.120849609375,0.0,0.0
+123,TD3 from scratch,2,29,2903.13232421875,0.0,0.0
+123,TD3+BC without physics regularization,2,29,2720.72119140625,0.0,0.0
+123,RL Neural Operator Solver,2,29,2442.120849609375,0.0,0.0
+123,Base FNO Initializer,2,30,3986.75732421875,0.0,0.07487307488918304
+123,Gradient residual refinement,2,30,3727.769287109375,0.0,0.07487307488918304
+123,PINN-style refinement,2,30,3970.74658203125,0.0,0.07487307488918304
+123,Supervised Neural Operator Corrector,2,30,3768.037109375,0.0,0.07487307488918304
+123,TD3 from scratch,2,30,4254.09326171875,0.0,0.07487307488918304
+123,TD3+BC without physics regularization,2,30,4107.974609375,0.0,0.07487307488918304
+123,RL Neural Operator Solver,2,30,3768.037109375,0.0,0.07487307488918304
+123,Base FNO Initializer,2,31,1355.7099609375,0.0,0.0
+123,Gradient residual refinement,2,31,1342.5892333984375,0.0,0.0
+123,PINN-style refinement,2,31,1347.19580078125,0.0,0.0
+123,Supervised Neural Operator Corrector,2,31,1269.701416015625,0.0,0.0
+123,TD3 from scratch,2,31,1687.88525390625,0.0,0.0
+123,TD3+BC without physics regularization,2,31,1461.7462158203125,0.0,0.0
+123,RL Neural Operator Solver,2,31,1269.701416015625,0.0,0.0
+123,Base FNO Initializer,2,32,914.642822265625,0.0,0.0
+123,Gradient residual refinement,2,32,960.3604736328125,0.0,0.0
+123,PINN-style refinement,2,32,908.4138793945312,0.0,0.0
+123,Supervised Neural Operator Corrector,2,32,866.1477661132812,0.0,0.0
+123,TD3 from scratch,2,32,1203.419189453125,0.0,0.0
+123,TD3+BC without physics regularization,2,32,1024.809814453125,0.0,0.0
+123,RL Neural Operator Solver,2,32,866.1477661132812,0.0,0.0
+123,Base FNO Initializer,2,33,370.3553161621094,0.0,0.0
+123,Gradient residual refinement,2,33,460.8428955078125,0.0,0.0
+123,PINN-style refinement,2,33,367.2112731933594,0.0,0.0
+123,Supervised Neural Operator Corrector,2,33,368.42926025390625,0.0,0.0
+123,TD3 from scratch,2,33,588.4589233398438,0.0,0.0
+123,TD3+BC without physics regularization,2,33,498.8045349121094,0.0,0.0
+123,RL Neural Operator Solver,2,33,368.42926025390625,0.0,0.0
+123,Base FNO Initializer,2,34,2923.20751953125,0.0,0.0
+123,Gradient residual refinement,2,34,2723.66748046875,0.0,0.0
+123,PINN-style refinement,2,34,2908.762451171875,0.0,0.0
+123,Supervised Neural Operator Corrector,2,34,2731.98046875,0.0,0.0
+123,TD3 from scratch,2,34,3185.8955078125,0.0,0.0
+123,TD3+BC without physics regularization,2,34,3036.947509765625,0.0,0.0
+123,RL Neural Operator Solver,2,34,2731.98046875,0.0,0.0
+123,Base FNO Initializer,2,35,557.515380859375,0.0,0.0
+123,Gradient residual refinement,2,35,634.7145385742188,0.0,0.0
+123,PINN-style refinement,2,35,553.30615234375,0.0,0.0
+123,Supervised Neural Operator Corrector,2,35,541.1165771484375,0.0,0.0
+123,TD3 from scratch,2,35,801.7998046875,0.0,0.0
+123,TD3+BC without physics regularization,2,35,677.9338989257812,0.0,0.0
+123,RL Neural Operator Solver,2,35,541.1165771484375,0.0,0.0
+123,Base FNO Initializer,5,0,48.1470832824707,0.0,0.0
+123,Gradient residual refinement,5,0,157.76744079589844,0.0,0.0
+123,PINN-style refinement,5,0,45.683807373046875,0.0,0.0
+123,Supervised Neural Operator Corrector,5,0,95.22308349609375,0.0,0.0
+123,TD3 from scratch,5,0,854.9837036132812,0.0,0.0
+123,TD3+BC without physics regularization,5,0,384.9275817871094,0.0,0.0
+123,RL Neural Operator Solver,5,0,95.22308349609375,0.0,0.0
+123,Base FNO Initializer,5,1,4245.99560546875,0.0,0.17247915267944336
+123,Gradient residual refinement,5,1,3933.18017578125,0.0,0.17247915267944336
+123,PINN-style refinement,5,1,4206.78662109375,0.0,0.17247915267944336
+123,Supervised Neural Operator Corrector,5,1,3912.498779296875,0.0,0.17247915267944336
+123,TD3 from scratch,5,1,5768.60498046875,0.0,0.17247915267944336
+123,TD3+BC without physics regularization,5,1,5271.875,0.0,0.17247915267944336
+123,RL Neural Operator Solver,5,1,3912.498779296875,0.0,0.17247915267944336
+123,Base FNO Initializer,5,2,3159.231201171875,0.0,0.0
+123,Gradient residual refinement,5,2,2942.162353515625,0.0,0.0
+123,PINN-style refinement,5,2,3123.44873046875,0.0,0.0
+123,Supervised Neural Operator Corrector,5,2,2869.689697265625,0.0,0.0
+123,TD3 from scratch,5,2,4483.44873046875,0.0,0.0
+123,TD3+BC without physics regularization,5,2,4243.7177734375,0.0,0.0
+123,RL Neural Operator Solver,5,2,2869.689697265625,0.0,0.0
+123,Base FNO Initializer,5,3,226.77752685546875,0.0,0.0
+123,Gradient residual refinement,5,3,321.8963623046875,0.0,0.0
+123,PINN-style refinement,5,3,221.74835205078125,0.0,0.0
+123,Supervised Neural Operator Corrector,5,3,269.8555908203125,0.0,0.0
+123,TD3 from scratch,5,3,1514.93310546875,0.0,0.0
+123,TD3+BC without physics regularization,5,3,635.873046875,0.0,0.0
+123,RL Neural Operator Solver,5,3,269.8555908203125,0.0,0.0
+123,Base FNO Initializer,5,4,2268.3505859375,0.0,0.0
+123,Gradient residual refinement,5,4,2167.060791015625,0.0,0.0
+123,PINN-style refinement,5,4,2238.604736328125,0.0,0.0
+123,Supervised Neural Operator Corrector,5,4,2049.92236328125,0.0,0.0
+123,TD3 from scratch,5,4,3864.827392578125,0.0,0.0
+123,TD3+BC without physics regularization,5,4,3253.798583984375,0.0,0.0
+123,RL Neural Operator Solver,5,4,2049.92236328125,0.0,0.0
+123,Base FNO Initializer,5,5,862.6002807617188,0.0,0.0
+123,Gradient residual refinement,5,5,897.9447631835938,0.0,0.0
+123,PINN-style refinement,5,5,849.181640625,0.0,0.0
+123,Supervised Neural Operator Corrector,5,5,824.0148315429688,0.0,0.0
+123,TD3 from scratch,5,5,2342.5693359375,0.0,0.0
+123,TD3+BC without physics regularization,5,5,1543.9844970703125,0.0,0.0
+123,RL Neural Operator Solver,5,5,824.0148315429688,0.0,0.0
+123,Base FNO Initializer,5,6,1131.1239013671875,0.0,0.0
+123,Gradient residual refinement,5,6,1147.311279296875,0.0,0.0
+123,PINN-style refinement,5,6,1114.15283203125,0.0,0.0
+123,Supervised Neural Operator Corrector,5,6,1052.565673828125,0.0,0.0
+123,TD3 from scratch,5,6,2736.7255859375,0.0,0.0
+123,TD3+BC without physics regularization,5,6,1825.9349365234375,0.0,0.0
+123,RL Neural Operator Solver,5,6,1052.565673828125,0.0,0.0
+123,Base FNO Initializer,5,7,139.532470703125,0.0,0.0
+123,Gradient residual refinement,5,7,245.5904998779297,0.0,0.0
+123,PINN-style refinement,5,7,135.45648193359375,0.0,0.0
+123,Supervised Neural Operator Corrector,5,7,190.40850830078125,0.0,0.0
+123,TD3 from scratch,5,7,1420.7440185546875,0.0,0.0
+123,TD3+BC without physics regularization,5,7,409.3494567871094,0.0,0.0
+123,RL Neural Operator Solver,5,7,190.40850830078125,0.0,0.0
+123,Base FNO Initializer,5,8,1722.603515625,0.0,0.0
+123,Gradient residual refinement,5,8,1670.5125732421875,0.0,0.0
+123,PINN-style refinement,5,8,1698.5687255859375,0.0,0.0
+123,Supervised Neural Operator Corrector,5,8,1564.2611083984375,0.0,0.0
+123,TD3 from scratch,5,8,3387.281494140625,0.0,0.0
+123,TD3+BC without physics regularization,5,8,2534.4794921875,0.0,0.0
+123,RL Neural Operator Solver,5,8,1564.2611083984375,0.0,0.0
+123,Base FNO Initializer,5,9,421.8193664550781,0.0,0.0
+123,Gradient residual refinement,5,9,502.8464050292969,0.0,0.0
+123,PINN-style refinement,5,9,414.44952392578125,0.0,0.0
+123,Supervised Neural Operator Corrector,5,9,449.15728759765625,0.0,0.0
+123,TD3 from scratch,5,9,1717.3232421875,0.0,0.0
+123,TD3+BC without physics regularization,5,9,1041.516357421875,0.0,0.0
+123,RL Neural Operator Solver,5,9,449.15728759765625,0.0,0.0
+123,Base FNO Initializer,5,10,1299.241943359375,0.0,0.0
+123,Gradient residual refinement,5,10,1288.1832275390625,0.0,0.0
+123,PINN-style refinement,5,10,1280.1383056640625,0.0,0.0
+123,Supervised Neural Operator Corrector,5,10,1196.6279296875,0.0,0.0
+123,TD3 from scratch,5,10,2940.634521484375,0.0,0.0
+123,TD3+BC without physics regularization,5,10,2006.743896484375,0.0,0.0
+123,RL Neural Operator Solver,5,10,1196.6279296875,0.0,0.0
+123,Base FNO Initializer,5,11,3659.13232421875,0.0,0.010925320908427238
+123,Gradient residual refinement,5,11,3383.366455078125,0.0,0.010925320908427238
+123,PINN-style refinement,5,11,3621.514892578125,0.0,0.010925320908427238
+123,Supervised Neural Operator Corrector,5,11,3345.05126953125,0.0,0.010925320908427238
+123,TD3 from scratch,5,11,5096.056640625,0.0,0.010925320908427238
+123,TD3+BC without physics regularization,5,11,4772.92822265625,0.0,0.010925320908427238
+123,RL Neural Operator Solver,5,11,3345.05126953125,0.0,0.010925320908427238
+123,Base FNO Initializer,5,12,387.0725402832031,0.0,0.0
+123,Gradient residual refinement,5,12,466.6455078125,0.0,0.0
+123,PINN-style refinement,5,12,380.1580505371094,0.0,0.0
+123,Supervised Neural Operator Corrector,5,12,419.751953125,0.0,0.0
+123,TD3 from scratch,5,12,1671.258056640625,0.0,0.0
+123,TD3+BC without physics regularization,5,12,982.6104736328125,0.0,0.0
+123,RL Neural Operator Solver,5,12,419.751953125,0.0,0.0
+123,Base FNO Initializer,5,13,3128.87060546875,0.0,0.0
+123,Gradient residual refinement,5,13,2915.3193359375,0.0,0.0
+123,PINN-style refinement,5,13,3093.211181640625,0.0,0.0
+123,Supervised Neural Operator Corrector,5,13,2841.341796875,0.0,0.0
+123,TD3 from scratch,5,13,4458.9697265625,0.0,0.0
+123,TD3+BC without physics regularization,5,13,4209.70556640625,0.0,0.0
+123,RL Neural Operator Solver,5,13,2841.341796875,0.0,0.0
+123,Base FNO Initializer,5,14,458.3894958496094,0.0,0.0
+123,Gradient residual refinement,5,14,544.7627563476562,0.0,0.0
+123,PINN-style refinement,5,14,450.5076599121094,0.0,0.0
+123,Supervised Neural Operator Corrector,5,14,480.2962341308594,0.0,0.0
+123,TD3 from scratch,5,14,1764.0540771484375,0.0,0.0
+123,TD3+BC without physics regularization,5,14,1092.8048095703125,0.0,0.0
+123,RL Neural Operator Solver,5,14,480.2962341308594,0.0,0.0
+123,Base FNO Initializer,5,15,3098.84619140625,0.0,0.0
+123,Gradient residual refinement,5,15,2890.124267578125,0.0,0.0
+123,PINN-style refinement,5,15,3063.35498046875,0.0,0.0
+123,Supervised Neural Operator Corrector,5,15,2813.46923828125,0.0,0.0
+123,TD3 from scratch,5,15,4432.57666015625,0.0,0.0
+123,TD3+BC without physics regularization,5,15,4174.91259765625,0.0,0.0
+123,RL Neural Operator Solver,5,15,2813.46923828125,0.0,0.0
+123,Base FNO Initializer,5,16,32.568233489990234,0.0,0.0
+123,Gradient residual refinement,5,16,151.10826110839844,0.0,0.0
+123,PINN-style refinement,5,16,30.585634231567383,0.0,0.0
+123,Supervised Neural Operator Corrector,5,16,83.06378936767578,0.0,0.0
+123,TD3 from scratch,5,16,700.4208984375,0.0,0.0
+123,TD3+BC without physics regularization,5,16,391.1268615722656,0.0,0.0
+123,RL Neural Operator Solver,5,16,83.06378936767578,0.0,0.0
+123,Base FNO Initializer,5,17,3531.842529296875,0.0,0.002559700980782509
+123,Gradient residual refinement,5,17,3270.634033203125,0.0,0.002559700980782509
+123,PINN-style refinement,5,17,3494.637939453125,0.0,0.002559700980782509
+123,Supervised Neural Operator Corrector,5,17,3222.31298828125,0.0,0.002559700980782509
+123,TD3 from scratch,5,17,4899.50341796875,0.0,0.002559700980782509
+123,TD3+BC without physics regularization,5,17,4651.095703125,0.0,0.002559700980782509
+123,RL Neural Operator Solver,5,17,3222.31298828125,0.0,0.002559700980782509
+123,Base FNO Initializer,5,18,8.283108711242676,0.0,0.0
+123,Gradient residual refinement,5,18,119.95751953125,0.0,0.0
+123,PINN-style refinement,5,18,7.376694202423096,0.0,0.0
+123,Supervised Neural Operator Corrector,5,18,47.75189971923828,0.0,0.0
+123,TD3 from scratch,5,18,722.8130493164062,0.0,0.0
+123,TD3+BC without physics regularization,5,18,387.60186767578125,0.0,0.0
+123,RL Neural Operator Solver,5,18,47.75189971923828,0.0,0.0
+123,Base FNO Initializer,5,19,279.2883605957031,0.0,0.0
+123,Gradient residual refinement,5,19,373.43499755859375,0.0,0.0
+123,PINN-style refinement,5,19,273.7013244628906,0.0,0.0
+123,Supervised Neural Operator Corrector,5,19,319.10955810546875,0.0,0.0
+123,TD3 from scratch,5,19,1547.9766845703125,0.0,0.0
+123,TD3+BC without physics regularization,5,19,725.6303100585938,0.0,0.0
+123,RL Neural Operator Solver,5,19,319.10955810546875,0.0,0.0
+123,Base FNO Initializer,5,20,354.12811279296875,0.0,0.0
+123,Gradient residual refinement,5,20,443.58001708984375,0.0,0.0
+123,PINN-style refinement,5,20,347.634521484375,0.0,0.0
+123,Supervised Neural Operator Corrector,5,20,390.3581237792969,0.0,0.0
+123,TD3 from scratch,5,20,1622.84716796875,0.0,0.0
+123,TD3+BC without physics regularization,5,20,916.0265502929688,0.0,0.0
+123,RL Neural Operator Solver,5,20,390.3581237792969,0.0,0.0
+123,Base FNO Initializer,5,21,994.3232421875,0.0,0.0
+123,Gradient residual refinement,5,21,1021.62890625,0.0,0.0
+123,PINN-style refinement,5,21,979.1224975585938,0.0,0.0
+123,Supervised Neural Operator Corrector,5,21,935.9237060546875,0.0,0.0
+123,TD3 from scratch,5,21,2543.444091796875,0.0,0.0
+123,TD3+BC without physics regularization,5,21,1680.4344482421875,0.0,0.0
+123,RL Neural Operator Solver,5,21,935.9237060546875,0.0,0.0
+123,Base FNO Initializer,5,22,159.24810791015625,0.0,0.0
+123,Gradient residual refinement,5,22,264.1904296875,0.0,0.0
+123,PINN-style refinement,5,22,154.94027709960938,0.0,0.0
+123,Supervised Neural Operator Corrector,5,22,210.18212890625,0.0,0.0
+123,TD3 from scratch,5,22,1458.466552734375,0.0,0.0
+123,TD3+BC without physics regularization,5,22,474.9010314941406,0.0,0.0
+123,RL Neural Operator Solver,5,22,210.18212890625,0.0,0.0
+123,Base FNO Initializer,5,23,3251.320556640625,0.0,0.0
+123,Gradient residual refinement,5,23,3027.753173828125,0.0,0.0
+123,PINN-style refinement,5,23,3215.115966796875,0.0,0.0
+123,Supervised Neural Operator Corrector,5,23,2956.07373046875,0.0,0.0
+123,TD3 from scratch,5,23,4561.56787109375,0.0,0.0
+123,TD3+BC without physics regularization,5,23,4346.623046875,0.0,0.0
+123,RL Neural Operator Solver,5,23,2956.07373046875,0.0,0.0
+123,Base FNO Initializer,5,24,265.5368347167969,0.0,0.0
+123,Gradient residual refinement,5,24,358.4069519042969,0.0,0.0
+123,PINN-style refinement,5,24,260.12457275390625,0.0,0.0
+123,Supervised Neural Operator Corrector,5,24,311.47894287109375,0.0,0.0
+123,TD3 from scratch,5,24,1539.62109375,0.0,0.0
+123,TD3+BC without physics regularization,5,24,690.828369140625,0.0,0.0
+123,RL Neural Operator Solver,5,24,311.47894287109375,0.0,0.0
+123,Base FNO Initializer,5,25,667.3829345703125,0.0,0.0
+123,Gradient residual refinement,5,25,732.0541381835938,0.0,0.0
+123,PINN-style refinement,5,25,656.6680908203125,0.0,0.0
+123,Supervised Neural Operator Corrector,5,25,659.203125,0.0,0.0
+123,TD3 from scratch,5,25,2064.179443359375,0.0,0.0
+123,TD3+BC without physics regularization,5,25,1336.308349609375,0.0,0.0
+123,RL Neural Operator Solver,5,25,659.203125,0.0,0.0
+123,Base FNO Initializer,5,26,1778.3543701171875,0.0,0.0
+123,Gradient residual refinement,5,26,1718.72021484375,0.0,0.0
+123,PINN-style refinement,5,26,1753.742431640625,0.0,0.0
+123,Supervised Neural Operator Corrector,5,26,1612.6021728515625,0.0,0.0
+123,TD3 from scratch,5,26,3443.0048828125,0.0,0.0
+123,TD3+BC without physics regularization,5,26,2603.5703125,0.0,0.0
+123,RL Neural Operator Solver,5,26,1612.6021728515625,0.0,0.0
+123,Base FNO Initializer,5,27,404.16497802734375,0.0,0.0
+123,Gradient residual refinement,5,27,488.6943359375,0.0,0.0
+123,PINN-style refinement,5,27,397.0476379394531,0.0,0.0
+123,Supervised Neural Operator Corrector,5,27,433.0180358886719,0.0,0.0
+123,TD3 from scratch,5,27,1690.08935546875,0.0,0.0
+123,TD3+BC without physics regularization,5,27,1017.1869506835938,0.0,0.0
+123,RL Neural Operator Solver,5,27,433.0180358886719,0.0,0.0
+123,Base FNO Initializer,5,28,496.6219482421875,0.0,0.0
+123,Gradient residual refinement,5,28,572.556640625,0.0,0.0
+123,PINN-style refinement,5,28,488.245849609375,0.0,0.0
+123,Supervised Neural Operator Corrector,5,28,513.3844604492188,0.0,0.0
+123,TD3 from scratch,5,28,1815.95947265625,0.0,0.0
+123,TD3+BC without physics regularization,5,28,1160.901123046875,0.0,0.0
+123,RL Neural Operator Solver,5,28,513.3844604492188,0.0,0.0
+123,Base FNO Initializer,5,29,2617.43017578125,0.0,0.0
+123,Gradient residual refinement,5,29,2468.862060546875,0.0,0.0
+123,PINN-style refinement,5,29,2584.799072265625,0.0,0.0
+123,Supervised Neural Operator Corrector,5,29,2367.5673828125,0.0,0.0
+123,TD3 from scratch,5,29,4089.220458984375,0.0,0.0
+123,TD3+BC without physics regularization,5,29,3635.618408203125,0.0,0.0
+123,RL Neural Operator Solver,5,29,2367.5673828125,0.0,0.0
+123,Base FNO Initializer,5,30,3986.75732421875,0.0,0.07487307488918304
+123,Gradient residual refinement,5,30,3687.23876953125,0.0,0.07487307488918304
+123,PINN-style refinement,5,30,3948.237060546875,0.0,0.07487307488918304
+123,Supervised Neural Operator Corrector,5,30,3662.014892578125,0.0,0.07487307488918304
+123,TD3 from scratch,5,30,5512.98291015625,0.0,0.07487307488918304
+123,TD3+BC without physics regularization,5,30,5044.6865234375,0.0,0.07487307488918304
+123,RL Neural Operator Solver,5,30,3662.014892578125,0.0,0.07487307488918304
+123,Base FNO Initializer,5,31,1355.7099609375,0.0,0.0
+123,Gradient residual refinement,5,31,1343.8531494140625,0.0,0.0
+123,PINN-style refinement,5,31,1335.926025390625,0.0,0.0
+123,Supervised Neural Operator Corrector,5,31,1245.2156982421875,0.0,0.0
+123,TD3 from scratch,5,31,3003.77734375,0.0,0.0
+123,TD3+BC without physics regularization,5,31,2071.803955078125,0.0,0.0
+123,RL Neural Operator Solver,5,31,1245.2156982421875,0.0,0.0
+123,Base FNO Initializer,5,32,914.642822265625,0.0,0.0
+123,Gradient residual refinement,5,32,948.061279296875,0.0,0.0
+123,PINN-style refinement,5,32,900.4768676757812,0.0,0.0
+123,Supervised Neural Operator Corrector,5,32,867.3917846679688,0.0,0.0
+123,TD3 from scratch,5,32,2421.180908203125,0.0,0.0
+123,TD3+BC without physics regularization,5,32,1593.11962890625,0.0,0.0
+123,RL Neural Operator Solver,5,32,867.3917846679688,0.0,0.0
+123,Base FNO Initializer,5,33,370.3553161621094,0.0,0.0
+123,Gradient residual refinement,5,33,458.1670227050781,0.0,0.0
+123,PINN-style refinement,5,33,363.6648254394531,0.0,0.0
+123,Supervised Neural Operator Corrector,5,33,401.73492431640625,0.0,0.0
+123,TD3 from scratch,5,33,1644.6134033203125,0.0,0.0
+123,TD3+BC without physics regularization,5,33,947.3856201171875,0.0,0.0
+123,RL Neural Operator Solver,5,33,401.73492431640625,0.0,0.0
+123,Base FNO Initializer,5,34,2923.20751953125,0.0,0.0
+123,Gradient residual refinement,5,34,2739.550537109375,0.0,0.0
+123,PINN-style refinement,5,34,2888.640625,0.0,0.0
+123,Supervised Neural Operator Corrector,5,34,2649.995849609375,0.0,0.0
+123,TD3 from scratch,5,34,4296.408203125,0.0,0.0
+123,TD3+BC without physics regularization,5,34,3981.044921875,0.0,0.0
+123,RL Neural Operator Solver,5,34,2649.995849609375,0.0,0.0
+123,Base FNO Initializer,5,35,557.515380859375,0.0,0.0
+123,Gradient residual refinement,5,35,629.053466796875,0.0,0.0
+123,PINN-style refinement,5,35,548.2915649414062,0.0,0.0
+123,Supervised Neural Operator Corrector,5,35,568.2000122070312,0.0,0.0
+123,TD3 from scratch,5,35,1910.068115234375,0.0,0.0
+123,TD3+BC without physics regularization,5,35,1223.7142333984375,0.0,0.0
+123,RL Neural Operator Solver,5,35,568.2000122070312,0.0,0.0
+123,Base FNO Initializer,10,0,48.1470832824707,0.0,0.0
+123,Gradient residual refinement,10,0,183.3769073486328,0.0,0.0
+123,PINN-style refinement,10,0,44.410091400146484,0.0,0.0
+123,Supervised Neural Operator Corrector,10,0,146.35496520996094,0.0,0.0
+123,TD3 from scratch,10,0,3543.974853515625,0.0,0.0
+123,TD3+BC without physics regularization,10,0,3230.24560546875,0.0,0.0
+123,RL Neural Operator Solver,10,0,146.35496520996094,0.0,0.0
+123,Base FNO Initializer,10,1,4245.99560546875,0.0,0.17247915267944336
+123,Gradient residual refinement,10,1,3897.376708984375,0.0,0.17247915267944336
+123,PINN-style refinement,10,1,4171.37158203125,0.0,0.17247915267944336
+123,Supervised Neural Operator Corrector,10,1,3885.193603515625,0.0,0.17247915267944336
+123,TD3 from scratch,10,1,10010.787109375,0.0,0.17247915267944336
+123,TD3+BC without physics regularization,10,1,9518.3046875,0.0,0.17247915267944336
+123,RL Neural Operator Solver,10,1,3885.193603515625,0.0,0.17247915267944336
+123,Base FNO Initializer,10,2,3159.231201171875,0.0,0.0
+123,Gradient residual refinement,10,2,2907.58984375,0.0,0.0
+123,PINN-style refinement,10,2,3091.513671875,0.0,0.0
+123,Supervised Neural Operator Corrector,10,2,2836.896484375,0.0,0.0
+123,TD3 from scratch,10,2,8297.5556640625,0.0,0.0
+123,TD3+BC without physics regularization,10,2,8612.912109375,0.0,0.0
+123,RL Neural Operator Solver,10,2,2836.896484375,0.0,0.0
+123,Base FNO Initializer,10,3,226.77752685546875,0.0,0.0
+123,Gradient residual refinement,10,3,358.1033630371094,0.0,0.0
+123,PINN-style refinement,10,3,218.7227325439453,0.0,0.0
+123,Supervised Neural Operator Corrector,10,3,303.7294921875,0.0,0.0
+123,TD3 from scratch,10,3,4768.955078125,0.0,0.0
+123,TD3+BC without physics regularization,10,3,3471.68115234375,0.0,0.0
+123,RL Neural Operator Solver,10,3,303.7294921875,0.0,0.0
+123,Base FNO Initializer,10,4,2268.3505859375,0.0,0.0
+123,Gradient residual refinement,10,4,2125.387451171875,0.0,0.0
+123,PINN-style refinement,10,4,2212.76123046875,0.0,0.0
+123,Supervised Neural Operator Corrector,10,4,2018.9744873046875,0.0,0.0
+123,TD3 from scratch,10,4,7906.94921875,0.0,0.0
+123,TD3+BC without physics regularization,10,4,7507.451171875,0.0,0.0
+123,RL Neural Operator Solver,10,4,2018.9744873046875,0.0,0.0
+123,Base FNO Initializer,10,5,862.6002807617188,0.0,0.0
+123,Gradient residual refinement,10,5,939.0895385742188,0.0,0.0
+123,PINN-style refinement,10,5,838.846923828125,0.0,0.0
+123,Supervised Neural Operator Corrector,10,5,825.8616943359375,0.0,0.0
+123,TD3 from scratch,10,5,6228.58349609375,0.0,0.0
+123,TD3+BC without physics regularization,10,5,5527.97607421875,0.0,0.0
+123,RL Neural Operator Solver,10,5,825.8616943359375,0.0,0.0
+123,Base FNO Initializer,10,6,1131.1239013671875,0.0,0.0
+123,Gradient residual refinement,10,6,1158.297607421875,0.0,0.0
+123,PINN-style refinement,10,6,1100.451171875,0.0,0.0
+123,Supervised Neural Operator Corrector,10,6,1043.9757080078125,0.0,0.0
+123,TD3 from scratch,10,6,6741.357421875,0.0,0.0
+123,TD3+BC without physics regularization,10,6,5596.77001953125,0.0,0.0
+123,RL Neural Operator Solver,10,6,1043.9757080078125,0.0,0.0
+123,Base FNO Initializer,10,7,139.532470703125,0.0,0.0
+123,Gradient residual refinement,10,7,270.2568664550781,0.0,0.0
+123,PINN-style refinement,10,7,133.0927734375,0.0,0.0
+123,Supervised Neural Operator Corrector,10,7,226.55221557617188,0.0,0.0
+123,TD3 from scratch,10,7,4744.41748046875,0.0,0.0
+123,TD3+BC without physics regularization,10,7,1162.76806640625,0.0,0.0
+123,RL Neural Operator Solver,10,7,226.55221557617188,0.0,0.0
+123,Base FNO Initializer,10,8,1722.603515625,0.0,0.0
+123,Gradient residual refinement,10,8,1664.0184326171875,0.0,0.0
+123,PINN-style refinement,10,8,1678.2239990234375,0.0,0.0
+123,Supervised Neural Operator Corrector,10,8,1541.30029296875,0.0,0.0
+123,TD3 from scratch,10,8,7352.9599609375,0.0,0.0
+123,TD3+BC without physics regularization,10,8,6641.68359375,0.0,0.0
+123,RL Neural Operator Solver,10,8,1541.30029296875,0.0,0.0
+123,Base FNO Initializer,10,9,421.8193664550781,0.0,0.0
+123,Gradient residual refinement,10,9,550.4913940429688,0.0,0.0
+123,PINN-style refinement,10,9,409.505859375,0.0,0.0
+123,Supervised Neural Operator Corrector,10,9,469.79046630859375,0.0,0.0
+123,TD3 from scratch,10,9,5193.353515625,0.0,0.0
+123,TD3+BC without physics regularization,10,9,4819.90283203125,0.0,0.0
+123,RL Neural Operator Solver,10,9,469.79046630859375,0.0,0.0
+123,Base FNO Initializer,10,10,1299.241943359375,0.0,0.0
+123,Gradient residual refinement,10,10,1302.7125244140625,0.0,0.0
+123,PINN-style refinement,10,10,1264.4503173828125,0.0,0.0
+123,Supervised Neural Operator Corrector,10,10,1183.90185546875,0.0,0.0
+123,TD3 from scratch,10,10,6918.541015625,0.0,0.0
+123,TD3+BC without physics regularization,10,10,6081.142578125,0.0,0.0
+123,RL Neural Operator Solver,10,10,1183.90185546875,0.0,0.0
+123,Base FNO Initializer,10,11,3659.13232421875,0.0,0.010925320908427238
+123,Gradient residual refinement,10,11,3353.5361328125,0.0,0.010925320908427238
+123,PINN-style refinement,10,11,3587.736572265625,0.0,0.010925320908427238
+123,Supervised Neural Operator Corrector,10,11,3315.244384765625,0.0,0.010925320908427238
+123,TD3 from scratch,10,11,9136.765625,0.0,0.010925320908427238
+123,TD3+BC without physics regularization,10,11,9198.8427734375,0.0,0.010925320908427238
+123,RL Neural Operator Solver,10,11,3315.244384765625,0.0,0.010925320908427238
+123,Base FNO Initializer,10,12,387.0725402832031,0.0,0.0
+123,Gradient residual refinement,10,12,523.842041015625,0.0,0.0
+123,PINN-style refinement,10,12,375.5689697265625,0.0,0.0
+123,Supervised Neural Operator Corrector,10,12,440.4698486328125,0.0,0.0
+123,TD3 from scratch,10,12,5146.931640625,0.0,0.0
+123,TD3+BC without physics regularization,10,12,4606.85302734375,0.0,0.0
+123,RL Neural Operator Solver,10,12,440.4698486328125,0.0,0.0
+123,Base FNO Initializer,10,13,3128.87060546875,0.0,0.0
+123,Gradient residual refinement,10,13,2878.5615234375,0.0,0.0
+123,PINN-style refinement,10,13,3061.4228515625,0.0,0.0
+123,Supervised Neural Operator Corrector,10,13,2808.31005859375,0.0,0.0
+123,TD3 from scratch,10,13,8279.8427734375,0.0,0.0
+123,TD3+BC without physics regularization,10,13,8582.255859375,0.0,0.0
+123,RL Neural Operator Solver,10,13,2808.31005859375,0.0,0.0
+123,Base FNO Initializer,10,14,458.3894958496094,0.0,0.0
+123,Gradient residual refinement,10,14,573.4793090820312,0.0,0.0
+123,PINN-style refinement,10,14,445.15576171875,0.0,0.0
+123,Supervised Neural Operator Corrector,10,14,500.5685119628906,0.0,0.0
+123,TD3 from scratch,10,14,5274.43603515625,0.0,0.0
+123,TD3+BC without physics regularization,10,14,5024.78857421875,0.0,0.0
+123,RL Neural Operator Solver,10,14,500.5685119628906,0.0,0.0
+123,Base FNO Initializer,10,15,3098.84619140625,0.0,0.0
+123,Gradient residual refinement,10,15,2854.779541015625,0.0,0.0
+123,PINN-style refinement,10,15,3031.726806640625,0.0,0.0
+123,Supervised Neural Operator Corrector,10,15,2780.32275390625,0.0,0.0
+123,TD3 from scratch,10,15,8239.9365234375,0.0,0.0
+123,TD3+BC without physics regularization,10,15,8549.2880859375,0.0,0.0
+123,RL Neural Operator Solver,10,15,2780.32275390625,0.0,0.0
+123,Base FNO Initializer,10,16,32.568233489990234,0.0,0.0
+123,Gradient residual refinement,10,16,168.3695068359375,0.0,0.0
+123,PINN-style refinement,10,16,29.648794174194336,0.0,0.0
+123,Supervised Neural Operator Corrector,10,16,133.55955505371094,0.0,0.0
+123,TD3 from scratch,10,16,3144.417724609375,0.0,0.0
+123,TD3+BC without physics regularization,10,16,3487.921142578125,0.0,0.0
+123,RL Neural Operator Solver,10,16,133.55955505371094,0.0,0.0
+123,Base FNO Initializer,10,17,3531.842529296875,0.0,0.002559700980782509
+123,Gradient residual refinement,10,17,3244.554931640625,0.0,0.002559700980782509
+123,PINN-style refinement,10,17,3461.27392578125,0.0,0.002559700980782509
+123,Supervised Neural Operator Corrector,10,17,3191.572509765625,0.0,0.002559700980782509
+123,TD3 from scratch,10,17,8769.732421875,0.0,0.002559700980782509
+123,TD3+BC without physics regularization,10,17,9024.4443359375,0.0,0.002559700980782509
+123,RL Neural Operator Solver,10,17,3191.572509765625,0.0,0.002559700980782509
+123,Base FNO Initializer,10,18,8.283108711242676,0.0,0.0
+123,Gradient residual refinement,10,18,150.3631591796875,0.0,0.0
+123,PINN-style refinement,10,18,7.16762113571167,0.0,0.0
+123,Supervised Neural Operator Corrector,10,18,112.38282775878906,0.0,0.0
+123,TD3 from scratch,10,18,3440.490478515625,0.0,0.0
+123,TD3+BC without physics regularization,10,18,2611.5888671875,0.0,0.0
+123,RL Neural Operator Solver,10,18,112.38282775878906,0.0,0.0
+123,Base FNO Initializer,10,19,279.2883605957031,0.0,0.0
+123,Gradient residual refinement,10,19,411.7542724609375,0.0,0.0
+123,PINN-style refinement,10,19,270.1961975097656,0.0,0.0
+123,Supervised Neural Operator Corrector,10,19,349.91717529296875,0.0,0.0
+123,TD3 from scratch,10,19,4905.48193359375,0.0,0.0
+123,TD3+BC without physics regularization,10,19,4116.421875,0.0,0.0
+123,RL Neural Operator Solver,10,19,349.91717529296875,0.0,0.0
+123,Base FNO Initializer,10,20,354.12811279296875,0.0,0.0
+123,Gradient residual refinement,10,20,484.39215087890625,0.0,0.0
+123,PINN-style refinement,10,20,343.392578125,0.0,0.0
+123,Supervised Neural Operator Corrector,10,20,413.1907043457031,0.0,0.0
+123,TD3 from scratch,10,20,5065.93359375,0.0,0.0
+123,TD3+BC without physics regularization,10,20,4503.4892578125,0.0,0.0
+123,RL Neural Operator Solver,10,20,413.1907043457031,0.0,0.0
+123,Base FNO Initializer,10,21,994.3232421875,0.0,0.0
+123,Gradient residual refinement,10,21,1043.2725830078125,0.0,0.0
+123,PINN-style refinement,10,21,967.0968017578125,0.0,0.0
+123,Supervised Neural Operator Corrector,10,21,932.7191772460938,0.0,0.0
+123,TD3 from scratch,10,21,6505.9072265625,0.0,0.0
+123,TD3+BC without physics regularization,10,21,5670.4404296875,0.0,0.0
+123,RL Neural Operator Solver,10,21,932.7191772460938,0.0,0.0
+123,Base FNO Initializer,10,22,159.24810791015625,0.0,0.0
+123,Gradient residual refinement,10,22,286.6393127441406,0.0,0.0
+123,PINN-style refinement,10,22,152.42906188964844,0.0,0.0
+123,Supervised Neural Operator Corrector,10,22,243.177734375,0.0,0.0
+123,TD3 from scratch,10,22,4801.20263671875,0.0,0.0
+123,TD3+BC without physics regularization,10,22,2194.578125,0.0,0.0
+123,RL Neural Operator Solver,10,22,243.177734375,0.0,0.0
+123,Base FNO Initializer,10,23,3251.320556640625,0.0,0.0
+123,Gradient residual refinement,10,23,2986.180908203125,0.0,0.0
+123,PINN-style refinement,10,23,3182.780517578125,0.0,0.0
+123,Supervised Neural Operator Corrector,10,23,2923.907470703125,0.0,0.0
+123,TD3 from scratch,10,23,8347.5869140625,0.0,0.0
+123,TD3+BC without physics regularization,10,23,8706.7333984375,0.0,0.0
+123,RL Neural Operator Solver,10,23,2923.907470703125,0.0,0.0
+123,Base FNO Initializer,10,24,265.5368347167969,0.0,0.0
+123,Gradient residual refinement,10,24,396.3776550292969,0.0,0.0
+123,PINN-style refinement,10,24,256.7557373046875,0.0,0.0
+123,Supervised Neural Operator Corrector,10,24,336.8388671875,0.0,0.0
+123,TD3 from scratch,10,24,4864.88037109375,0.0,0.0
+123,TD3+BC without physics regularization,10,24,4058.08984375,0.0,0.0
+123,RL Neural Operator Solver,10,24,336.8388671875,0.0,0.0
+123,Base FNO Initializer,10,25,667.3829345703125,0.0,0.0
+123,Gradient residual refinement,10,25,758.5575561523438,0.0,0.0
+123,PINN-style refinement,10,25,648.8157958984375,0.0,0.0
+123,Supervised Neural Operator Corrector,10,25,669.78125,0.0,0.0
+123,TD3 from scratch,10,25,5804.0771484375,0.0,0.0
+123,TD3+BC without physics regularization,10,25,5292.076171875,0.0,0.0
+123,RL Neural Operator Solver,10,25,669.78125,0.0,0.0
+123,Base FNO Initializer,10,26,1778.3543701171875,0.0,0.0
+123,Gradient residual refinement,10,26,1715.6632080078125,0.0,0.0
+123,PINN-style refinement,10,26,1732.86181640625,0.0,0.0
+123,Supervised Neural Operator Corrector,10,26,1591.0302734375,0.0,0.0
+123,TD3 from scratch,10,26,7425.0224609375,0.0,0.0
+123,TD3+BC without physics regularization,10,26,6765.54345703125,0.0,0.0
+123,RL Neural Operator Solver,10,26,1591.0302734375,0.0,0.0
+123,Base FNO Initializer,10,27,404.16497802734375,0.0,0.0
+123,Gradient residual refinement,10,27,525.1956176757812,0.0,0.0
+123,PINN-style refinement,10,27,392.2906799316406,0.0,0.0
+123,Supervised Neural Operator Corrector,10,27,456.5564270019531,0.0,0.0
+123,TD3 from scratch,10,27,5171.67626953125,0.0,0.0
+123,TD3+BC without physics regularization,10,27,4706.74560546875,0.0,0.0
+123,RL Neural Operator Solver,10,27,456.5564270019531,0.0,0.0
+123,Base FNO Initializer,10,28,496.6219482421875,0.0,0.0
+123,Gradient residual refinement,10,28,614.4103393554688,0.0,0.0
+123,PINN-style refinement,10,28,482.4715270996094,0.0,0.0
+123,Supervised Neural Operator Corrector,10,28,531.1700439453125,0.0,0.0
+123,TD3 from scratch,10,28,5374.23779296875,0.0,0.0
+123,TD3+BC without physics regularization,10,28,5233.2451171875,0.0,0.0
+123,RL Neural Operator Solver,10,28,531.1700439453125,0.0,0.0
+123,Base FNO Initializer,10,29,2617.43017578125,0.0,0.0
+123,Gradient residual refinement,10,29,2423.870361328125,0.0,0.0
+123,PINN-style refinement,10,29,2556.040771484375,0.0,0.0
+123,Supervised Neural Operator Corrector,10,29,2333.526611328125,0.0,0.0
+123,TD3 from scratch,10,29,8094.87109375,0.0,0.0
+123,TD3+BC without physics regularization,10,29,8048.0986328125,0.0,0.0
+123,RL Neural Operator Solver,10,29,2333.526611328125,0.0,0.0
+123,Base FNO Initializer,10,30,3986.75732421875,0.0,0.07487307488918304
+123,Gradient residual refinement,10,30,3653.559814453125,0.0,0.07487307488918304
+123,PINN-style refinement,10,30,3913.509521484375,0.0,0.07487307488918304
+123,Supervised Neural Operator Corrector,10,30,3634.532470703125,0.0,0.07487307488918304
+123,TD3 from scratch,10,30,9740.626953125,0.0,0.07487307488918304
+123,TD3+BC without physics regularization,10,30,9410.314453125,0.0,0.07487307488918304
+123,RL Neural Operator Solver,10,30,3634.532470703125,0.0,0.07487307488918304
+123,Base FNO Initializer,10,31,1355.7099609375,0.0,0.0
+123,Gradient residual refinement,10,31,1344.725341796875,0.0,0.0
+123,PINN-style refinement,10,31,1319.576904296875,0.0,0.0
+123,Supervised Neural Operator Corrector,10,31,1229.7879638671875,0.0,0.0
+123,TD3 from scratch,10,31,6950.2861328125,0.0,0.0
+123,TD3+BC without physics regularization,10,31,6203.326171875,0.0,0.0
+123,RL Neural Operator Solver,10,31,1229.7879638671875,0.0,0.0
+123,Base FNO Initializer,10,32,914.642822265625,0.0,0.0
+123,Gradient residual refinement,10,32,973.5940551757812,0.0,0.0
+123,PINN-style refinement,10,32,889.4489135742188,0.0,0.0
+123,Supervised Neural Operator Corrector,10,32,868.6192016601562,0.0,0.0
+123,TD3 from scratch,10,32,6338.361328125,0.0,0.0
+123,TD3+BC without physics regularization,10,32,5624.97412109375,0.0,0.0
+123,RL Neural Operator Solver,10,32,868.6192016601562,0.0,0.0
+123,Base FNO Initializer,10,33,370.3553161621094,0.0,0.0
+123,Gradient residual refinement,10,33,496.5216369628906,0.0,0.0
+123,PINN-style refinement,10,33,359.2630920410156,0.0,0.0
+123,Supervised Neural Operator Corrector,10,33,429.0396423339844,0.0,0.0
+123,TD3 from scratch,10,33,5100.12109375,0.0,0.0
+123,TD3+BC without physics regularization,10,33,4564.1044921875,0.0,0.0
+123,RL Neural Operator Solver,10,33,429.0396423339844,0.0,0.0
+123,Base FNO Initializer,10,34,2923.20751953125,0.0,0.0
+123,Gradient residual refinement,10,34,2696.12939453125,0.0,0.0
+123,PINN-style refinement,10,34,2857.9052734375,0.0,0.0
+123,Supervised Neural Operator Corrector,10,34,2615.95654296875,0.0,0.0
+123,TD3 from scratch,10,34,8166.806640625,0.0,0.0
+123,TD3+BC without physics regularization,10,34,8379.54296875,0.0,0.0
+123,RL Neural Operator Solver,10,34,2615.95654296875,0.0,0.0
+123,Base FNO Initializer,10,35,557.515380859375,0.0,0.0
+123,Gradient residual refinement,10,35,663.7586059570312,0.0,0.0
+123,PINN-style refinement,10,35,541.7916259765625,0.0,0.0
+123,Supervised Neural Operator Corrector,10,35,580.8197021484375,0.0,0.0
+123,TD3 from scratch,10,35,5546.09716796875,0.0,0.0
+123,TD3+BC without physics regularization,10,35,5319.88037109375,0.0,0.0
+123,RL Neural Operator Solver,10,35,580.8197021484375,0.0,0.0
+2026,Base FNO Initializer,1,0,49.3974494934082,0.0,0.0
+2026,Gradient residual refinement,1,0,92.67972564697266,0.0,0.0
+2026,PINN-style refinement,1,0,48.54885482788086,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,0,52.45592498779297,0.0,0.0
+2026,TD3 from scratch,1,0,80.59783935546875,0.0,0.0
+2026,TD3+BC without physics regularization,1,0,163.135498046875,0.0,0.0
+2026,RL Neural Operator Solver,1,0,52.45592498779297,0.0,0.0
+2026,Base FNO Initializer,1,1,3217.341796875,0.0,0.17247915267944336
+2026,Gradient residual refinement,1,1,3140.31494140625,0.0,0.17247915267944336
+2026,PINN-style refinement,1,1,3212.551513671875,0.0,0.17247915267944336
+2026,Supervised Neural Operator Corrector,1,1,3149.371826171875,0.0,0.17247915267944336
+2026,TD3 from scratch,1,1,3260.87548828125,0.0,0.17247915267944336
+2026,TD3+BC without physics regularization,1,1,3324.028076171875,0.0,0.17247915267944336
+2026,RL Neural Operator Solver,1,1,3149.371826171875,0.0,0.17247915267944336
+2026,Base FNO Initializer,1,2,2212.841552734375,0.0,0.0
+2026,Gradient residual refinement,1,2,2149.0,0.0,0.0
+2026,PINN-style refinement,1,2,2208.35693359375,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,2,2150.282470703125,0.0,0.0
+2026,TD3 from scratch,1,2,2238.918212890625,0.0,0.0
+2026,TD3+BC without physics regularization,1,2,2312.524658203125,0.0,0.0
+2026,RL Neural Operator Solver,1,2,2150.282470703125,0.0,0.0
+2026,Base FNO Initializer,1,3,251.32000732421875,0.0,0.0
+2026,Gradient residual refinement,1,3,274.3100280761719,0.0,0.0
+2026,PINN-style refinement,1,3,249.60415649414062,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,3,242.72608947753906,0.0,0.0
+2026,TD3 from scratch,1,3,289.0361328125,0.0,0.0
+2026,TD3+BC without physics regularization,1,3,351.8266296386719,0.0,0.0
+2026,RL Neural Operator Solver,1,3,242.72608947753906,0.0,0.0
+2026,Base FNO Initializer,1,4,1518.27685546875,0.0,0.0
+2026,Gradient residual refinement,1,4,1474.6981201171875,0.0,0.0
+2026,PINN-style refinement,1,4,1514.3443603515625,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,4,1471.10009765625,0.0,0.0
+2026,TD3 from scratch,1,4,1560.7127685546875,0.0,0.0
+2026,TD3+BC without physics regularization,1,4,1621.566162109375,0.0,0.0
+2026,RL Neural Operator Solver,1,4,1471.10009765625,0.0,0.0
+2026,Base FNO Initializer,1,5,753.5623779296875,0.0,0.0
+2026,Gradient residual refinement,1,5,739.9712524414062,0.0,0.0
+2026,PINN-style refinement,1,5,750.736572265625,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,5,724.1984252929688,0.0,0.0
+2026,TD3 from scratch,1,5,812.7293701171875,0.0,0.0
+2026,TD3+BC without physics regularization,1,5,853.7821044921875,0.0,0.0
+2026,RL Neural Operator Solver,1,5,724.1984252929688,0.0,0.0
+2026,Base FNO Initializer,1,6,904.5723876953125,0.0,0.0
+2026,Gradient residual refinement,1,6,887.630126953125,0.0,0.0
+2026,PINN-style refinement,1,6,901.575439453125,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,6,872.4386596679688,0.0,0.0
+2026,TD3 from scratch,1,6,966.2085571289062,0.0,0.0
+2026,TD3+BC without physics regularization,1,6,1010.1776123046875,0.0,0.0
+2026,RL Neural Operator Solver,1,6,872.4386596679688,0.0,0.0
+2026,Base FNO Initializer,1,7,153.7891387939453,0.0,0.0
+2026,Gradient residual refinement,1,7,185.2512664794922,0.0,0.0
+2026,PINN-style refinement,1,7,152.40994262695312,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,7,150.80645751953125,0.0,0.0
+2026,TD3 from scratch,1,7,186.601318359375,0.0,0.0
+2026,TD3+BC without physics regularization,1,7,256.35260009765625,0.0,0.0
+2026,RL Neural Operator Solver,1,7,150.80645751953125,0.0,0.0
+2026,Base FNO Initializer,1,8,1205.5423583984375,0.0,0.0
+2026,Gradient residual refinement,1,8,1175.6483154296875,0.0,0.0
+2026,PINN-style refinement,1,8,1202.121826171875,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,8,1167.5113525390625,0.0,0.0
+2026,TD3 from scratch,1,8,1259.352783203125,0.0,0.0
+2026,TD3+BC without physics regularization,1,8,1302.927001953125,0.0,0.0
+2026,RL Neural Operator Solver,1,8,1167.5113525390625,0.0,0.0
+2026,Base FNO Initializer,1,9,440.1627197265625,0.0,0.0
+2026,Gradient residual refinement,1,9,446.2525329589844,0.0,0.0
+2026,PINN-style refinement,1,9,437.87945556640625,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,9,421.5911560058594,0.0,0.0
+2026,TD3 from scratch,1,9,487.82232666015625,0.0,0.0
+2026,TD3+BC without physics regularization,1,9,539.22998046875,0.0,0.0
+2026,RL Neural Operator Solver,1,9,421.5911560058594,0.0,0.0
+2026,Base FNO Initializer,1,10,991.6483154296875,0.0,0.0
+2026,Gradient residual refinement,1,10,969.9194946289062,0.0,0.0
+2026,PINN-style refinement,1,10,988.5617065429688,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,10,958.3588256835938,0.0,0.0
+2026,TD3 from scratch,1,10,1052.910400390625,0.0,0.0
+2026,TD3+BC without physics regularization,1,10,1095.0928955078125,0.0,0.0
+2026,RL Neural Operator Solver,1,10,958.3588256835938,0.0,0.0
+2026,Base FNO Initializer,1,11,2669.5693359375,0.0,0.010925320908427238
+2026,Gradient residual refinement,1,11,2598.52587890625,0.0,0.010925320908427238
+2026,PINN-style refinement,1,11,2664.917236328125,0.0,0.010925320908427238
+2026,Supervised Neural Operator Corrector,1,11,2603.708984375,0.0,0.010925320908427238
+2026,TD3 from scratch,1,11,2706.978759765625,0.0,0.010925320908427238
+2026,TD3+BC without physics regularization,1,11,2774.8955078125,0.0,0.010925320908427238
+2026,RL Neural Operator Solver,1,11,2603.708984375,0.0,0.010925320908427238
+2026,Base FNO Initializer,1,12,409.5272521972656,0.0,0.0
+2026,Gradient residual refinement,1,12,417.9322814941406,0.0,0.0
+2026,PINN-style refinement,1,12,407.3277282714844,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,12,392.4377136230469,0.0,0.0
+2026,TD3 from scratch,1,12,455.845703125,0.0,0.0
+2026,TD3+BC without physics regularization,1,12,508.1443176269531,0.0,0.0
+2026,RL Neural Operator Solver,1,12,392.4377136230469,0.0,0.0
+2026,Base FNO Initializer,1,13,2186.3564453125,0.0,0.0
+2026,Gradient residual refinement,1,13,2123.1376953125,0.0,0.0
+2026,PINN-style refinement,1,13,2181.87939453125,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,13,2124.13720703125,0.0,0.0
+2026,TD3 from scratch,1,13,2212.754150390625,0.0,0.0
+2026,TD3+BC without physics regularization,1,13,2285.9384765625,0.0,0.0
+2026,RL Neural Operator Solver,1,13,2124.13720703125,0.0,0.0
+2026,Base FNO Initializer,1,14,471.0674743652344,0.0,0.0
+2026,Gradient residual refinement,1,14,475.72161865234375,0.0,0.0
+2026,PINN-style refinement,1,14,468.70758056640625,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,14,451.0914611816406,0.0,0.0
+2026,TD3 from scratch,1,14,519.751953125,0.0,0.0
+2026,TD3+BC without physics regularization,1,14,570.9767456054688,0.0,0.0
+2026,RL Neural Operator Solver,1,14,451.0914611816406,0.0,0.0
+2026,Base FNO Initializer,1,15,2160.02197265625,0.0,0.0
+2026,Gradient residual refinement,1,15,2097.333984375,0.0,0.0
+2026,PINN-style refinement,1,15,2155.567626953125,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,15,2098.23486328125,0.0,0.0
+2026,TD3 from scratch,1,15,2186.903076171875,0.0,0.0
+2026,TD3+BC without physics regularization,1,15,2259.623291015625,0.0,0.0
+2026,RL Neural Operator Solver,1,15,2098.23486328125,0.0,0.0
+2026,Base FNO Initializer,1,16,32.60041809082031,0.0,0.0
+2026,Gradient residual refinement,1,16,82.35846710205078,0.0,0.0
+2026,PINN-style refinement,1,16,31.882457733154297,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,16,35.82241439819336,0.0,0.0
+2026,TD3 from scratch,1,16,64.57671356201172,0.0,0.0
+2026,TD3+BC without physics regularization,1,16,145.7611846923828,0.0,0.0
+2026,RL Neural Operator Solver,1,16,35.82241439819336,0.0,0.0
+2026,Base FNO Initializer,1,17,2551.693603515625,0.0,0.002559700980782509
+2026,Gradient residual refinement,1,17,2481.945556640625,0.0,0.002559700980782509
+2026,PINN-style refinement,1,17,2547.07470703125,0.0,0.002559700980782509
+2026,Supervised Neural Operator Corrector,1,17,2486.0400390625,0.0,0.002559700980782509
+2026,TD3 from scratch,1,17,2582.37451171875,0.0,0.002559700980782509
+2026,TD3+BC without physics regularization,1,17,2655.802734375,0.0,0.002559700980782509
+2026,RL Neural Operator Solver,1,17,2486.0400390625,0.0,0.002559700980782509
+2026,Base FNO Initializer,1,18,9.142180442810059,0.0,0.0
+2026,Gradient residual refinement,1,18,55.39841842651367,0.0,0.0
+2026,PINN-style refinement,1,18,8.561538696289062,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,18,10.94374942779541,0.0,0.0
+2026,TD3 from scratch,1,18,53.52207946777344,0.0,0.0
+2026,TD3+BC without physics regularization,1,18,124.62860870361328,0.0,0.0
+2026,RL Neural Operator Solver,1,18,10.94374942779541,0.0,0.0
+2026,Base FNO Initializer,1,19,306.40625,0.0,0.0
+2026,Gradient residual refinement,1,19,324.0615234375,0.0,0.0
+2026,PINN-style refinement,1,19,304.51275634765625,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,19,294.7976379394531,0.0,0.0
+2026,TD3 from scratch,1,19,347.82171630859375,0.0,0.0
+2026,TD3+BC without physics regularization,1,19,405.886474609375,0.0,0.0
+2026,RL Neural Operator Solver,1,19,294.7976379394531,0.0,0.0
+2026,Base FNO Initializer,1,20,379.35107421875,0.0,0.0
+2026,Gradient residual refinement,1,20,390.78070068359375,0.0,0.0
+2026,PINN-style refinement,1,20,377.2356872558594,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,20,363.76507568359375,0.0,0.0
+2026,TD3 from scratch,1,20,424.5780334472656,0.0,0.0
+2026,TD3+BC without physics regularization,1,20,478.2959899902344,0.0,0.0
+2026,RL Neural Operator Solver,1,20,363.76507568359375,0.0,0.0
+2026,Base FNO Initializer,1,21,829.941162109375,0.0,0.0
+2026,Gradient residual refinement,1,21,815.2503051757812,0.0,0.0
+2026,PINN-style refinement,1,21,827.0469970703125,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,21,799.015380859375,0.0,0.0
+2026,TD3 from scratch,1,21,890.573974609375,0.0,0.0
+2026,TD3+BC without physics regularization,1,21,933.0221557617188,0.0,0.0
+2026,RL Neural Operator Solver,1,21,799.015380859375,0.0,0.0
+2026,Base FNO Initializer,1,22,176.34616088867188,0.0,0.0
+2026,Gradient residual refinement,1,22,207.27737426757812,0.0,0.0
+2026,PINN-style refinement,1,22,174.88632202148438,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,22,172.062255859375,0.0,0.0
+2026,TD3 from scratch,1,22,210.1348419189453,0.0,0.0
+2026,TD3+BC without physics regularization,1,22,276.75592041015625,0.0,0.0
+2026,RL Neural Operator Solver,1,22,172.062255859375,0.0,0.0
+2026,Base FNO Initializer,1,23,2294.974853515625,0.0,0.0
+2026,Gradient residual refinement,1,23,2229.6650390625,0.0,0.0
+2026,PINN-style refinement,1,23,2290.45361328125,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,23,2231.260498046875,0.0,0.0
+2026,TD3 from scratch,1,23,2319.86181640625,0.0,0.0
+2026,TD3+BC without physics regularization,1,23,2394.739013671875,0.0,0.0
+2026,RL Neural Operator Solver,1,23,2231.260498046875,0.0,0.0
+2026,Base FNO Initializer,1,24,292.3182067871094,0.0,0.0
+2026,Gradient residual refinement,1,24,311.0602722167969,0.0,0.0
+2026,PINN-style refinement,1,24,290.4657287597656,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,24,281.5224609375,0.0,0.0
+2026,TD3 from scratch,1,24,332.9920349121094,0.0,0.0
+2026,TD3+BC without physics regularization,1,24,392.2098083496094,0.0,0.0
+2026,RL Neural Operator Solver,1,24,281.5224609375,0.0,0.0
+2026,Base FNO Initializer,1,25,628.3527221679688,0.0,0.0
+2026,Gradient residual refinement,1,25,621.2498168945312,0.0,0.0
+2026,PINN-style refinement,1,25,625.6849365234375,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,25,602.3179321289062,0.0,0.0
+2026,TD3 from scratch,1,25,682.9735717773438,0.0,0.0
+2026,TD3+BC without physics regularization,1,25,728.6677856445312,0.0,0.0
+2026,RL Neural Operator Solver,1,25,602.3179321289062,0.0,0.0
+2026,Base FNO Initializer,1,26,1234.501953125,0.0,0.0
+2026,Gradient residual refinement,1,26,1203.2764892578125,0.0,0.0
+2026,PINN-style refinement,1,26,1231.01416015625,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,26,1195.627685546875,0.0,0.0
+2026,TD3 from scratch,1,26,1287.3978271484375,0.0,0.0
+2026,TD3+BC without physics regularization,1,26,1332.3896484375,0.0,0.0
+2026,RL Neural Operator Solver,1,26,1195.627685546875,0.0,0.0
+2026,Base FNO Initializer,1,27,424.79248046875,0.0,0.0
+2026,Gradient residual refinement,1,27,432.1871337890625,0.0,0.0
+2026,PINN-style refinement,1,27,422.56005859375,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,27,406.9577941894531,0.0,0.0
+2026,TD3 from scratch,1,27,471.9246826171875,0.0,0.0
+2026,TD3+BC without physics regularization,1,27,524.1719970703125,0.0,0.0
+2026,RL Neural Operator Solver,1,27,406.9577941894531,0.0,0.0
+2026,Base FNO Initializer,1,28,502.25244140625,0.0,0.0
+2026,Gradient residual refinement,1,28,503.52203369140625,0.0,0.0
+2026,PINN-style refinement,1,28,499.8201599121094,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,28,480.82965087890625,0.0,0.0
+2026,TD3 from scratch,1,28,551.7371826171875,0.0,0.0
+2026,TD3+BC without physics regularization,1,28,602.3585815429688,0.0,0.0
+2026,RL Neural Operator Solver,1,28,480.82965087890625,0.0,0.0
+2026,Base FNO Initializer,1,29,1764.4405517578125,0.0,0.0
+2026,Gradient residual refinement,1,29,1711.8385009765625,0.0,0.0
+2026,PINN-style refinement,1,29,1760.2490234375,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,29,1710.4510498046875,0.0,0.0
+2026,TD3 from scratch,1,29,1799.34765625,0.0,0.0
+2026,TD3+BC without physics regularization,1,29,1863.4012451171875,0.0,0.0
+2026,RL Neural Operator Solver,1,29,1710.4510498046875,0.0,0.0
+2026,Base FNO Initializer,1,30,2974.670166015625,0.0,0.07487307488918304
+2026,Gradient residual refinement,1,30,2899.91064453125,0.0,0.07487307488918304
+2026,PINN-style refinement,1,30,2969.937744140625,0.0,0.07487307488918304
+2026,Supervised Neural Operator Corrector,1,30,2908.05517578125,0.0,0.07487307488918304
+2026,TD3 from scratch,1,30,3018.719970703125,0.0,0.07487307488918304
+2026,TD3+BC without physics regularization,1,30,3084.58056640625,0.0,0.07487307488918304
+2026,RL Neural Operator Solver,1,30,2908.05517578125,0.0,0.07487307488918304
+2026,Base FNO Initializer,1,31,1020.2290649414062,0.0,0.0
+2026,Gradient residual refinement,1,31,996.405029296875,0.0,0.0
+2026,PINN-style refinement,1,31,1017.1069946289062,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,31,986.3845825195312,0.0,0.0
+2026,TD3 from scratch,1,31,1080.96484375,0.0,0.0
+2026,TD3+BC without physics regularization,1,31,1121.9639892578125,0.0,0.0
+2026,RL Neural Operator Solver,1,31,986.3845825195312,0.0,0.0
+2026,Base FNO Initializer,1,32,784.4037475585938,0.0,0.0
+2026,Gradient residual refinement,1,32,770.6029663085938,0.0,0.0
+2026,PINN-style refinement,1,32,781.5540161132812,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,32,754.388671875,0.0,0.0
+2026,TD3 from scratch,1,32,844.2453002929688,0.0,0.0
+2026,TD3+BC without physics regularization,1,32,885.5377197265625,0.0,0.0
+2026,RL Neural Operator Solver,1,32,754.388671875,0.0,0.0
+2026,Base FNO Initializer,1,33,394.347412109375,0.0,0.0
+2026,Gradient residual refinement,1,33,404.1416320800781,0.0,0.0
+2026,PINN-style refinement,1,33,392.19342041015625,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,33,378.13372802734375,0.0,0.0
+2026,TD3 from scratch,1,33,439.96099853515625,0.0,0.0
+2026,TD3+BC without physics regularization,1,33,492.9909973144531,0.0,0.0
+2026,RL Neural Operator Solver,1,33,378.13372802734375,0.0,0.0
+2026,Base FNO Initializer,1,34,2009.6724853515625,0.0,0.0
+2026,Gradient residual refinement,1,34,1950.5927734375,0.0,0.0
+2026,PINN-style refinement,1,34,2005.302490234375,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,34,1950.4737548828125,0.0,0.0
+2026,TD3 from scratch,1,34,2039.042724609375,0.0,0.0
+2026,TD3+BC without physics regularization,1,34,2108.614013671875,0.0,0.0
+2026,RL Neural Operator Solver,1,34,1950.4737548828125,0.0,0.0
+2026,Base FNO Initializer,1,35,549.4725952148438,0.0,0.0
+2026,Gradient residual refinement,1,35,548.1591796875,0.0,0.0
+2026,PINN-style refinement,1,35,546.9302978515625,0.0,0.0
+2026,Supervised Neural Operator Corrector,1,35,526.2659912109375,0.0,0.0
+2026,TD3 from scratch,1,35,601.26171875,0.0,0.0
+2026,TD3+BC without physics regularization,1,35,650.0892944335938,0.0,0.0
+2026,RL Neural Operator Solver,1,35,526.2659912109375,0.0,0.0
+2026,Base FNO Initializer,2,0,49.3974494934082,0.0,0.0
+2026,Gradient residual refinement,2,0,143.04037475585938,0.0,0.0
+2026,PINN-style refinement,2,0,47.88133239746094,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,0,54.039588928222656,0.0,0.0
+2026,TD3 from scratch,2,0,167.5894317626953,0.0,0.0
+2026,TD3+BC without physics regularization,2,0,334.10858154296875,0.0,0.0
+2026,RL Neural Operator Solver,2,0,54.039588928222656,0.0,0.0
+2026,Base FNO Initializer,2,1,3217.341796875,0.0,0.17247915267944336
+2026,Gradient residual refinement,2,1,3126.18408203125,0.0,0.17247915267944336
+2026,PINN-style refinement,2,1,3207.95556640625,0.0,0.17247915267944336
+2026,Supervised Neural Operator Corrector,2,1,3107.89990234375,0.0,0.17247915267944336
+2026,TD3 from scratch,2,1,3392.240234375,0.0,0.17247915267944336
+2026,TD3+BC without physics regularization,2,1,3576.7685546875,0.0,0.17247915267944336
+2026,RL Neural Operator Solver,2,1,3107.89990234375,0.0,0.17247915267944336
+2026,Base FNO Initializer,2,2,2212.841552734375,0.0,0.0
+2026,Gradient residual refinement,2,2,2166.029541015625,0.0,0.0
+2026,PINN-style refinement,2,2,2204.079833984375,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,2,2115.274658203125,0.0,0.0
+2026,TD3 from scratch,2,2,2361.35888671875,0.0,0.0
+2026,TD3+BC without physics regularization,2,2,2536.532958984375,0.0,0.0
+2026,RL Neural Operator Solver,2,2,2115.274658203125,0.0,0.0
+2026,Base FNO Initializer,2,3,251.32000732421875,0.0,0.0
+2026,Gradient residual refinement,2,3,354.6944885253906,0.0,0.0
+2026,PINN-style refinement,2,3,248.1133270263672,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,3,249.02708435058594,0.0,0.0
+2026,TD3 from scratch,2,3,415.6911315917969,0.0,0.0
+2026,TD3+BC without physics regularization,2,3,535.1707153320312,0.0,0.0
+2026,RL Neural Operator Solver,2,3,249.02708435058594,0.0,0.0
+2026,Base FNO Initializer,2,4,1518.27685546875,0.0,0.0
+2026,Gradient residual refinement,2,4,1532.17626953125,0.0,0.0
+2026,PINN-style refinement,2,4,1510.638427734375,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,4,1447.9896240234375,0.0,0.0
+2026,TD3 from scratch,2,4,1710.1715087890625,0.0,0.0
+2026,TD3+BC without physics regularization,2,4,1845.9862060546875,0.0,0.0
+2026,RL Neural Operator Solver,2,4,1447.9896240234375,0.0,0.0
+2026,Base FNO Initializer,2,5,753.5623779296875,0.0,0.0
+2026,Gradient residual refinement,2,5,814.2263793945312,0.0,0.0
+2026,PINN-style refinement,2,5,748.1591796875,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,5,711.72412109375,0.0,0.0
+2026,TD3 from scratch,2,5,981.5990600585938,0.0,0.0
+2026,TD3+BC without physics regularization,2,5,1065.826416015625,0.0,0.0
+2026,RL Neural Operator Solver,2,5,711.72412109375,0.0,0.0
+2026,Base FNO Initializer,2,6,904.5723876953125,0.0,0.0
+2026,Gradient residual refinement,2,6,951.7889404296875,0.0,0.0
+2026,PINN-style refinement,2,6,898.8279418945312,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,6,856.242431640625,0.0,0.0
+2026,TD3 from scratch,2,6,1142.5467529296875,0.0,0.0
+2026,TD3+BC without physics regularization,2,6,1224.41015625,0.0,0.0
+2026,RL Neural Operator Solver,2,6,856.242431640625,0.0,0.0
+2026,Base FNO Initializer,2,7,153.7891387939453,0.0,0.0
+2026,Gradient residual refinement,2,7,240.33944702148438,0.0,0.0
+2026,PINN-style refinement,2,7,151.2404327392578,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,7,156.04501342773438,0.0,0.0
+2026,TD3 from scratch,2,7,293.8786926269531,0.0,0.0
+2026,TD3+BC without physics regularization,2,7,430.98046875,0.0,0.0
+2026,RL Neural Operator Solver,2,7,156.04501342773438,0.0,0.0
+2026,Base FNO Initializer,2,8,1205.5423583984375,0.0,0.0
+2026,Gradient residual refinement,2,8,1246.9102783203125,0.0,0.0
+2026,PINN-style refinement,2,8,1198.9383544921875,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,8,1148.2537841796875,0.0,0.0
+2026,TD3 from scratch,2,8,1422.525146484375,0.0,0.0
+2026,TD3+BC without physics regularization,2,8,1517.4583740234375,0.0,0.0
+2026,RL Neural Operator Solver,2,8,1148.2537841796875,0.0,0.0
+2026,Base FNO Initializer,2,9,440.1627197265625,0.0,0.0
+2026,Gradient residual refinement,2,9,527.31689453125,0.0,0.0
+2026,PINN-style refinement,2,9,435.8379211425781,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,9,420.81866455078125,0.0,0.0
+2026,TD3 from scratch,2,9,625.0671997070312,0.0,0.0
+2026,TD3+BC without physics regularization,2,9,738.2657470703125,0.0,0.0
+2026,RL Neural Operator Solver,2,9,420.81866455078125,0.0,0.0
+2026,Base FNO Initializer,2,10,991.6483154296875,0.0,0.0
+2026,Gradient residual refinement,2,10,1041.6246337890625,0.0,0.0
+2026,PINN-style refinement,2,10,985.7154541015625,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,10,940.8488159179688,0.0,0.0
+2026,TD3 from scratch,2,10,1229.1851806640625,0.0,0.0
+2026,TD3+BC without physics regularization,2,10,1308.4776611328125,0.0,0.0
+2026,RL Neural Operator Solver,2,10,940.8488159179688,0.0,0.0
+2026,Base FNO Initializer,2,11,2669.5693359375,0.0,0.010925320908427238
+2026,Gradient residual refinement,2,11,2597.31396484375,0.0,0.010925320908427238
+2026,PINN-style refinement,2,11,2660.465576171875,0.0,0.010925320908427238
+2026,Supervised Neural Operator Corrector,2,11,2565.00390625,0.0,0.010925320908427238
+2026,TD3 from scratch,2,11,2836.284423828125,0.0,0.010925320908427238
+2026,TD3+BC without physics regularization,2,11,3018.65185546875,0.0,0.010925320908427238
+2026,RL Neural Operator Solver,2,11,2565.00390625,0.0,0.010925320908427238
+2026,Base FNO Initializer,2,12,409.5272521972656,0.0,0.0
+2026,Gradient residual refinement,2,12,498.8404541015625,0.0,0.0
+2026,PINN-style refinement,2,12,405.3705749511719,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,12,392.985107421875,0.0,0.0
+2026,TD3 from scratch,2,12,590.068115234375,0.0,0.0
+2026,TD3+BC without physics regularization,2,12,704.99169921875,0.0,0.0
+2026,RL Neural Operator Solver,2,12,392.985107421875,0.0,0.0
+2026,Base FNO Initializer,2,13,2186.3564453125,0.0,0.0
+2026,Gradient residual refinement,2,13,2142.132080078125,0.0,0.0
+2026,PINN-style refinement,2,13,2177.611328125,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,13,2089.475830078125,0.0,0.0
+2026,TD3 from scratch,2,13,2335.755859375,0.0,0.0
+2026,TD3+BC without physics regularization,2,13,2510.607177734375,0.0,0.0
+2026,RL Neural Operator Solver,2,13,2089.475830078125,0.0,0.0
+2026,Base FNO Initializer,2,14,471.0674743652344,0.0,0.0
+2026,Gradient residual refinement,2,14,558.7996215820312,0.0,0.0
+2026,PINN-style refinement,2,14,466.5912780761719,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,14,449.6441345214844,0.0,0.0
+2026,TD3 from scratch,2,14,660.5576171875,0.0,0.0
+2026,TD3+BC without physics regularization,2,14,770.7531127929688,0.0,0.0
+2026,RL Neural Operator Solver,2,14,449.6441345214844,0.0,0.0
+2026,Base FNO Initializer,2,15,2160.02197265625,0.0,0.0
+2026,Gradient residual refinement,2,15,2114.304931640625,0.0,0.0
+2026,PINN-style refinement,2,15,2151.323486328125,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,15,2063.96240234375,0.0,0.0
+2026,TD3 from scratch,2,15,2310.594482421875,0.0,0.0
+2026,TD3+BC without physics regularization,2,15,2484.59814453125,0.0,0.0
+2026,RL Neural Operator Solver,2,15,2063.96240234375,0.0,0.0
+2026,Base FNO Initializer,2,16,32.60041809082031,0.0,0.0
+2026,Gradient residual refinement,2,16,137.56809997558594,0.0,0.0
+2026,PINN-style refinement,2,16,31.337581634521484,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,16,38.632728576660156,0.0,0.0
+2026,TD3 from scratch,2,16,149.21630859375,0.0,0.0
+2026,TD3+BC without physics regularization,2,16,318.7789611816406,0.0,0.0
+2026,RL Neural Operator Solver,2,16,38.632728576660156,0.0,0.0
+2026,Base FNO Initializer,2,17,2551.693603515625,0.0,0.002559700980782509
+2026,Gradient residual refinement,2,17,2480.282958984375,0.0,0.002559700980782509
+2026,PINN-style refinement,2,17,2542.65966796875,0.0,0.002559700980782509
+2026,Supervised Neural Operator Corrector,2,17,2447.741455078125,0.0,0.002559700980782509
+2026,TD3 from scratch,2,17,2711.670654296875,0.0,0.002559700980782509
+2026,TD3+BC without physics regularization,2,17,2887.57275390625,0.0,0.002559700980782509
+2026,RL Neural Operator Solver,2,17,2447.741455078125,0.0,0.002559700980782509
+2026,Base FNO Initializer,2,18,9.142180442810059,0.0,0.0
+2026,Gradient residual refinement,2,18,127.63417053222656,0.0,0.0
+2026,PINN-style refinement,2,18,8.122953414916992,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,18,12.367531776428223,0.0,0.0
+2026,TD3 from scratch,2,18,161.945556640625,0.0,0.0
+2026,TD3+BC without physics regularization,2,18,289.63629150390625,0.0,0.0
+2026,RL Neural Operator Solver,2,18,12.367531776428223,0.0,0.0
+2026,Base FNO Initializer,2,19,306.40625,0.0,0.0
+2026,Gradient residual refinement,2,19,403.3285217285156,0.0,0.0
+2026,PINN-style refinement,2,19,302.8479919433594,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,19,299.1659851074219,0.0,0.0
+2026,TD3 from scratch,2,19,478.1460876464844,0.0,0.0
+2026,TD3+BC without physics regularization,2,19,592.54248046875,0.0,0.0
+2026,RL Neural Operator Solver,2,19,299.1659851074219,0.0,0.0
+2026,Base FNO Initializer,2,20,379.35107421875,0.0,0.0
+2026,Gradient residual refinement,2,20,473.0582580566406,0.0,0.0
+2026,PINN-style refinement,2,20,375.3609619140625,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,20,365.0392150878906,0.0,0.0
+2026,TD3 from scratch,2,20,556.9501953125,0.0,0.0
+2026,TD3+BC without physics regularization,2,20,671.8865356445312,0.0,0.0
+2026,RL Neural Operator Solver,2,20,365.0392150878906,0.0,0.0
+2026,Base FNO Initializer,2,21,829.941162109375,0.0,0.0
+2026,Gradient residual refinement,2,21,886.2922973632812,0.0,0.0
+2026,PINN-style refinement,2,21,824.3984985351562,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,21,784.6588134765625,0.0,0.0
+2026,TD3 from scratch,2,21,1064.14599609375,0.0,0.0
+2026,TD3+BC without physics regularization,2,21,1146.7540283203125,0.0,0.0
+2026,RL Neural Operator Solver,2,21,784.6588134765625,0.0,0.0
+2026,Base FNO Initializer,2,22,176.34616088867188,0.0,0.0
+2026,Gradient residual refinement,2,22,275.8517150878906,0.0,0.0
+2026,PINN-style refinement,2,22,173.63751220703125,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,22,178.259765625,0.0,0.0
+2026,TD3 from scratch,2,22,323.6579895019531,0.0,0.0
+2026,TD3+BC without physics regularization,2,22,452.9183349609375,0.0,0.0
+2026,RL Neural Operator Solver,2,22,178.259765625,0.0,0.0
+2026,Base FNO Initializer,2,23,2294.974853515625,0.0,0.0
+2026,Gradient residual refinement,2,23,2246.05810546875,0.0,0.0
+2026,PINN-style refinement,2,23,2286.136962890625,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,23,2195.16162109375,0.0,0.0
+2026,TD3 from scratch,2,23,2440.570556640625,0.0,0.0
+2026,TD3+BC without physics regularization,2,23,2617.206298828125,0.0,0.0
+2026,RL Neural Operator Solver,2,23,2195.16162109375,0.0,0.0
+2026,Base FNO Initializer,2,24,292.3182067871094,0.0,0.0
+2026,Gradient residual refinement,2,24,395.87640380859375,0.0,0.0
+2026,PINN-style refinement,2,24,288.8442077636719,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,24,286.9164123535156,0.0,0.0
+2026,TD3 from scratch,2,24,462.1042175292969,0.0,0.0
+2026,TD3+BC without physics regularization,2,24,578.732666015625,0.0,0.0
+2026,RL Neural Operator Solver,2,24,286.9164123535156,0.0,0.0
+2026,Base FNO Initializer,2,25,628.3527221679688,0.0,0.0
+2026,Gradient residual refinement,2,25,703.6448364257812,0.0,0.0
+2026,PINN-style refinement,2,25,623.2615356445312,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,25,594.0835571289062,0.0,0.0
+2026,TD3 from scratch,2,25,840.3336791992188,0.0,0.0
+2026,TD3+BC without physics regularization,2,25,934.7858276367188,0.0,0.0
+2026,RL Neural Operator Solver,2,25,594.0835571289062,0.0,0.0
+2026,Base FNO Initializer,2,26,1234.501953125,0.0,0.0
+2026,Gradient residual refinement,2,26,1266.659912109375,0.0,0.0
+2026,PINN-style refinement,2,26,1227.7662353515625,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,26,1176.1328125,0.0,0.0
+2026,TD3 from scratch,2,26,1449.7713623046875,0.0,0.0
+2026,TD3+BC without physics regularization,2,26,1548.099609375,0.0,0.0
+2026,RL Neural Operator Solver,2,26,1176.1328125,0.0,0.0
+2026,Base FNO Initializer,2,27,424.79248046875,0.0,0.0
+2026,Gradient residual refinement,2,27,513.6749267578125,0.0,0.0
+2026,PINN-style refinement,2,27,420.5655822753906,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,27,406.5099792480469,0.0,0.0
+2026,TD3 from scratch,2,27,607.728515625,0.0,0.0
+2026,TD3+BC without physics regularization,2,27,721.8101196289062,0.0,0.0
+2026,RL Neural Operator Solver,2,27,406.5099792480469,0.0,0.0
+2026,Base FNO Initializer,2,28,502.25244140625,0.0,0.0
+2026,Gradient residual refinement,2,28,584.0426635742188,0.0,0.0
+2026,PINN-style refinement,2,28,497.6315612792969,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,28,477.7047424316406,0.0,0.0
+2026,TD3 from scratch,2,28,695.8623046875,0.0,0.0
+2026,TD3+BC without physics regularization,2,28,802.9288330078125,0.0,0.0
+2026,RL Neural Operator Solver,2,28,477.7047424316406,0.0,0.0
+2026,Base FNO Initializer,2,29,1764.4405517578125,0.0,0.0
+2026,Gradient residual refinement,2,29,1759.4832763671875,0.0,0.0
+2026,PINN-style refinement,2,29,1756.27685546875,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,29,1682.82275390625,0.0,0.0
+2026,TD3 from scratch,2,29,1936.011962890625,0.0,0.0
+2026,TD3+BC without physics regularization,2,29,2091.654052734375,0.0,0.0
+2026,RL Neural Operator Solver,2,29,1682.82275390625,0.0,0.0
+2026,Base FNO Initializer,2,30,2974.670166015625,0.0,0.07487307488918304
+2026,Gradient residual refinement,2,30,2889.04248046875,0.0,0.07487307488918304
+2026,PINN-style refinement,2,30,2965.402099609375,0.0,0.07487307488918304
+2026,Supervised Neural Operator Corrector,2,30,2868.170654296875,0.0,0.07487307488918304
+2026,TD3 from scratch,2,30,3154.286376953125,0.0,0.07487307488918304
+2026,TD3+BC without physics regularization,2,30,3342.582763671875,0.0,0.07487307488918304
+2026,RL Neural Operator Solver,2,30,2868.170654296875,0.0,0.07487307488918304
+2026,Base FNO Initializer,2,31,1020.2290649414062,0.0,0.0
+2026,Gradient residual refinement,2,31,1060.3671875,0.0,0.0
+2026,PINN-style refinement,2,31,1014.2232666015625,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,31,968.3842163085938,0.0,0.0
+2026,TD3 from scratch,2,31,1255.8011474609375,0.0,0.0
+2026,TD3+BC without physics regularization,2,31,1334.55029296875,0.0,0.0
+2026,RL Neural Operator Solver,2,31,968.3842163085938,0.0,0.0
+2026,Base FNO Initializer,2,32,784.4037475585938,0.0,0.0
+2026,Gradient residual refinement,2,32,847.3778686523438,0.0,0.0
+2026,PINN-style refinement,2,32,778.9403076171875,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,32,740.9379272460938,0.0,0.0
+2026,TD3 from scratch,2,32,1015.20654296875,0.0,0.0
+2026,TD3+BC without physics regularization,2,32,1098.504638671875,0.0,0.0
+2026,RL Neural Operator Solver,2,32,740.9379272460938,0.0,0.0
+2026,Base FNO Initializer,2,33,394.347412109375,0.0,0.0
+2026,Gradient residual refinement,2,33,487.2507019042969,0.0,0.0
+2026,PINN-style refinement,2,33,390.2783508300781,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,33,378.79437255859375,0.0,0.0
+2026,TD3 from scratch,2,33,572.9246826171875,0.0,0.0
+2026,TD3+BC without physics regularization,2,33,688.3178100585938,0.0,0.0
+2026,RL Neural Operator Solver,2,33,378.79437255859375,0.0,0.0
+2026,Base FNO Initializer,2,34,2009.6724853515625,0.0,0.0
+2026,Gradient residual refinement,2,34,1972.0733642578125,0.0,0.0
+2026,PINN-style refinement,2,34,2001.1434326171875,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,34,1918.5186767578125,0.0,0.0
+2026,TD3 from scratch,2,34,2166.895751953125,0.0,0.0
+2026,TD3+BC without physics regularization,2,34,2335.612060546875,0.0,0.0
+2026,RL Neural Operator Solver,2,34,1918.5186767578125,0.0,0.0
+2026,Base FNO Initializer,2,35,549.4725952148438,0.0,0.0
+2026,Gradient residual refinement,2,35,631.3281860351562,0.0,0.0
+2026,PINN-style refinement,2,35,544.635009765625,0.0,0.0
+2026,Supervised Neural Operator Corrector,2,35,521.8399658203125,0.0,0.0
+2026,TD3 from scratch,2,35,751.4290161132812,0.0,0.0
+2026,TD3+BC without physics regularization,2,35,853.6305541992188,0.0,0.0
+2026,RL Neural Operator Solver,2,35,521.8399658203125,0.0,0.0
+2026,Base FNO Initializer,5,0,49.3974494934082,0.0,0.0
+2026,Gradient residual refinement,5,0,169.54896545410156,0.0,0.0
+2026,PINN-style refinement,5,0,46.51752853393555,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,0,132.39273071289062,0.0,0.0
+2026,TD3 from scratch,5,0,881.3326416015625,0.0,0.0
+2026,TD3+BC without physics regularization,5,0,1268.2257080078125,0.0,0.0
+2026,RL Neural Operator Solver,5,0,132.39273071289062,0.0,0.0
+2026,Base FNO Initializer,5,1,3217.341796875,0.0,0.17247915267944336
+2026,Gradient residual refinement,5,1,3160.735595703125,0.0,0.17247915267944336
+2026,PINN-style refinement,5,1,3194.98046875,0.0,0.17247915267944336
+2026,Supervised Neural Operator Corrector,5,1,3042.506103515625,0.0,0.17247915267944336
+2026,TD3 from scratch,5,1,4317.02392578125,0.0,0.17247915267944336
+2026,TD3+BC without physics regularization,5,1,4733.46484375,0.0,0.17247915267944336
+2026,RL Neural Operator Solver,5,1,3042.506103515625,0.0,0.17247915267944336
+2026,Base FNO Initializer,5,2,2212.841552734375,0.0,0.0
+2026,Gradient residual refinement,5,2,2196.669921875,0.0,0.0
+2026,PINN-style refinement,5,2,2192.154541015625,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,2,2058.170166015625,0.0,0.0
+2026,TD3 from scratch,5,2,3498.8388671875,0.0,0.0
+2026,TD3+BC without physics regularization,5,2,3503.822998046875,0.0,0.0
+2026,RL Neural Operator Solver,5,2,2058.170166015625,0.0,0.0
+2026,Base FNO Initializer,5,3,251.32000732421875,0.0,0.0
+2026,Gradient residual refinement,5,3,327.5633544921875,0.0,0.0
+2026,PINN-style refinement,5,3,244.50460815429688,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,3,318.3341979980469,0.0,0.0
+2026,TD3 from scratch,5,3,1498.5999755859375,0.0,0.0
+2026,TD3+BC without physics regularization,5,3,1436.1158447265625,0.0,0.0
+2026,RL Neural Operator Solver,5,3,318.3341979980469,0.0,0.0
+2026,Base FNO Initializer,5,4,1518.27685546875,0.0,0.0
+2026,Gradient residual refinement,5,4,1532.90625,0.0,0.0
+2026,PINN-style refinement,5,4,1500.463134765625,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,4,1410.02783203125,0.0,0.0
+2026,TD3 from scratch,5,4,2836.218994140625,0.0,0.0
+2026,TD3+BC without physics regularization,5,4,2828.010498046875,0.0,0.0
+2026,RL Neural Operator Solver,5,4,1410.02783203125,0.0,0.0
+2026,Base FNO Initializer,5,5,753.5623779296875,0.0,0.0
+2026,Gradient residual refinement,5,5,801.028564453125,0.0,0.0
+2026,PINN-style refinement,5,5,741.309814453125,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,5,728.7392578125,0.0,0.0
+2026,TD3 from scratch,5,5,2123.8955078125,0.0,0.0
+2026,TD3+BC without physics regularization,5,5,2085.12158203125,0.0,0.0
+2026,RL Neural Operator Solver,5,5,728.7392578125,0.0,0.0
+2026,Base FNO Initializer,5,6,904.5723876953125,0.0,0.0
+2026,Gradient residual refinement,5,6,943.4205322265625,0.0,0.0
+2026,PINN-style refinement,5,6,891.5263061523438,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,6,852.951904296875,0.0,0.0
+2026,TD3 from scratch,5,6,2287.46435546875,0.0,0.0
+2026,TD3+BC without physics regularization,5,6,2271.156005859375,0.0,0.0
+2026,RL Neural Operator Solver,5,6,852.951904296875,0.0,0.0
+2026,Base FNO Initializer,5,7,153.7891387939453,0.0,0.0
+2026,Gradient residual refinement,5,7,252.73886108398438,0.0,0.0
+2026,PINN-style refinement,5,7,148.52505493164062,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,7,230.34620666503906,0.0,0.0
+2026,TD3 from scratch,5,7,1223.0091552734375,0.0,0.0
+2026,TD3+BC without physics regularization,5,7,1331.3431396484375,0.0,0.0
+2026,RL Neural Operator Solver,5,7,230.34620666503906,0.0,0.0
+2026,Base FNO Initializer,5,8,1205.5423583984375,0.0,0.0
+2026,Gradient residual refinement,5,8,1227.464599609375,0.0,0.0
+2026,PINN-style refinement,5,8,1190.3411865234375,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,8,1119.43798828125,0.0,0.0
+2026,TD3 from scratch,5,8,2584.6494140625,0.0,0.0
+2026,TD3+BC without physics regularization,5,8,2505.7568359375,0.0,0.0
+2026,RL Neural Operator Solver,5,8,1119.43798828125,0.0,0.0
+2026,Base FNO Initializer,5,9,440.1627197265625,0.0,0.0
+2026,Gradient residual refinement,5,9,507.11187744140625,0.0,0.0
+2026,PINN-style refinement,5,9,430.6712341308594,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,9,474.1509704589844,0.0,0.0
+2026,TD3 from scratch,5,9,1767.001220703125,0.0,0.0
+2026,TD3+BC without physics regularization,5,9,1679.127197265625,0.0,0.0
+2026,RL Neural Operator Solver,5,9,474.1509704589844,0.0,0.0
+2026,Base FNO Initializer,5,10,991.6483154296875,0.0,0.0
+2026,Gradient residual refinement,5,10,1028.0472412109375,0.0,0.0
+2026,PINN-style refinement,5,10,978.1056518554688,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,10,928.219482421875,0.0,0.0
+2026,TD3 from scratch,5,10,2389.11279296875,0.0,0.0
+2026,TD3+BC without physics regularization,5,10,2346.97314453125,0.0,0.0
+2026,RL Neural Operator Solver,5,10,928.219482421875,0.0,0.0
+2026,Base FNO Initializer,5,11,2669.5693359375,0.0,0.010925320908427238
+2026,Gradient residual refinement,5,11,2638.71484375,0.0,0.010925320908427238
+2026,PINN-style refinement,5,11,2647.970458984375,0.0,0.010925320908427238
+2026,Supervised Neural Operator Corrector,5,11,2502.873291015625,0.0,0.010925320908427238
+2026,TD3 from scratch,5,11,3819.29296875,0.0,0.010925320908427238
+2026,TD3+BC without physics regularization,5,11,4037.36328125,0.0,0.010925320908427238
+2026,RL Neural Operator Solver,5,11,2502.873291015625,0.0,0.010925320908427238
+2026,Base FNO Initializer,5,12,409.5272521972656,0.0,0.0
+2026,Gradient residual refinement,5,12,481.06787109375,0.0,0.0
+2026,PINN-style refinement,5,12,400.4542236328125,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,12,449.00579833984375,0.0,0.0
+2026,TD3 from scratch,5,12,1723.0162353515625,0.0,0.0
+2026,TD3+BC without physics regularization,5,12,1636.0625,0.0,0.0
+2026,RL Neural Operator Solver,5,12,449.00579833984375,0.0,0.0
+2026,Base FNO Initializer,5,13,2186.3564453125,0.0,0.0
+2026,Gradient residual refinement,5,13,2178.9755859375,0.0,0.0
+2026,PINN-style refinement,5,13,2165.720703125,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,13,2032.880859375,0.0,0.0
+2026,TD3 from scratch,5,13,3473.5869140625,0.0,0.0
+2026,TD3+BC without physics regularization,5,13,3479.416748046875,0.0,0.0
+2026,RL Neural Operator Solver,5,13,2032.880859375,0.0,0.0
+2026,Base FNO Initializer,5,14,471.0674743652344,0.0,0.0
+2026,Gradient residual refinement,5,14,533.3146362304688,0.0,0.0
+2026,PINN-style refinement,5,14,461.2037048339844,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,14,498.2004699707031,0.0,0.0
+2026,TD3 from scratch,5,14,1802.43994140625,0.0,0.0
+2026,TD3+BC without physics regularization,5,14,1722.1412353515625,0.0,0.0
+2026,RL Neural Operator Solver,5,14,498.2004699707031,0.0,0.0
+2026,Base FNO Initializer,5,15,2160.02197265625,0.0,0.0
+2026,Gradient residual refinement,5,15,2154.4912109375,0.0,0.0
+2026,PINN-style refinement,5,15,2139.495849609375,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,15,2007.9215087890625,0.0,0.0
+2026,TD3 from scratch,5,15,3448.24169921875,0.0,0.0
+2026,TD3+BC without physics regularization,5,15,3454.133056640625,0.0,0.0
+2026,RL Neural Operator Solver,5,15,2007.9215087890625,0.0,0.0
+2026,Base FNO Initializer,5,16,32.60041809082031,0.0,0.0
+2026,Gradient residual refinement,5,16,145.2506561279297,0.0,0.0
+2026,PINN-style refinement,5,16,30.276397705078125,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,16,115.30193328857422,0.0,0.0
+2026,TD3 from scratch,5,16,774.75341796875,0.0,0.0
+2026,TD3+BC without physics regularization,5,16,1254.8712158203125,0.0,0.0
+2026,RL Neural Operator Solver,5,16,115.30193328857422,0.0,0.0
+2026,Base FNO Initializer,5,17,2551.693603515625,0.0,0.002559700980782509
+2026,Gradient residual refinement,5,17,2518.139404296875,0.0,0.002559700980782509
+2026,PINN-style refinement,5,17,2530.28369140625,0.0,0.002559700980782509
+2026,Supervised Neural Operator Corrector,5,17,2385.93994140625,0.0,0.002559700980782509
+2026,TD3 from scratch,5,17,3813.983154296875,0.0,0.002559700980782509
+2026,TD3+BC without physics regularization,5,17,3884.307373046875,0.0,0.002559700980782509
+2026,RL Neural Operator Solver,5,17,2385.93994140625,0.0,0.002559700980782509
+2026,Base FNO Initializer,5,18,9.142180442810059,0.0,0.0
+2026,Gradient residual refinement,5,18,119.41700744628906,0.0,0.0
+2026,PINN-style refinement,5,18,7.325367450714111,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,18,89.60108947753906,0.0,0.0
+2026,TD3 from scratch,5,18,973.22998046875,0.0,0.0
+2026,TD3+BC without physics regularization,5,18,1263.9527587890625,0.0,0.0
+2026,RL Neural Operator Solver,5,18,89.60108947753906,0.0,0.0
+2026,Base FNO Initializer,5,19,306.40625,0.0,0.0
+2026,Gradient residual refinement,5,19,385.1960754394531,0.0,0.0
+2026,PINN-style refinement,5,19,298.7543640136719,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,19,362.6150817871094,0.0,0.0
+2026,TD3 from scratch,5,19,1579.1368408203125,0.0,0.0
+2026,TD3+BC without physics regularization,5,19,1496.5390625,0.0,0.0
+2026,RL Neural Operator Solver,5,19,362.6150817871094,0.0,0.0
+2026,Base FNO Initializer,5,20,379.35107421875,0.0,0.0
+2026,Gradient residual refinement,5,20,449.41802978515625,0.0,0.0
+2026,PINN-style refinement,5,20,370.67779541015625,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,20,421.972412109375,0.0,0.0
+2026,TD3 from scratch,5,20,1680.370849609375,0.0,0.0
+2026,TD3+BC without physics regularization,5,20,1594.41845703125,0.0,0.0
+2026,RL Neural Operator Solver,5,20,421.972412109375,0.0,0.0
+2026,Base FNO Initializer,5,21,829.941162109375,0.0,0.0
+2026,Gradient residual refinement,5,21,867.6721801757812,0.0,0.0
+2026,PINN-style refinement,5,21,817.3507080078125,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,21,792.5619506835938,0.0,0.0
+2026,TD3 from scratch,5,21,2205.400146484375,0.0,0.0
+2026,TD3+BC without physics regularization,5,21,2182.63427734375,0.0,0.0
+2026,RL Neural Operator Solver,5,21,792.5619506835938,0.0,0.0
+2026,Base FNO Initializer,5,22,176.34616088867188,0.0,0.0
+2026,Gradient residual refinement,5,22,276.1791076660156,0.0,0.0
+2026,PINN-style refinement,5,22,170.70657348632812,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,22,252.8184356689453,0.0,0.0
+2026,TD3 from scratch,5,22,1298.837646484375,0.0,0.0
+2026,TD3+BC without physics regularization,5,22,1349.3193359375,0.0,0.0
+2026,RL Neural Operator Solver,5,22,252.8184356689453,0.0,0.0
+2026,Base FNO Initializer,5,23,2294.974853515625,0.0,0.0
+2026,Gradient residual refinement,5,23,2280.517333984375,0.0,0.0
+2026,PINN-style refinement,5,23,2274.08349609375,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,23,2136.431396484375,0.0,0.0
+2026,TD3 from scratch,5,23,3576.43408203125,0.0,0.0
+2026,TD3+BC without physics regularization,5,23,3583.90234375,0.0,0.0
+2026,RL Neural Operator Solver,5,23,2136.431396484375,0.0,0.0
+2026,Base FNO Initializer,5,24,292.3182067871094,0.0,0.0
+2026,Gradient residual refinement,5,24,369.42626953125,0.0,0.0
+2026,PINN-style refinement,5,24,284.8701171875,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,24,354.196044921875,0.0,0.0
+2026,TD3 from scratch,5,24,1561.8314208984375,0.0,0.0
+2026,TD3+BC without physics regularization,5,24,1483.2747802734375,0.0,0.0
+2026,RL Neural Operator Solver,5,24,354.196044921875,0.0,0.0
+2026,Base FNO Initializer,5,25,628.3527221679688,0.0,0.0
+2026,Gradient residual refinement,5,25,684.2659912109375,0.0,0.0
+2026,PINN-style refinement,5,25,616.9150390625,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,25,628.8854370117188,0.0,0.0
+2026,TD3 from scratch,5,25,1984.25146484375,0.0,0.0
+2026,TD3+BC without physics regularization,5,25,1925.570068359375,0.0,0.0
+2026,RL Neural Operator Solver,5,25,628.8854370117188,0.0,0.0
+2026,Base FNO Initializer,5,26,1234.501953125,0.0,0.0
+2026,Gradient residual refinement,5,26,1262.2535400390625,0.0,0.0
+2026,PINN-style refinement,5,26,1219.0045166015625,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,26,1146.63330078125,0.0,0.0
+2026,TD3 from scratch,5,26,2613.2744140625,0.0,0.0
+2026,TD3+BC without physics regularization,5,26,2531.90576171875,0.0,0.0
+2026,RL Neural Operator Solver,5,26,1146.63330078125,0.0,0.0
+2026,Base FNO Initializer,5,27,424.79248046875,0.0,0.0
+2026,Gradient residual refinement,5,27,492.14483642578125,0.0,0.0
+2026,PINN-style refinement,5,27,415.5370178222656,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,27,461.45654296875,0.0,0.0
+2026,TD3 from scratch,5,27,1740.28857421875,0.0,0.0
+2026,TD3+BC without physics regularization,5,27,1659.09912109375,0.0,0.0
+2026,RL Neural Operator Solver,5,27,461.45654296875,0.0,0.0
+2026,Base FNO Initializer,5,28,502.25244140625,0.0,0.0
+2026,Gradient residual refinement,5,28,565.5534057617188,0.0,0.0
+2026,PINN-style refinement,5,28,492.0241394042969,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,28,523.1903686523438,0.0,0.0
+2026,TD3 from scratch,5,28,1838.98095703125,0.0,0.0
+2026,TD3+BC without physics regularization,5,28,1762.0340576171875,0.0,0.0
+2026,RL Neural Operator Solver,5,28,523.1903686523438,0.0,0.0
+2026,Base FNO Initializer,5,29,1764.4405517578125,0.0,0.0
+2026,Gradient residual refinement,5,29,1766.13671875,0.0,0.0
+2026,PINN-style refinement,5,29,1745.294921875,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,29,1636.888427734375,0.0,0.0
+2026,TD3 from scratch,5,29,3051.47314453125,0.0,0.0
+2026,TD3+BC without physics regularization,5,29,3072.33984375,0.0,0.0
+2026,RL Neural Operator Solver,5,29,1636.888427734375,0.0,0.0
+2026,Base FNO Initializer,5,30,2974.670166015625,0.0,0.07487307488918304
+2026,Gradient residual refinement,5,30,2927.9521484375,0.0,0.07487307488918304
+2026,PINN-style refinement,5,30,2952.622314453125,0.0,0.07487307488918304
+2026,Supervised Neural Operator Corrector,5,30,2805.515869140625,0.0,0.07487307488918304
+2026,TD3 from scratch,5,30,4117.7451171875,0.0,0.07487307488918304
+2026,TD3+BC without physics regularization,5,30,4454.51171875,0.0,0.07487307488918304
+2026,RL Neural Operator Solver,5,30,2805.515869140625,0.0,0.07487307488918304
+2026,Base FNO Initializer,5,31,1020.2290649414062,0.0,0.0
+2026,Gradient residual refinement,5,31,1057.2911376953125,0.0,0.0
+2026,PINN-style refinement,5,31,1006.4982299804688,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,31,951.8426513671875,0.0,0.0
+2026,TD3 from scratch,5,31,2417.017822265625,0.0,0.0
+2026,TD3+BC without physics regularization,5,31,2367.12353515625,0.0,0.0
+2026,RL Neural Operator Solver,5,31,951.8426513671875,0.0,0.0
+2026,Base FNO Initializer,5,32,784.4037475585938,0.0,0.0
+2026,Gradient residual refinement,5,32,821.9684448242188,0.0,0.0
+2026,PINN-style refinement,5,32,772.0045166015625,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,32,753.8228149414062,0.0,0.0
+2026,TD3 from scratch,5,32,2157.30810546875,0.0,0.0
+2026,TD3+BC without physics regularization,5,32,2124.38330078125,0.0,0.0
+2026,RL Neural Operator Solver,5,32,753.8228149414062,0.0,0.0
+2026,Base FNO Initializer,5,33,394.347412109375,0.0,0.0
+2026,Gradient residual refinement,5,33,466.8316955566406,0.0,0.0
+2026,PINN-style refinement,5,33,385.48272705078125,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,33,434.0607604980469,0.0,0.0
+2026,TD3 from scratch,5,33,1699.02783203125,0.0,0.0
+2026,TD3+BC without physics regularization,5,33,1614.5465087890625,0.0,0.0
+2026,RL Neural Operator Solver,5,33,434.0607604980469,0.0,0.0
+2026,Base FNO Initializer,5,34,2009.6724853515625,0.0,0.0
+2026,Gradient residual refinement,5,34,2014.1644287109375,0.0,0.0
+2026,PINN-style refinement,5,34,1989.58837890625,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,34,1865.86962890625,0.0,0.0
+2026,TD3 from scratch,5,34,3299.299560546875,0.0,0.0
+2026,TD3+BC without physics regularization,5,34,3308.597412109375,0.0,0.0
+2026,RL Neural Operator Solver,5,34,1865.86962890625,0.0,0.0
+2026,Base FNO Initializer,5,35,549.4725952148438,0.0,0.0
+2026,Gradient residual refinement,5,35,604.4708862304688,0.0,0.0
+2026,PINN-style refinement,5,35,538.7015380859375,0.0,0.0
+2026,Supervised Neural Operator Corrector,5,35,564.080078125,0.0,0.0
+2026,TD3 from scratch,5,35,1895.908203125,0.0,0.0
+2026,TD3+BC without physics regularization,5,35,1826.2701416015625,0.0,0.0
+2026,RL Neural Operator Solver,5,35,564.080078125,0.0,0.0
+2026,Base FNO Initializer,10,0,49.3974494934082,0.0,0.0
+2026,Gradient residual refinement,10,0,179.66421508789062,0.0,0.0
+2026,PINN-style refinement,10,0,45.26352310180664,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,0,167.74366760253906,0.0,0.0
+2026,TD3 from scratch,10,0,4092.67578125,0.0,0.0
+2026,TD3+BC without physics regularization,10,0,3548.833740234375,0.0,0.0
+2026,RL Neural Operator Solver,10,0,167.74366760253906,0.0,0.0
+2026,Base FNO Initializer,10,1,3217.341796875,0.0,0.17247915267944336
+2026,Gradient residual refinement,10,1,3142.03369140625,0.0,0.17247915267944336
+2026,PINN-style refinement,10,1,3175.40234375,0.0,0.17247915267944336
+2026,Supervised Neural Operator Corrector,10,1,2982.5390625,0.0,0.17247915267944336
+2026,TD3 from scratch,10,1,7739.91748046875,0.0,0.17247915267944336
+2026,TD3+BC without physics regularization,10,1,7618.4873046875,0.0,0.17247915267944336
+2026,RL Neural Operator Solver,10,1,2982.5390625,0.0,0.17247915267944336
+2026,Base FNO Initializer,10,2,2212.841552734375,0.0,0.0
+2026,Gradient residual refinement,10,2,2190.5869140625,0.0,0.0
+2026,PINN-style refinement,10,2,2174.542236328125,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,2,2001.10009765625,0.0,0.0
+2026,TD3 from scratch,10,2,7782.287109375,0.0,0.0
+2026,TD3+BC without physics regularization,10,2,5981.607421875,0.0,0.0
+2026,RL Neural Operator Solver,10,2,2001.10009765625,0.0,0.0
+2026,Base FNO Initializer,10,3,251.32000732421875,0.0,0.0
+2026,Gradient residual refinement,10,3,390.255615234375,0.0,0.0
+2026,PINN-style refinement,10,3,240.14108276367188,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,3,348.2176818847656,0.0,0.0
+2026,TD3 from scratch,10,3,5999.9580078125,0.0,0.0
+2026,TD3+BC without physics regularization,10,3,3820.677001953125,0.0,0.0
+2026,RL Neural Operator Solver,10,3,348.2176818847656,0.0,0.0
+2026,Base FNO Initializer,10,4,1518.27685546875,0.0,0.0
+2026,Gradient residual refinement,10,4,1550.9599609375,0.0,0.0
+2026,PINN-style refinement,10,4,1485.923095703125,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,4,1372.7940673828125,0.0,0.0
+2026,TD3 from scratch,10,4,6876.2509765625,0.0,0.0
+2026,TD3+BC without physics regularization,10,4,5285.79736328125,0.0,0.0
+2026,RL Neural Operator Solver,10,4,1372.7940673828125,0.0,0.0
+2026,Base FNO Initializer,10,5,753.5623779296875,0.0,0.0
+2026,Gradient residual refinement,10,5,837.1964111328125,0.0,0.0
+2026,PINN-style refinement,10,5,731.8409423828125,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,5,740.0582885742188,0.0,0.0
+2026,TD3 from scratch,10,5,6548.25,0.0,0.0
+2026,TD3+BC without physics regularization,10,5,4355.482421875,0.0,0.0
+2026,RL Neural Operator Solver,10,5,740.0582885742188,0.0,0.0
+2026,Base FNO Initializer,10,6,904.5723876953125,0.0,0.0
+2026,Gradient residual refinement,10,6,973.6605834960938,0.0,0.0
+2026,PINN-style refinement,10,6,881.2921752929688,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,6,856.9464721679688,0.0,0.0
+2026,TD3 from scratch,10,6,6551.42236328125,0.0,0.0
+2026,TD3+BC without physics regularization,10,6,4630.53759765625,0.0,0.0
+2026,RL Neural Operator Solver,10,6,856.9464721679688,0.0,0.0
+2026,Base FNO Initializer,10,7,153.7891387939453,0.0,0.0
+2026,Gradient residual refinement,10,7,284.5022888183594,0.0,0.0
+2026,PINN-style refinement,10,7,145.4304962158203,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,7,257.3830261230469,0.0,0.0
+2026,TD3 from scratch,10,7,5368.48876953125,0.0,0.0
+2026,TD3+BC without physics regularization,10,7,3726.126708984375,0.0,0.0
+2026,RL Neural Operator Solver,10,7,257.3830261230469,0.0,0.0
+2026,Base FNO Initializer,10,8,1205.5423583984375,0.0,0.0
+2026,Gradient residual refinement,10,8,1262.384033203125,0.0,0.0
+2026,PINN-style refinement,10,8,1178.25244140625,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,8,1104.13134765625,0.0,0.0
+2026,TD3 from scratch,10,8,6729.23193359375,0.0,0.0
+2026,TD3+BC without physics regularization,10,8,4951.36669921875,0.0,0.0
+2026,RL Neural Operator Solver,10,8,1104.13134765625,0.0,0.0
+2026,Base FNO Initializer,10,9,440.1627197265625,0.0,0.0
+2026,Gradient residual refinement,10,9,556.4948120117188,0.0,0.0
+2026,PINN-style refinement,10,9,423.93572998046875,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,9,497.1999816894531,0.0,0.0
+2026,TD3 from scratch,10,9,6481.638671875,0.0,0.0
+2026,TD3+BC without physics regularization,10,9,4085.60107421875,0.0,0.0
+2026,RL Neural Operator Solver,10,9,497.1999816894531,0.0,0.0
+2026,Base FNO Initializer,10,10,991.6483154296875,0.0,0.0
+2026,Gradient residual refinement,10,10,1057.27587890625,0.0,0.0
+2026,PINN-style refinement,10,10,967.4273071289062,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,10,929.8820190429688,0.0,0.0
+2026,TD3 from scratch,10,10,6614.96875,0.0,0.0
+2026,TD3+BC without physics regularization,10,10,4767.431640625,0.0,0.0
+2026,RL Neural Operator Solver,10,10,929.8820190429688,0.0,0.0
+2026,Base FNO Initializer,10,11,2669.5693359375,0.0,0.010925320908427238
+2026,Gradient residual refinement,10,11,2615.356201171875,0.0,0.010925320908427238
+2026,PINN-style refinement,10,11,2629.287353515625,0.0,0.010925320908427238
+2026,Supervised Neural Operator Corrector,10,11,2441.488037109375,0.0,0.010925320908427238
+2026,TD3 from scratch,10,11,7413.77490234375,0.0,0.010925320908427238
+2026,TD3+BC without physics regularization,10,11,6639.2724609375,0.0,0.010925320908427238
+2026,RL Neural Operator Solver,10,11,2441.488037109375,0.0,0.010925320908427238
+2026,Base FNO Initializer,10,12,409.5272521972656,0.0,0.0
+2026,Gradient residual refinement,10,12,526.6648559570312,0.0,0.0
+2026,PINN-style refinement,10,12,394.0982666015625,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,12,470.4393005371094,0.0,0.0
+2026,TD3 from scratch,10,12,6400.03369140625,0.0,0.0
+2026,TD3+BC without physics regularization,10,12,4051.969970703125,0.0,0.0
+2026,RL Neural Operator Solver,10,12,470.4393005371094,0.0,0.0
+2026,Base FNO Initializer,10,13,2186.3564453125,0.0,0.0
+2026,Gradient residual refinement,10,13,2161.55615234375,0.0,0.0
+2026,PINN-style refinement,10,13,2148.173583984375,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,13,1976.2642822265625,0.0,0.0
+2026,TD3 from scratch,10,13,7734.1884765625,0.0,0.0
+2026,TD3+BC without physics regularization,10,13,5955.52001953125,0.0,0.0
+2026,RL Neural Operator Solver,10,13,1976.2642822265625,0.0,0.0
+2026,Base FNO Initializer,10,14,471.0674743652344,0.0,0.0
+2026,Gradient residual refinement,10,14,582.428955078125,0.0,0.0
+2026,PINN-style refinement,10,14,454.1199035644531,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,14,516.3818359375,0.0,0.0
+2026,TD3 from scratch,10,14,6519.0810546875,0.0,0.0
+2026,TD3+BC without physics regularization,10,14,4119.76416015625,0.0,0.0
+2026,RL Neural Operator Solver,10,14,516.3818359375,0.0,0.0
+2026,Base FNO Initializer,10,15,2160.02197265625,0.0,0.0
+2026,Gradient residual refinement,10,15,2133.842041015625,0.0,0.0
+2026,PINN-style refinement,10,15,2122.0419921875,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,15,1951.794921875,0.0,0.0
+2026,TD3 from scratch,10,15,7707.6435546875,0.0,0.0
+2026,TD3+BC without physics regularization,10,15,5928.83837890625,0.0,0.0
+2026,RL Neural Operator Solver,10,15,1951.794921875,0.0,0.0
+2026,Base FNO Initializer,10,16,32.60041809082031,0.0,0.0
+2026,Gradient residual refinement,10,16,166.11265563964844,0.0,0.0
+2026,PINN-style refinement,10,16,29.415449142456055,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,16,154.7447052001953,0.0,0.0
+2026,TD3 from scratch,10,16,3642.70263671875,0.0,0.0
+2026,TD3+BC without physics regularization,10,16,3503.1767578125,0.0,0.0
+2026,RL Neural Operator Solver,10,16,154.7447052001953,0.0,0.0
+2026,Base FNO Initializer,10,17,2551.693603515625,0.0,0.002559700980782509
+2026,Gradient residual refinement,10,17,2502.193115234375,0.0,0.002559700980782509
+2026,PINN-style refinement,10,17,2511.810791015625,0.0,0.002559700980782509
+2026,Supervised Neural Operator Corrector,10,17,2324.4833984375,0.0,0.002559700980782509
+2026,TD3 from scratch,10,17,7811.52001953125,0.0,0.002559700980782509
+2026,TD3+BC without physics regularization,10,17,6426.33251953125,0.0,0.002559700980782509
+2026,RL Neural Operator Solver,10,17,2324.4833984375,0.0,0.002559700980782509
+2026,Base FNO Initializer,10,18,9.142180442810059,0.0,0.0
+2026,Gradient residual refinement,10,18,154.87985229492188,0.0,0.0
+2026,PINN-style refinement,10,18,6.8758697509765625,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,18,137.67279052734375,0.0,0.0
+2026,TD3 from scratch,10,18,4394.20947265625,0.0,0.0
+2026,TD3+BC without physics regularization,10,18,3427.490234375,0.0,0.0
+2026,RL Neural Operator Solver,10,18,137.67279052734375,0.0,0.0
+2026,Base FNO Initializer,10,19,306.40625,0.0,0.0
+2026,Gradient residual refinement,10,19,436.17279052734375,0.0,0.0
+2026,PINN-style refinement,10,19,293.68505859375,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,19,390.6676025390625,0.0,0.0
+2026,TD3 from scratch,10,19,6081.76220703125,0.0,0.0
+2026,TD3+BC without physics regularization,10,19,3896.966796875,0.0,0.0
+2026,RL Neural Operator Solver,10,19,390.6676025390625,0.0,0.0
+2026,Base FNO Initializer,10,20,379.35107421875,0.0,0.0
+2026,Gradient residual refinement,10,20,502.02789306640625,0.0,0.0
+2026,PINN-style refinement,10,20,364.7006530761719,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,20,447.4481201171875,0.0,0.0
+2026,TD3 from scratch,10,20,6299.4443359375,0.0,0.0
+2026,TD3+BC without physics regularization,10,20,4008.735595703125,0.0,0.0
+2026,RL Neural Operator Solver,10,20,447.4481201171875,0.0,0.0
+2026,Base FNO Initializer,10,21,829.941162109375,0.0,0.0
+2026,Gradient residual refinement,10,21,911.0726318359375,0.0,0.0
+2026,PINN-style refinement,10,21,807.4841918945312,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,21,798.5662231445312,0.0,0.0
+2026,TD3 from scratch,10,21,6538.0302734375,0.0,0.0
+2026,TD3+BC without physics regularization,10,21,4484.4150390625,0.0,0.0
+2026,RL Neural Operator Solver,10,21,798.5662231445312,0.0,0.0
+2026,Base FNO Initializer,10,22,176.34616088867188,0.0,0.0
+2026,Gradient residual refinement,10,22,306.3846740722656,0.0,0.0
+2026,PINN-style refinement,10,22,167.30191040039062,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,22,277.9743957519531,0.0,0.0
+2026,TD3 from scratch,10,22,5512.15380859375,0.0,0.0
+2026,TD3+BC without physics regularization,10,22,3744.754638671875,0.0,0.0
+2026,RL Neural Operator Solver,10,22,277.9743957519531,0.0,0.0
+2026,Base FNO Initializer,10,23,2294.974853515625,0.0,0.0
+2026,Gradient residual refinement,10,23,2264.82470703125,0.0,0.0
+2026,PINN-style refinement,10,23,2256.229248046875,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,23,2077.941162109375,0.0,0.0
+2026,TD3 from scratch,10,23,7865.9609375,0.0,0.0
+2026,TD3+BC without physics regularization,10,23,6064.87255859375,0.0,0.0
+2026,RL Neural Operator Solver,10,23,2077.941162109375,0.0,0.0
+2026,Base FNO Initializer,10,24,292.3182067871094,0.0,0.0
+2026,Gradient residual refinement,10,24,424.9804992675781,0.0,0.0
+2026,PINN-style refinement,10,24,279.98095703125,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,24,381.5299072265625,0.0,0.0
+2026,TD3 from scratch,10,24,6114.31884765625,0.0,0.0
+2026,TD3+BC without physics regularization,10,24,3878.108154296875,0.0,0.0
+2026,RL Neural Operator Solver,10,24,381.5299072265625,0.0,0.0
+2026,Base FNO Initializer,10,25,628.3527221679688,0.0,0.0
+2026,Gradient residual refinement,10,25,724.55029296875,0.0,0.0
+2026,PINN-style refinement,10,25,608.2973022460938,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,25,643.3890380859375,0.0,0.0
+2026,TD3 from scratch,10,25,6581.73681640625,0.0,0.0
+2026,TD3+BC without physics regularization,10,25,4230.9228515625,0.0,0.0
+2026,RL Neural Operator Solver,10,25,643.3890380859375,0.0,0.0
+2026,Base FNO Initializer,10,26,1234.501953125,0.0,0.0
+2026,Gradient residual refinement,10,26,1282.4779052734375,0.0,0.0
+2026,PINN-style refinement,10,26,1206.696044921875,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,26,1129.081298828125,0.0,0.0
+2026,TD3 from scratch,10,26,6752.18115234375,0.0,0.0
+2026,TD3+BC without physics regularization,10,26,4976.5771484375,0.0,0.0
+2026,RL Neural Operator Solver,10,26,1129.081298828125,0.0,0.0
+2026,Base FNO Initializer,10,27,424.79248046875,0.0,0.0
+2026,Gradient residual refinement,10,27,544.964599609375,0.0,0.0
+2026,PINN-style refinement,10,27,408.9987487792969,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,27,478.4278259277344,0.0,0.0
+2026,TD3 from scratch,10,27,6434.421875,0.0,0.0
+2026,TD3+BC without physics regularization,10,27,4069.204345703125,0.0,0.0
+2026,RL Neural Operator Solver,10,27,478.4278259277344,0.0,0.0
+2026,Base FNO Initializer,10,28,502.25244140625,0.0,0.0
+2026,Gradient residual refinement,10,28,617.6820068359375,0.0,0.0
+2026,PINN-style refinement,10,28,484.60003662109375,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,28,543.029541015625,0.0,0.0
+2026,TD3 from scratch,10,28,6551.779296875,0.0,0.0
+2026,TD3+BC without physics regularization,10,28,4149.35546875,0.0,0.0
+2026,RL Neural Operator Solver,10,28,543.029541015625,0.0,0.0
+2026,Base FNO Initializer,10,29,1764.4405517578125,0.0,0.0
+2026,Gradient residual refinement,10,29,1775.8568115234375,0.0,0.0
+2026,PINN-style refinement,10,29,1729.3504638671875,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,29,1590.433837890625,0.0,0.0
+2026,TD3 from scratch,10,29,7005.982421875,0.0,0.0
+2026,TD3+BC without physics regularization,10,29,5532.06005859375,0.0,0.0
+2026,RL Neural Operator Solver,10,29,1590.433837890625,0.0,0.0
+2026,Base FNO Initializer,10,30,2974.670166015625,0.0,0.07487307488918304
+2026,Gradient residual refinement,10,30,2908.451171875,0.0,0.07487307488918304
+2026,PINN-style refinement,10,30,2933.403076171875,0.0,0.07487307488918304
+2026,Supervised Neural Operator Corrector,10,30,2746.944091796875,0.0,0.07487307488918304
+2026,TD3 from scratch,10,30,7762.48974609375,0.0,0.07487307488918304
+2026,TD3+BC without physics regularization,10,30,7179.7041015625,0.0,0.07487307488918304
+2026,RL Neural Operator Solver,10,30,2746.944091796875,0.0,0.07487307488918304
+2026,Base FNO Initializer,10,31,1020.2290649414062,0.0,0.0
+2026,Gradient residual refinement,10,31,1078.0677490234375,0.0,0.0
+2026,PINN-style refinement,10,31,995.6405029296875,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,31,949.5036010742188,0.0,0.0
+2026,TD3 from scratch,10,31,6622.87109375,0.0,0.0
+2026,TD3+BC without physics regularization,10,31,4802.93359375,0.0,0.0
+2026,RL Neural Operator Solver,10,31,949.5036010742188,0.0,0.0
+2026,Base FNO Initializer,10,32,784.4037475585938,0.0,0.0
+2026,Gradient residual refinement,10,32,870.4102783203125,0.0,0.0
+2026,PINN-style refinement,10,32,762.364990234375,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,32,763.0399169921875,0.0,0.0
+2026,TD3 from scratch,10,32,6548.42626953125,0.0,0.0
+2026,TD3+BC without physics regularization,10,32,4398.52783203125,0.0,0.0
+2026,RL Neural Operator Solver,10,32,763.0399169921875,0.0,0.0
+2026,Base FNO Initializer,10,33,394.347412109375,0.0,0.0
+2026,Gradient residual refinement,10,33,516.288330078125,0.0,0.0
+2026,PINN-style refinement,10,33,379.318359375,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,33,455.84283447265625,0.0,0.0
+2026,TD3 from scratch,10,33,6340.84619140625,0.0,0.0
+2026,TD3+BC without physics regularization,10,33,4030.57421875,0.0,0.0
+2026,RL Neural Operator Solver,10,33,455.84283447265625,0.0,0.0
+2026,Base FNO Initializer,10,34,2009.6724853515625,0.0,0.0
+2026,Gradient residual refinement,10,34,1989.126708984375,0.0,0.0
+2026,PINN-style refinement,10,34,1972.6378173828125,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,34,1812.8238525390625,0.0,0.0
+2026,TD3 from scratch,10,34,7446.9384765625,0.0,0.0
+2026,TD3+BC without physics regularization,10,34,5775.6337890625,0.0,0.0
+2026,RL Neural Operator Solver,10,34,1812.8238525390625,0.0,0.0
+2026,Base FNO Initializer,10,35,549.4725952148438,0.0,0.0
+2026,Gradient residual refinement,10,35,652.8767700195312,0.0,0.0
+2026,PINN-style refinement,10,35,530.7772827148438,0.0,0.0
+2026,Supervised Neural Operator Corrector,10,35,579.9185180664062,0.0,0.0
+2026,TD3 from scratch,10,35,6576.5322265625,0.0,0.0
+2026,TD3+BC without physics regularization,10,35,4184.638671875,0.0,0.0
+2026,RL Neural Operator Solver,10,35,579.9185180664062,0.0,0.0

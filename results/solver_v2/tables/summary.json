@@ -1,0 +1,18 @@
+{
+  "mode": "paper",
+  "device": "cuda",
+  "seeds": [
+    42,
+    123,
+    2026
+  ],
+  "tables": [
+    "convergence.csv",
+    "main_results.csv",
+    "per_case_results.csv",
+    "physics_metrics.csv",
+    "residual_accuracy_quadrants.csv",
+    "seed_results.csv",
+    "training_summary.csv"
+  ]
+}
