@@ -57,6 +57,10 @@ solver_v2:
   td3_scratch_epochs: 50
   autoencoder_epochs: 70
   critic_mc_epochs: 70
+  lambda_decoder_wrong: 0.5
+  lambda_decoder_sens: 0.2
+  decoder_wrong_margin: 0.05
+  decoder_sensitivity_floor: 0.03
   online_cycles: 2
   online_rollout_cases: 24
   horizon: 5

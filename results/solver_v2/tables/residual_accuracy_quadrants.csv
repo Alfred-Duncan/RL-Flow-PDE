@@ -7,11 +7,11 @@ gt_directed,Residual better / Accuracy better,1382,0.7677777777777778
 gt_directed,Residual better / Accuracy worse,0,0.0
 gt_directed,Residual worse / Accuracy better,418,0.23222222222222222
 gt_directed,Both worse,0,0.0
-online_actor_cycle0,Residual better / Accuracy better,255,0.7083333333333334
-online_actor_cycle0,Residual better / Accuracy worse,1,0.002777777777777778
-online_actor_cycle0,Residual worse / Accuracy better,84,0.23333333333333334
-online_actor_cycle0,Both worse,20,0.05555555555555555
-online_actor_cycle1,Residual better / Accuracy better,256,0.7111111111111111
-online_actor_cycle1,Residual better / Accuracy worse,1,0.002777777777777778
-online_actor_cycle1,Residual worse / Accuracy better,83,0.23055555555555557
-online_actor_cycle1,Both worse,20,0.05555555555555555
+online_actor_cycle0,Residual better / Accuracy better,274,0.7611111111111111
+online_actor_cycle0,Residual better / Accuracy worse,3,0.008333333333333333
+online_actor_cycle0,Residual worse / Accuracy better,76,0.2111111111111111
+online_actor_cycle0,Both worse,7,0.019444444444444445
+online_actor_cycle1,Residual better / Accuracy better,270,0.75
+online_actor_cycle1,Residual better / Accuracy worse,7,0.019444444444444445
+online_actor_cycle1,Residual worse / Accuracy better,79,0.21944444444444444
+online_actor_cycle1,Both worse,4,0.011111111111111112

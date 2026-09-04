@@ -8,11 +8,15 @@
   ],
   "tables": [
     "convergence.csv",
+    "critic_long_horizon_ranking.csv",
     "critic_ranking.csv",
+    "latent_controllability.csv",
     "main_results.csv",
     "per_case_results.csv",
     "physics_metrics.csv",
+    "policy_shift.csv",
     "residual_accuracy_quadrants.csv",
+    "rl_contribution.csv",
     "seed_results.csv",
     "training_summary.csv"
   ]

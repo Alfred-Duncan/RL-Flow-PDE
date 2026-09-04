@@ -48,7 +48,7 @@ class ReplayDataset(Dataset):
         return {
             "state_fields": tr.state_fields,
             "state_scalars": tr.state_scalars,
-            "action": tr.action,
+            "action": tr.action.reshape(-1),
             "delta_u": tr.delta_u,
             "reward": torch.tensor(tr.reward, dtype=torch.float32),
             "mc_return": torch.tensor(tr.mc_return, dtype=torch.float32),

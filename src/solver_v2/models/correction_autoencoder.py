@@ -86,17 +86,31 @@ class CorrectionOperatorDecoder(nn.Module):
         depth: int = 3,
     ):
         super().__init__()
+        del in_channels
         self.latent_dim = int(latent_dim)
-        self.lift = nn.Conv2d(in_channels + latent_dim + 2, width, 1)
+        self.width = int(width)
+        # Only residual/source/coordinates enter the shortcut path. The main field
+        # representation is seeded and modulated by z so z cannot be ignored.
+        self.state_lift = nn.Conv2d(2 + 2, width, 1)
+        self.z_seed = nn.Sequential(nn.Linear(latent_dim, width), nn.GELU(), nn.Linear(width, width))
+        self.z_film = nn.Sequential(nn.Linear(latent_dim, 2 * width), nn.GELU(), nn.Linear(2 * width, 2 * width))
         self.film = ScalarFiLM(scalar_dim, width)
         self.blocks = nn.ModuleList([FNOBlock(width, modes, modes) for _ in range(depth)])
         self.proj = nn.Sequential(nn.Conv2d(width, width, 1), nn.GELU(), nn.Conv2d(width, 1, 1))
 
     def forward(self, fields: torch.Tensor, scalars: torch.Tensor, z: torch.Tensor, stats: dict, temperature: float = 1.0) -> torch.Tensor:
         b, _, nx, nt = fields.shape
-        z_field = z[:, :, None, None].expand(b, self.latent_dim, nx, nt)
-        x = torch.cat([fields, z_field, coordinate_grid(b, nx, nt, fields.device)], dim=1)
-        h = self.film(self.lift(x), scalars)
+        if z.ndim > 2:
+            z = z.view(z.shape[0], -1)
+        if z.ndim == 1:
+            z = z.unsqueeze(0)
+        state_cond = torch.cat([fields[:, 1:3], coordinate_grid(b, nx, nt, fields.device)], dim=1)
+        state_h = self.state_lift(state_cond)
+        z_h = self.z_seed(z).view(b, self.width, 1, 1).expand(b, self.width, nx, nt)
+        gamma, beta = self.z_film(z).chunk(2, dim=1)
+        h = 0.25 * state_h + z_h
+        h = h * (1.0 + gamma[:, :, None, None]) + beta[:, :, None, None]
+        h = self.film(h, scalars)
         for block in self.blocks:
             h = block(h)
         return bounded_delta(self.proj(h).squeeze(1), stats, temperature)
