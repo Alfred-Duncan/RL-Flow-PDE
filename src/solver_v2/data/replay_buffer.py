@@ -7,14 +7,15 @@ from torch.utils.data import Dataset
 
 
 @dataclass
-class SolverTransition:
+class RawCorrectionTransition:
     case_id: int
     episode_id: int
     step_idx: int
     split: str
+    gt: torch.Tensor
     state_fields: torch.Tensor
     state_scalars: torch.Tensor
-    action: torch.Tensor
+    delta_u: torch.Tensor
     reward: float
     next_fields: torch.Tensor
     next_scalars: torch.Tensor
@@ -27,6 +28,12 @@ class SolverTransition:
     physics_after: float
     action_norm: float
     source_policy: str
+
+
+@dataclass
+class SolverTransition(RawCorrectionTransition):
+    action: torch.Tensor
+    mc_return: float = 0.0
 
 
 class ReplayDataset(Dataset):
@@ -42,7 +49,9 @@ class ReplayDataset(Dataset):
             "state_fields": tr.state_fields,
             "state_scalars": tr.state_scalars,
             "action": tr.action,
+            "delta_u": tr.delta_u,
             "reward": torch.tensor(tr.reward, dtype=torch.float32),
+            "mc_return": torch.tensor(tr.mc_return, dtype=torch.float32),
             "next_fields": tr.next_fields,
             "next_scalars": tr.next_scalars,
             "done": torch.tensor(tr.done, dtype=torch.float32),
@@ -61,4 +70,3 @@ class ReplayBuffer:
 
     def dataset(self, split: str = "train") -> ReplayDataset:
         return ReplayDataset(self.by_split(split))
-

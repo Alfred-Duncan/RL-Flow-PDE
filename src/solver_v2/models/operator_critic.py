@@ -2,36 +2,50 @@ from __future__ import annotations
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
-from src.solver_v2.models.operator_blocks import FNOBlock, coordinate_grid
+from src.solver_v2.models.correction_autoencoder import NeuralOperatorStateEncoder
 
 
 class OperatorQ(nn.Module):
-    def __init__(self, in_channels: int = 4, scalar_dim: int = 4, width: int = 32, modes: int = 8, depth: int = 2):
+    def __init__(
+        self,
+        in_channels: int = 5,
+        scalar_dim: int = 4,
+        width: int = 32,
+        modes: int = 8,
+        depth: int = 2,
+        latent_dim: int = 32,
+        state_dim: int = 96,
+    ):
         super().__init__()
-        self.lift = nn.Conv2d(in_channels + 2, width, 1)
-        self.blocks = nn.ModuleList([FNOBlock(width, modes, modes) for _ in range(depth)])
-        self.pool = nn.AdaptiveAvgPool2d(1)
-        self.head = nn.Sequential(nn.Linear(width + scalar_dim, width), nn.GELU(), nn.Linear(width, width), nn.GELU(), nn.Linear(width, 1))
+        self.encoder = NeuralOperatorStateEncoder(in_channels, scalar_dim, width, modes, depth, state_dim)
+        self.head = nn.Sequential(
+            nn.Linear(state_dim + latent_dim, width),
+            nn.GELU(),
+            nn.LayerNorm(width),
+            nn.Linear(width, width),
+            nn.GELU(),
+            nn.Linear(width, 1),
+        )
 
     def forward(self, fields: torch.Tensor, scalars: torch.Tensor, action: torch.Tensor) -> torch.Tensor:
-        # fields: [u_t, residual_t, source, ic_field, bc_field]; critic uses [u, residual, source, action].
-        x = torch.stack([fields[:, 0], fields[:, 1], fields[:, 2], action], dim=1)
-        b, _, nx, nt = x.shape
-        x = torch.cat([x, coordinate_grid(b, nx, nt, x.device)], dim=1)
-        h = self.lift(x)
-        for block in self.blocks:
-            h = block(h)
-        pooled = self.pool(h).flatten(1)
-        return self.head(torch.cat([pooled, scalars], dim=1)).squeeze(-1)
+        return self.head(torch.cat([self.encoder(fields, scalars), action], dim=1)).squeeze(-1)
 
 
 class TwinOperatorCritic(nn.Module):
-    def __init__(self, in_channels: int = 4, scalar_dim: int = 4, width: int = 32, modes: int = 8, depth: int = 2):
+    def __init__(
+        self,
+        in_channels: int = 5,
+        scalar_dim: int = 4,
+        width: int = 32,
+        modes: int = 8,
+        depth: int = 2,
+        latent_dim: int = 32,
+        state_dim: int = 96,
+    ):
         super().__init__()
-        self.q1 = OperatorQ(in_channels, scalar_dim, width, modes, depth)
-        self.q2 = OperatorQ(in_channels, scalar_dim, width, modes, depth)
+        self.q1 = OperatorQ(in_channels, scalar_dim, width, modes, depth, latent_dim, state_dim)
+        self.q2 = OperatorQ(in_channels, scalar_dim, width, modes, depth, latent_dim, state_dim)
 
     def forward(self, fields: torch.Tensor, scalars: torch.Tensor, action: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
         return self.q1(fields, scalars, action), self.q2(fields, scalars, action)

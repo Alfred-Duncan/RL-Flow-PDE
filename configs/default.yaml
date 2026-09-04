@@ -55,12 +55,16 @@ solver_v2:
   pretrain_epochs: 60
   td3_epochs: 50
   td3_scratch_epochs: 50
+  autoencoder_epochs: 70
+  critic_mc_epochs: 70
   online_cycles: 2
   online_rollout_cases: 24
   horizon: 5
   eval_steps: [1, 2, 5, 10]
   width: 32
   modes: 8
+  latent_dim: 32
+  state_dim: 96
   actor_depth: 3
   critic_depth: 2
   temperature: 1.0

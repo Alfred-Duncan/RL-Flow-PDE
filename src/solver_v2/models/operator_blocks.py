@@ -13,15 +13,17 @@ class SpectralConv2d(nn.Module):
         self.modes1 = int(modes1)
         self.modes2 = int(modes2)
         scale = 1.0 / max(1, in_channels * out_channels)
-        self.weight = nn.Parameter(scale * torch.randn(in_channels, out_channels, modes1, modes2, dtype=torch.cfloat))
+        self.weights_pos = nn.Parameter(scale * torch.randn(in_channels, out_channels, modes1, modes2, dtype=torch.cfloat))
+        self.weights_neg = nn.Parameter(scale * torch.randn(in_channels, out_channels, modes1, modes2, dtype=torch.cfloat))
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         b, _, h, w = x.shape
         x_ft = torch.fft.rfft2(x)
         out_ft = torch.zeros(b, self.out_channels, h, w // 2 + 1, dtype=torch.cfloat, device=x.device)
-        m1 = min(self.modes1, h)
+        m1 = min(self.modes1, max(1, h // 2))
         m2 = min(self.modes2, w // 2 + 1)
-        out_ft[:, :, :m1, :m2] = torch.einsum("bixy,ioxy->boxy", x_ft[:, :, :m1, :m2], self.weight[:, :, :m1, :m2])
+        out_ft[:, :, :m1, :m2] = torch.einsum("bixy,ioxy->boxy", x_ft[:, :, :m1, :m2], self.weights_pos[:, :, :m1, :m2])
+        out_ft[:, :, -m1:, :m2] = torch.einsum("bixy,ioxy->boxy", x_ft[:, :, -m1:, :m2], self.weights_neg[:, :, :m1, :m2])
         return torch.fft.irfft2(out_ft, s=(h, w)).real
 
 
@@ -50,4 +52,3 @@ class ScalarFiLM(nn.Module):
     def forward(self, x: torch.Tensor, scalars: torch.Tensor) -> torch.Tensor:
         gamma, beta = self.net(scalars).chunk(2, dim=1)
         return x * (1.0 + 0.1 * gamma[:, :, None, None]) + 0.1 * beta[:, :, None, None]
-

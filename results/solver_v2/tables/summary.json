@@ -8,6 +8,7 @@
   ],
   "tables": [
     "convergence.csv",
+    "critic_ranking.csv",
     "main_results.csv",
     "per_case_results.csv",
     "physics_metrics.csv",
