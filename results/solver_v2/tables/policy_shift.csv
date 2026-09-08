@@ -1,244 +1,487 @@
-Seed,state,latent_policy_shift,correction_policy_shift
-42,0,0.0,0.0
-42,1,0.0,0.0
-42,2,0.0,0.0
-42,3,0.0,0.0
-42,4,0.0,0.0
-42,5,0.0,0.0
-42,6,0.0,0.0
-42,7,0.0,0.0
-42,8,0.0,0.0
-42,9,0.0,0.0
-42,10,0.0,0.0
-42,11,0.0,0.0
-42,12,0.0,0.0
-42,13,0.0,0.0
-42,14,0.0,0.0
-42,15,0.0,0.0
-42,16,0.0,0.0
-42,17,0.0,0.0
-42,18,0.0,0.0
-42,19,0.0,0.0
-42,20,0.0,0.0
-42,21,0.0,0.0
-42,22,0.0,0.0
-42,23,0.0,0.0
-42,24,0.0,0.0
-42,25,0.0,0.0
-42,26,0.0,0.0
-42,27,0.0,0.0
-42,28,0.0,0.0
-42,29,0.0,0.0
-42,30,0.0,0.0
-42,31,0.0,0.0
-42,32,0.0,0.0
-42,33,0.0,0.0
-42,34,0.0,0.0
-42,35,0.0,0.0
-42,36,0.0,0.0
-42,37,0.0,0.0
-42,38,0.0,0.0
-42,39,0.0,0.0
-42,40,0.0,0.0
-42,41,0.0,0.0
-42,42,0.0,0.0
-42,43,0.0,0.0
-42,44,0.0,0.0
-42,45,0.0,0.0
-42,46,0.0,0.0
-42,47,0.0,0.0
-42,48,0.0,0.0
-42,49,0.0,0.0
-42,50,0.0,0.0
-42,51,0.0,0.0
-42,52,0.0,0.0
-42,53,0.0,0.0
-42,54,0.0,0.0
-42,55,0.0,0.0
-42,56,0.0,0.0
-42,57,0.0,0.0
-42,58,0.0,0.0
-42,59,0.0,0.0
-42,60,0.0,0.0
-42,61,0.0,0.0
-42,62,0.0,0.0
-42,63,0.0,0.0
-42,64,0.0,0.0
-42,65,0.0,0.0
-42,66,0.0,0.0
-42,67,0.0,0.0
-42,68,0.0,0.0
-42,69,0.0,0.0
-42,70,0.0,0.0
-42,71,0.0,0.0
-42,72,0.0,0.0
-42,73,0.0,0.0
-42,74,0.0,0.0
-42,75,0.0,0.0
-42,76,0.0,0.0
-42,77,0.0,0.0
-42,78,0.0,0.0
-42,79,0.0,0.0
-42,-1,0.0,0.0
-123,0,0.0,0.0
-123,1,0.0,0.0
-123,2,0.0,0.0
-123,3,0.0,0.0
-123,4,0.0,0.0
-123,5,0.0,0.0
-123,6,0.0,0.0
-123,7,0.0,0.0
-123,8,0.0,0.0
-123,9,0.0,0.0
-123,10,0.0,0.0
-123,11,0.0,0.0
-123,12,0.0,0.0
-123,13,0.0,0.0
-123,14,0.0,0.0
-123,15,0.0,0.0
-123,16,0.0,0.0
-123,17,0.0,0.0
-123,18,0.0,0.0
-123,19,0.0,0.0
-123,20,0.0,0.0
-123,21,0.0,0.0
-123,22,0.0,0.0
-123,23,0.0,0.0
-123,24,0.0,0.0
-123,25,0.0,0.0
-123,26,0.0,0.0
-123,27,0.0,0.0
-123,28,0.0,0.0
-123,29,0.0,0.0
-123,30,0.0,0.0
-123,31,0.0,0.0
-123,32,0.0,0.0
-123,33,0.0,0.0
-123,34,0.0,0.0
-123,35,0.0,0.0
-123,36,0.0,0.0
-123,37,0.0,0.0
-123,38,0.0,0.0
-123,39,0.0,0.0
-123,40,0.0,0.0
-123,41,0.0,0.0
-123,42,0.0,0.0
-123,43,0.0,0.0
-123,44,0.0,0.0
-123,45,0.0,0.0
-123,46,0.0,0.0
-123,47,0.0,0.0
-123,48,0.0,0.0
-123,49,0.0,0.0
-123,50,0.0,0.0
-123,51,0.0,0.0
-123,52,0.0,0.0
-123,53,0.0,0.0
-123,54,0.0,0.0
-123,55,0.0,0.0
-123,56,0.0,0.0
-123,57,0.0,0.0
-123,58,0.0,0.0
-123,59,0.0,0.0
-123,60,0.0,0.0
-123,61,0.0,0.0
-123,62,0.0,0.0
-123,63,0.0,0.0
-123,64,0.0,0.0
-123,65,0.0,0.0
-123,66,0.0,0.0
-123,67,0.0,0.0
-123,68,0.0,0.0
-123,69,0.0,0.0
-123,70,0.0,0.0
-123,71,0.0,0.0
-123,72,0.0,0.0
-123,73,0.0,0.0
-123,74,0.0,0.0
-123,75,0.0,0.0
-123,76,0.0,0.0
-123,77,0.0,0.0
-123,78,0.0,0.0
-123,79,0.0,0.0
-123,-1,0.0,0.0
-2026,0,0.0,0.0
-2026,1,0.0,0.0
-2026,2,0.0,0.0
-2026,3,0.0,0.0
-2026,4,0.0,0.0
-2026,5,0.0,0.0
-2026,6,0.0,0.0
-2026,7,0.0,0.0
-2026,8,0.0,0.0
-2026,9,0.0,0.0
-2026,10,0.0,0.0
-2026,11,0.0,0.0
-2026,12,0.0,0.0
-2026,13,0.0,0.0
-2026,14,0.0,0.0
-2026,15,0.0,0.0
-2026,16,0.0,0.0
-2026,17,0.0,0.0
-2026,18,0.0,0.0
-2026,19,0.0,0.0
-2026,20,0.0,0.0
-2026,21,0.0,0.0
-2026,22,0.0,0.0
-2026,23,0.0,0.0
-2026,24,0.0,0.0
-2026,25,0.0,0.0
-2026,26,0.0,0.0
-2026,27,0.0,0.0
-2026,28,0.0,0.0
-2026,29,0.0,0.0
-2026,30,0.0,0.0
-2026,31,0.0,0.0
-2026,32,0.0,0.0
-2026,33,0.0,0.0
-2026,34,0.0,0.0
-2026,35,0.0,0.0
-2026,36,0.0,0.0
-2026,37,0.0,0.0
-2026,38,0.0,0.0
-2026,39,0.0,0.0
-2026,40,0.0,0.0
-2026,41,0.0,0.0
-2026,42,0.0,0.0
-2026,43,0.0,0.0
-2026,44,0.0,0.0
-2026,45,0.0,0.0
-2026,46,0.0,0.0
-2026,47,0.0,0.0
-2026,48,0.0,0.0
-2026,49,0.0,0.0
-2026,50,0.0,0.0
-2026,51,0.0,0.0
-2026,52,0.0,0.0
-2026,53,0.0,0.0
-2026,54,0.0,0.0
-2026,55,0.0,0.0
-2026,56,0.0,0.0
-2026,57,0.0,0.0
-2026,58,0.0,0.0
-2026,59,0.0,0.0
-2026,60,0.0,0.0
-2026,61,0.0,0.0
-2026,62,0.0,0.0
-2026,63,0.0,0.0
-2026,64,0.0,0.0
-2026,65,0.0,0.0
-2026,66,0.0,0.0
-2026,67,0.0,0.0
-2026,68,0.0,0.0
-2026,69,0.0,0.0
-2026,70,0.0,0.0
-2026,71,0.0,0.0
-2026,72,0.0,0.0
-2026,73,0.0,0.0
-2026,74,0.0,0.0
-2026,75,0.0,0.0
-2026,76,0.0,0.0
-2026,77,0.0,0.0
-2026,78,0.0,0.0
-2026,79,0.0,0.0
-2026,-1,0.0,0.0
+Seed,Policy,state,latent_policy_shift,correction_policy_shift
+42,Best Actual RL Policy,0,0.15471401810646057,0.02406350150704384
+42,Best Actual RL Policy,1,0.14616850018501282,0.025115586817264557
+42,Best Actual RL Policy,2,0.1396578699350357,0.025298114866018295
+42,Best Actual RL Policy,3,0.1354789286851883,0.02430398017168045
+42,Best Actual RL Policy,4,0.1344163864850998,0.021945618093013763
+42,Best Actual RL Policy,5,0.15471401810646057,0.02406350150704384
+42,Best Actual RL Policy,6,0.14388789236545563,0.015422864817082882
+42,Best Actual RL Policy,7,0.1372949331998825,0.00889109168201685
+42,Best Actual RL Policy,8,0.13479503989219666,0.014212277717888355
+42,Best Actual RL Policy,9,0.13584889471530914,0.022854788228869438
+42,Best Actual RL Policy,10,0.2800724506378174,0.1255846619606018
+42,Best Actual RL Policy,11,0.26979348063468933,0.12090352922677994
+42,Best Actual RL Policy,12,0.2630506455898285,0.11249961704015732
+42,Best Actual RL Policy,13,0.2609739601612091,0.1017070785164833
+42,Best Actual RL Policy,14,0.26451820135116577,0.08970050513744354
+42,Best Actual RL Policy,15,0.21759344637393951,0.1017741933465004
+42,Best Actual RL Policy,16,0.20633918046951294,0.10043451189994812
+42,Best Actual RL Policy,17,0.19876441359519958,0.09615325927734375
+42,Best Actual RL Policy,18,0.1957821100950241,0.08945177495479584
+42,Best Actual RL Policy,19,0.19832298159599304,0.08119957149028778
+42,Best Actual RL Policy,20,0.168921560049057,0.02156616561114788
+42,Best Actual RL Policy,21,0.16058705747127533,0.023551736027002335
+42,Best Actual RL Policy,22,0.1534559428691864,0.026298144832253456
+42,Best Actual RL Policy,23,0.14801648259162903,0.02967396005988121
+42,Best Actual RL Policy,24,0.144907146692276,0.03344009444117546
+42,Best Actual RL Policy,25,0.168921560049057,0.02156616561114788
+42,Best Actual RL Policy,26,0.16197271645069122,0.035495880991220474
+42,Best Actual RL Policy,27,0.15644022822380066,0.046631284058094025
+42,Best Actual RL Policy,28,0.15310531854629517,0.05041179060935974
+42,Best Actual RL Policy,29,0.15116184949874878,0.058900218456983566
+42,Best Actual RL Policy,30,0.22387896478176117,0.10504376143217087
+42,Best Actual RL Policy,31,0.21254196763038635,0.1033744290471077
+42,Best Actual RL Policy,32,0.20484356582164764,0.09861751645803452
+42,Best Actual RL Policy,33,0.20177476108074188,0.09134577214717865
+42,Best Actual RL Policy,34,0.20425575971603394,0.08253061771392822
+42,Best Actual RL Policy,35,0.3694629371166229,0.12921546399593353
+42,Best Actual RL Policy,36,0.3633508086204529,0.1245366558432579
+42,Best Actual RL Policy,37,0.3613693416118622,0.11703610420227051
+42,Best Actual RL Policy,38,0.3641243577003479,0.10727614164352417
+42,Best Actual RL Policy,39,0.3719269335269928,0.09547221660614014
+42,Best Actual RL Policy,40,0.26503559947013855,0.12164342403411865
+42,Best Actual RL Policy,41,0.25415924191474915,0.11735138297080994
+42,Best Actual RL Policy,42,0.24680081009864807,0.10952331870794296
+42,Best Actual RL Policy,43,0.24408183991909027,0.09924749284982681
+42,Best Actual RL Policy,44,0.24704426527023315,0.08776336908340454
+42,Best Actual RL Policy,45,0.1572117656469345,0.008321136236190796
+42,Best Actual RL Policy,46,0.14878544211387634,0.00873089861124754
+42,Best Actual RL Policy,47,0.1419133096933365,0.008664589375257492
+42,Best Actual RL Policy,48,0.13703082501888275,0.008103880099952221
+42,Best Actual RL Policy,49,0.13486303389072418,0.00752840144559741
+42,Best Actual RL Policy,50,0.1572117656469345,0.008321136236190796
+42,Best Actual RL Policy,51,0.1480029672384262,0.009272722527384758
+42,Best Actual RL Policy,52,0.142525315284729,0.021233676001429558
+42,Best Actual RL Policy,53,0.14024358987808228,0.029838254675269127
+42,Best Actual RL Policy,54,0.1407179832458496,0.039156123995780945
+42,Best Actual RL Policy,55,0.2801775336265564,0.2536320686340332
+42,Best Actual RL Policy,56,0.2706119418144226,0.2573731541633606
+42,Best Actual RL Policy,57,0.26456519961357117,0.25377291440963745
+42,Best Actual RL Policy,58,0.26249557733535767,0.24177759885787964
+42,Best Actual RL Policy,59,0.2645452320575714,0.22067642211914062
+42,Best Actual RL Policy,60,0.2801775336265564,0.2536320686340332
+42,Best Actual RL Policy,61,0.2681252062320709,0.12250217795372009
+42,Best Actual RL Policy,62,0.25736597180366516,0.11808958649635315
+42,Best Actual RL Policy,63,0.2501320242881775,0.11007948964834213
+42,Best Actual RL Policy,64,0.24754199385643005,0.09965559095144272
+42,Best Actual RL Policy,65,0.25061753392219543,0.08806014806032181
+42,Best Actual RL Policy,66,0.17241406440734863,0.06802108883857727
+42,Best Actual RL Policy,67,0.162104070186615,0.06750108301639557
+42,Best Actual RL Policy,68,0.15538451075553894,0.06515106558799744
+42,Best Actual RL Policy,69,0.15270060300827026,0.06155466288328171
+42,Best Actual RL Policy,70,0.15463636815547943,0.05663644149899483
+42,Best Actual RL Policy,71,0.3550601005554199,0.13035283982753754
+42,Best Actual RL Policy,72,0.3484509289264679,0.1239146739244461
+42,Best Actual RL Policy,73,0.3459761142730713,0.11524094641208649
+42,Best Actual RL Policy,74,0.3483203053474426,0.10499769449234009
+42,Best Actual RL Policy,75,0.35574501752853394,0.0930899977684021
+42,Best Actual RL Policy,76,0.22100822627544403,0.023093631491065025
+42,Best Actual RL Policy,77,0.21106679737567902,0.02038971334695816
+42,Best Actual RL Policy,78,0.20254553854465485,0.017425768077373505
+42,Best Actual RL Policy,79,0.19619131088256836,0.014838420785963535
+42,Best Actual RL Policy,-1,0.21500992588698864,0.07867154003470204
+42,Selected Production Policy,0,0.0,0.0
+42,Selected Production Policy,1,0.0,0.0
+42,Selected Production Policy,2,0.0,0.0
+42,Selected Production Policy,3,0.0,0.0
+42,Selected Production Policy,4,0.0,0.0
+42,Selected Production Policy,5,0.0,0.0
+42,Selected Production Policy,6,0.0,0.0
+42,Selected Production Policy,7,0.0,0.0
+42,Selected Production Policy,8,0.0,0.0
+42,Selected Production Policy,9,0.0,0.0
+42,Selected Production Policy,10,0.0,0.0
+42,Selected Production Policy,11,0.0,0.0
+42,Selected Production Policy,12,0.0,0.0
+42,Selected Production Policy,13,0.0,0.0
+42,Selected Production Policy,14,0.0,0.0
+42,Selected Production Policy,15,0.0,0.0
+42,Selected Production Policy,16,0.0,0.0
+42,Selected Production Policy,17,0.0,0.0
+42,Selected Production Policy,18,0.0,0.0
+42,Selected Production Policy,19,0.0,0.0
+42,Selected Production Policy,20,0.0,0.0
+42,Selected Production Policy,21,0.0,0.0
+42,Selected Production Policy,22,0.0,0.0
+42,Selected Production Policy,23,0.0,0.0
+42,Selected Production Policy,24,0.0,0.0
+42,Selected Production Policy,25,0.0,0.0
+42,Selected Production Policy,26,0.0,0.0
+42,Selected Production Policy,27,0.0,0.0
+42,Selected Production Policy,28,0.0,0.0
+42,Selected Production Policy,29,0.0,0.0
+42,Selected Production Policy,30,0.0,0.0
+42,Selected Production Policy,31,0.0,0.0
+42,Selected Production Policy,32,0.0,0.0
+42,Selected Production Policy,33,0.0,0.0
+42,Selected Production Policy,34,0.0,0.0
+42,Selected Production Policy,35,0.0,0.0
+42,Selected Production Policy,36,0.0,0.0
+42,Selected Production Policy,37,0.0,0.0
+42,Selected Production Policy,38,0.0,0.0
+42,Selected Production Policy,39,0.0,0.0
+42,Selected Production Policy,40,0.0,0.0
+42,Selected Production Policy,41,0.0,0.0
+42,Selected Production Policy,42,0.0,0.0
+42,Selected Production Policy,43,0.0,0.0
+42,Selected Production Policy,44,0.0,0.0
+42,Selected Production Policy,45,0.0,0.0
+42,Selected Production Policy,46,0.0,0.0
+42,Selected Production Policy,47,0.0,0.0
+42,Selected Production Policy,48,0.0,0.0
+42,Selected Production Policy,49,0.0,0.0
+42,Selected Production Policy,50,0.0,0.0
+42,Selected Production Policy,51,0.0,0.0
+42,Selected Production Policy,52,0.0,0.0
+42,Selected Production Policy,53,0.0,0.0
+42,Selected Production Policy,54,0.0,0.0
+42,Selected Production Policy,55,0.0,0.0
+42,Selected Production Policy,56,0.0,0.0
+42,Selected Production Policy,57,0.0,0.0
+42,Selected Production Policy,58,0.0,0.0
+42,Selected Production Policy,59,0.0,0.0
+42,Selected Production Policy,60,0.0,0.0
+42,Selected Production Policy,61,0.0,0.0
+42,Selected Production Policy,62,0.0,0.0
+42,Selected Production Policy,63,0.0,0.0
+42,Selected Production Policy,64,0.0,0.0
+42,Selected Production Policy,65,0.0,0.0
+42,Selected Production Policy,66,0.0,0.0
+42,Selected Production Policy,67,0.0,0.0
+42,Selected Production Policy,68,0.0,0.0
+42,Selected Production Policy,69,0.0,0.0
+42,Selected Production Policy,70,0.0,0.0
+42,Selected Production Policy,71,0.0,0.0
+42,Selected Production Policy,72,0.0,0.0
+42,Selected Production Policy,73,0.0,0.0
+42,Selected Production Policy,74,0.0,0.0
+42,Selected Production Policy,75,0.0,0.0
+42,Selected Production Policy,76,0.0,0.0
+42,Selected Production Policy,77,0.0,0.0
+42,Selected Production Policy,78,0.0,0.0
+42,Selected Production Policy,79,0.0,0.0
+42,Selected Production Policy,-1,0.0,0.0
+123,Best Actual RL Policy,0,0.2277170568704605,0.12331017851829529
+123,Best Actual RL Policy,1,0.23172633349895477,0.1317107379436493
+123,Best Actual RL Policy,2,0.23937347531318665,0.13971281051635742
+123,Best Actual RL Policy,3,0.25009843707084656,0.1470443606376648
+123,Best Actual RL Policy,4,0.2633039057254791,0.1535060852766037
+123,Best Actual RL Policy,5,0.2277170568704605,0.12331017851829529
+123,Best Actual RL Policy,6,0.23148731887340546,0.13111788034439087
+123,Best Actual RL Policy,7,0.2384302169084549,0.1396675556898117
+123,Best Actual RL Policy,8,0.24842454493045807,0.14431466162204742
+123,Best Actual RL Policy,9,0.26059287786483765,0.15364770591259003
+123,Best Actual RL Policy,10,0.3701762557029724,0.33855441212654114
+123,Best Actual RL Policy,11,0.37412258982658386,0.34518706798553467
+123,Best Actual RL Policy,12,0.38016656041145325,0.3490511476993561
+123,Best Actual RL Policy,13,0.38800105452537537,0.3506292402744293
+123,Best Actual RL Policy,14,0.3972729742527008,0.350291907787323
+123,Best Actual RL Policy,15,0.3090900480747223,0.37176790833473206
+123,Best Actual RL Policy,16,0.3128609359264374,0.3799673020839691
+123,Best Actual RL Policy,17,0.3191624581813812,0.38603758811950684
+123,Best Actual RL Policy,18,0.3276335895061493,0.39012548327445984
+123,Best Actual RL Policy,19,0.3378674387931824,0.39230799674987793
+123,Best Actual RL Policy,20,0.1947847604751587,0.05305767431855202
+123,Best Actual RL Policy,21,0.19843930006027222,0.0416090190410614
+123,Best Actual RL Policy,22,0.20630016922950745,0.030608056113123894
+123,Best Actual RL Policy,23,0.21769088506698608,0.020204151049256325
+123,Best Actual RL Policy,24,0.23183700442314148,0.010875447653234005
+123,Best Actual RL Policy,25,0.1947847604751587,0.05305767431855202
+123,Best Actual RL Policy,26,0.1980225294828415,0.04357083514332771
+123,Best Actual RL Policy,27,0.20537258684635162,0.03226795047521591
+123,Best Actual RL Policy,28,0.21587061882019043,0.023489845916628838
+123,Best Actual RL Policy,29,0.22938387095928192,0.013202537782490253
+123,Best Actual RL Policy,30,0.3154281675815582,0.37423402070999146
+123,Best Actual RL Policy,31,0.31929585337638855,0.3824470341205597
+123,Best Actual RL Policy,32,0.32562026381492615,0.3883688151836395
+123,Best Actual RL Policy,33,0.334074467420578,0.39228588342666626
+123,Best Actual RL Policy,34,0.34421542286872864,0.39418575167655945
+123,Best Actual RL Policy,35,0.43614062666893005,0.1507304161787033
+123,Best Actual RL Policy,36,0.43768560886383057,0.15157967805862427
+123,Best Actual RL Policy,37,0.4412500858306885,0.15203894674777985
+123,Best Actual RL Policy,38,0.44663092494010925,0.1521274447441101
+123,Best Actual RL Policy,39,0.4535743296146393,0.15202178061008453
+123,Best Actual RL Policy,40,0.35593271255493164,0.3583291172981262
+123,Best Actual RL Policy,41,0.360019326210022,0.365316778421402
+123,Best Actual RL Policy,42,0.3662679195404053,0.36953145265579224
+123,Best Actual RL Policy,43,0.3743663430213928,0.3715178370475769
+123,Best Actual RL Policy,44,0.38396939635276794,0.37157317996025085
+123,Best Actual RL Policy,45,0.2159873992204666,0.056409165263175964
+123,Best Actual RL Policy,46,0.2200506031513214,0.0655912384390831
+123,Best Actual RL Policy,47,0.22796131670475006,0.07436595857143402
+123,Best Actual RL Policy,48,0.23911133408546448,0.08262079209089279
+123,Best Actual RL Policy,49,0.2528335154056549,0.09004800766706467
+123,Best Actual RL Policy,50,0.2159873992204666,0.056409165263175964
+123,Best Actual RL Policy,51,0.21967342495918274,0.06466042995452881
+123,Best Actual RL Policy,52,0.22689302265644073,0.07355900853872299
+123,Best Actual RL Policy,53,0.23726868629455566,0.0800555944442749
+123,Best Actual RL Policy,54,0.25007912516593933,0.08932523429393768
+123,Best Actual RL Policy,55,0.24288374185562134,0.21245816349983215
+123,Best Actual RL Policy,56,0.23573268949985504,0.2110142558813095
+123,Best Actual RL Policy,57,0.2315024584531784,0.2090834081172943
+123,Best Actual RL Policy,58,0.2301749736070633,0.20679859817028046
+123,Best Actual RL Policy,59,0.23159947991371155,0.20431268215179443
+123,Best Actual RL Policy,60,0.358865886926651,0.3549090623855591
+123,Best Actual RL Policy,61,0.36294418573379517,0.3618488311767578
+123,Best Actual RL Policy,62,0.3691544234752655,0.36599165201187134
+123,Best Actual RL Policy,63,0.37720251083374023,0.367870032787323
+123,Best Actual RL Policy,64,0.3867354393005371,0.3677818179130554
+123,Best Actual RL Policy,65,0.2613103985786438,0.2930736839771271
+123,Best Actual RL Policy,66,0.26470455527305603,0.30176907777786255
+123,Best Actual RL Policy,67,0.2711993455886841,0.30939969420433044
+123,Best Actual RL Policy,68,0.28034278750419617,0.3155811131000519
+123,Best Actual RL Policy,69,0.2916518449783325,0.3200622797012329
+123,Best Actual RL Policy,70,0.42891988158226013,0.17708039283752441
+123,Best Actual RL Policy,71,0.4309827983379364,0.1786630004644394
+123,Best Actual RL Policy,72,0.43499332666397095,0.17944297194480896
+123,Best Actual RL Policy,73,0.44075503945350647,0.17954868078231812
+123,Best Actual RL Policy,74,0.44803571701049805,0.17934219539165497
+123,Best Actual RL Policy,75,0.18617263436317444,0.23571158945560455
+123,Best Actual RL Policy,76,0.18442408740520477,0.22942768037319183
+123,Best Actual RL Policy,77,0.18684133887290955,0.22290849685668945
+123,Best Actual RL Policy,78,0.1930406093597412,0.216365247964859
+123,Best Actual RL Policy,79,0.2024257481098175,0.20988966524600983
+123,Best Actual RL Policy,-1,0.29450780991464853,0.21291090508457272
+123,Selected Production Policy,0,0.0,0.0
+123,Selected Production Policy,1,0.0,0.0
+123,Selected Production Policy,2,0.0,0.0
+123,Selected Production Policy,3,0.0,0.0
+123,Selected Production Policy,4,0.0,0.0
+123,Selected Production Policy,5,0.0,0.0
+123,Selected Production Policy,6,0.0,0.0
+123,Selected Production Policy,7,0.0,0.0
+123,Selected Production Policy,8,0.0,0.0
+123,Selected Production Policy,9,0.0,0.0
+123,Selected Production Policy,10,0.0,0.0
+123,Selected Production Policy,11,0.0,0.0
+123,Selected Production Policy,12,0.0,0.0
+123,Selected Production Policy,13,0.0,0.0
+123,Selected Production Policy,14,0.0,0.0
+123,Selected Production Policy,15,0.0,0.0
+123,Selected Production Policy,16,0.0,0.0
+123,Selected Production Policy,17,0.0,0.0
+123,Selected Production Policy,18,0.0,0.0
+123,Selected Production Policy,19,0.0,0.0
+123,Selected Production Policy,20,0.0,0.0
+123,Selected Production Policy,21,0.0,0.0
+123,Selected Production Policy,22,0.0,0.0
+123,Selected Production Policy,23,0.0,0.0
+123,Selected Production Policy,24,0.0,0.0
+123,Selected Production Policy,25,0.0,0.0
+123,Selected Production Policy,26,0.0,0.0
+123,Selected Production Policy,27,0.0,0.0
+123,Selected Production Policy,28,0.0,0.0
+123,Selected Production Policy,29,0.0,0.0
+123,Selected Production Policy,30,0.0,0.0
+123,Selected Production Policy,31,0.0,0.0
+123,Selected Production Policy,32,0.0,0.0
+123,Selected Production Policy,33,0.0,0.0
+123,Selected Production Policy,34,0.0,0.0
+123,Selected Production Policy,35,0.0,0.0
+123,Selected Production Policy,36,0.0,0.0
+123,Selected Production Policy,37,0.0,0.0
+123,Selected Production Policy,38,0.0,0.0
+123,Selected Production Policy,39,0.0,0.0
+123,Selected Production Policy,40,0.0,0.0
+123,Selected Production Policy,41,0.0,0.0
+123,Selected Production Policy,42,0.0,0.0
+123,Selected Production Policy,43,0.0,0.0
+123,Selected Production Policy,44,0.0,0.0
+123,Selected Production Policy,45,0.0,0.0
+123,Selected Production Policy,46,0.0,0.0
+123,Selected Production Policy,47,0.0,0.0
+123,Selected Production Policy,48,0.0,0.0
+123,Selected Production Policy,49,0.0,0.0
+123,Selected Production Policy,50,0.0,0.0
+123,Selected Production Policy,51,0.0,0.0
+123,Selected Production Policy,52,0.0,0.0
+123,Selected Production Policy,53,0.0,0.0
+123,Selected Production Policy,54,0.0,0.0
+123,Selected Production Policy,55,0.0,0.0
+123,Selected Production Policy,56,0.0,0.0
+123,Selected Production Policy,57,0.0,0.0
+123,Selected Production Policy,58,0.0,0.0
+123,Selected Production Policy,59,0.0,0.0
+123,Selected Production Policy,60,0.0,0.0
+123,Selected Production Policy,61,0.0,0.0
+123,Selected Production Policy,62,0.0,0.0
+123,Selected Production Policy,63,0.0,0.0
+123,Selected Production Policy,64,0.0,0.0
+123,Selected Production Policy,65,0.0,0.0
+123,Selected Production Policy,66,0.0,0.0
+123,Selected Production Policy,67,0.0,0.0
+123,Selected Production Policy,68,0.0,0.0
+123,Selected Production Policy,69,0.0,0.0
+123,Selected Production Policy,70,0.0,0.0
+123,Selected Production Policy,71,0.0,0.0
+123,Selected Production Policy,72,0.0,0.0
+123,Selected Production Policy,73,0.0,0.0
+123,Selected Production Policy,74,0.0,0.0
+123,Selected Production Policy,75,0.0,0.0
+123,Selected Production Policy,76,0.0,0.0
+123,Selected Production Policy,77,0.0,0.0
+123,Selected Production Policy,78,0.0,0.0
+123,Selected Production Policy,79,0.0,0.0
+123,Selected Production Policy,-1,0.0,0.0
+2026,Best Actual RL Policy,0,0.0,0.0
+2026,Best Actual RL Policy,1,0.0,0.0
+2026,Best Actual RL Policy,2,0.0,0.0
+2026,Best Actual RL Policy,3,0.0,0.0
+2026,Best Actual RL Policy,4,0.0,0.0
+2026,Best Actual RL Policy,5,0.0,0.0
+2026,Best Actual RL Policy,6,0.0,0.0
+2026,Best Actual RL Policy,7,0.0,0.0
+2026,Best Actual RL Policy,8,0.0,0.0
+2026,Best Actual RL Policy,9,0.0,0.0
+2026,Best Actual RL Policy,10,0.0,0.0
+2026,Best Actual RL Policy,11,0.0,0.0
+2026,Best Actual RL Policy,12,0.0,0.0
+2026,Best Actual RL Policy,13,0.0,0.0
+2026,Best Actual RL Policy,14,0.0,0.0
+2026,Best Actual RL Policy,15,0.0,0.0
+2026,Best Actual RL Policy,16,0.0,0.0
+2026,Best Actual RL Policy,17,0.0,0.0
+2026,Best Actual RL Policy,18,0.0,0.0
+2026,Best Actual RL Policy,19,0.0,0.0
+2026,Best Actual RL Policy,20,0.0,0.0
+2026,Best Actual RL Policy,21,0.0,0.0
+2026,Best Actual RL Policy,22,0.0,0.0
+2026,Best Actual RL Policy,23,0.0,0.0
+2026,Best Actual RL Policy,24,0.0,0.0
+2026,Best Actual RL Policy,25,0.0,0.0
+2026,Best Actual RL Policy,26,0.0,0.0
+2026,Best Actual RL Policy,27,0.0,0.0
+2026,Best Actual RL Policy,28,0.0,0.0
+2026,Best Actual RL Policy,29,0.0,0.0
+2026,Best Actual RL Policy,30,0.0,0.0
+2026,Best Actual RL Policy,31,0.0,0.0
+2026,Best Actual RL Policy,32,0.0,0.0
+2026,Best Actual RL Policy,33,0.0,0.0
+2026,Best Actual RL Policy,34,0.0,0.0
+2026,Best Actual RL Policy,35,0.0,0.0
+2026,Best Actual RL Policy,36,0.0,0.0
+2026,Best Actual RL Policy,37,0.0,0.0
+2026,Best Actual RL Policy,38,0.0,0.0
+2026,Best Actual RL Policy,39,0.0,0.0
+2026,Best Actual RL Policy,40,0.0,0.0
+2026,Best Actual RL Policy,41,0.0,0.0
+2026,Best Actual RL Policy,42,0.0,0.0
+2026,Best Actual RL Policy,43,0.0,0.0
+2026,Best Actual RL Policy,44,0.0,0.0
+2026,Best Actual RL Policy,45,0.0,0.0
+2026,Best Actual RL Policy,46,0.0,0.0
+2026,Best Actual RL Policy,47,0.0,0.0
+2026,Best Actual RL Policy,48,0.0,0.0
+2026,Best Actual RL Policy,49,0.0,0.0
+2026,Best Actual RL Policy,50,0.0,0.0
+2026,Best Actual RL Policy,51,0.0,0.0
+2026,Best Actual RL Policy,52,0.0,0.0
+2026,Best Actual RL Policy,53,0.0,0.0
+2026,Best Actual RL Policy,54,0.0,0.0
+2026,Best Actual RL Policy,55,0.0,0.0
+2026,Best Actual RL Policy,56,0.0,0.0
+2026,Best Actual RL Policy,57,0.0,0.0
+2026,Best Actual RL Policy,58,0.0,0.0
+2026,Best Actual RL Policy,59,0.0,0.0
+2026,Best Actual RL Policy,60,0.0,0.0
+2026,Best Actual RL Policy,61,0.0,0.0
+2026,Best Actual RL Policy,62,0.0,0.0
+2026,Best Actual RL Policy,63,0.0,0.0
+2026,Best Actual RL Policy,64,0.0,0.0
+2026,Best Actual RL Policy,65,0.0,0.0
+2026,Best Actual RL Policy,66,0.0,0.0
+2026,Best Actual RL Policy,67,0.0,0.0
+2026,Best Actual RL Policy,68,0.0,0.0
+2026,Best Actual RL Policy,69,0.0,0.0
+2026,Best Actual RL Policy,70,0.0,0.0
+2026,Best Actual RL Policy,71,0.0,0.0
+2026,Best Actual RL Policy,72,0.0,0.0
+2026,Best Actual RL Policy,73,0.0,0.0
+2026,Best Actual RL Policy,74,0.0,0.0
+2026,Best Actual RL Policy,75,0.0,0.0
+2026,Best Actual RL Policy,76,0.0,0.0
+2026,Best Actual RL Policy,77,0.0,0.0
+2026,Best Actual RL Policy,78,0.0,0.0
+2026,Best Actual RL Policy,79,0.0,0.0
+2026,Best Actual RL Policy,-1,0.0,0.0
+2026,Selected Production Policy,0,0.0,0.0
+2026,Selected Production Policy,1,0.0,0.0
+2026,Selected Production Policy,2,0.0,0.0
+2026,Selected Production Policy,3,0.0,0.0
+2026,Selected Production Policy,4,0.0,0.0
+2026,Selected Production Policy,5,0.0,0.0
+2026,Selected Production Policy,6,0.0,0.0
+2026,Selected Production Policy,7,0.0,0.0
+2026,Selected Production Policy,8,0.0,0.0
+2026,Selected Production Policy,9,0.0,0.0
+2026,Selected Production Policy,10,0.0,0.0
+2026,Selected Production Policy,11,0.0,0.0
+2026,Selected Production Policy,12,0.0,0.0
+2026,Selected Production Policy,13,0.0,0.0
+2026,Selected Production Policy,14,0.0,0.0
+2026,Selected Production Policy,15,0.0,0.0
+2026,Selected Production Policy,16,0.0,0.0
+2026,Selected Production Policy,17,0.0,0.0
+2026,Selected Production Policy,18,0.0,0.0
+2026,Selected Production Policy,19,0.0,0.0
+2026,Selected Production Policy,20,0.0,0.0
+2026,Selected Production Policy,21,0.0,0.0
+2026,Selected Production Policy,22,0.0,0.0
+2026,Selected Production Policy,23,0.0,0.0
+2026,Selected Production Policy,24,0.0,0.0
+2026,Selected Production Policy,25,0.0,0.0
+2026,Selected Production Policy,26,0.0,0.0
+2026,Selected Production Policy,27,0.0,0.0
+2026,Selected Production Policy,28,0.0,0.0
+2026,Selected Production Policy,29,0.0,0.0
+2026,Selected Production Policy,30,0.0,0.0
+2026,Selected Production Policy,31,0.0,0.0
+2026,Selected Production Policy,32,0.0,0.0
+2026,Selected Production Policy,33,0.0,0.0
+2026,Selected Production Policy,34,0.0,0.0
+2026,Selected Production Policy,35,0.0,0.0
+2026,Selected Production Policy,36,0.0,0.0
+2026,Selected Production Policy,37,0.0,0.0
+2026,Selected Production Policy,38,0.0,0.0
+2026,Selected Production Policy,39,0.0,0.0
+2026,Selected Production Policy,40,0.0,0.0
+2026,Selected Production Policy,41,0.0,0.0
+2026,Selected Production Policy,42,0.0,0.0
+2026,Selected Production Policy,43,0.0,0.0
+2026,Selected Production Policy,44,0.0,0.0
+2026,Selected Production Policy,45,0.0,0.0
+2026,Selected Production Policy,46,0.0,0.0
+2026,Selected Production Policy,47,0.0,0.0
+2026,Selected Production Policy,48,0.0,0.0
+2026,Selected Production Policy,49,0.0,0.0
+2026,Selected Production Policy,50,0.0,0.0
+2026,Selected Production Policy,51,0.0,0.0
+2026,Selected Production Policy,52,0.0,0.0
+2026,Selected Production Policy,53,0.0,0.0
+2026,Selected Production Policy,54,0.0,0.0
+2026,Selected Production Policy,55,0.0,0.0
+2026,Selected Production Policy,56,0.0,0.0
+2026,Selected Production Policy,57,0.0,0.0
+2026,Selected Production Policy,58,0.0,0.0
+2026,Selected Production Policy,59,0.0,0.0
+2026,Selected Production Policy,60,0.0,0.0
+2026,Selected Production Policy,61,0.0,0.0
+2026,Selected Production Policy,62,0.0,0.0
+2026,Selected Production Policy,63,0.0,0.0
+2026,Selected Production Policy,64,0.0,0.0
+2026,Selected Production Policy,65,0.0,0.0
+2026,Selected Production Policy,66,0.0,0.0
+2026,Selected Production Policy,67,0.0,0.0
+2026,Selected Production Policy,68,0.0,0.0
+2026,Selected Production Policy,69,0.0,0.0
+2026,Selected Production Policy,70,0.0,0.0
+2026,Selected Production Policy,71,0.0,0.0
+2026,Selected Production Policy,72,0.0,0.0
+2026,Selected Production Policy,73,0.0,0.0
+2026,Selected Production Policy,74,0.0,0.0
+2026,Selected Production Policy,75,0.0,0.0
+2026,Selected Production Policy,76,0.0,0.0
+2026,Selected Production Policy,77,0.0,0.0
+2026,Selected Production Policy,78,0.0,0.0
+2026,Selected Production Policy,79,0.0,0.0
+2026,Selected Production Policy,-1,0.0,0.0

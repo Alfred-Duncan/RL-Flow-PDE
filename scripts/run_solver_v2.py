@@ -12,6 +12,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 V2_CACHE_VERSION = "latent_operator_v3"
 INITIALIZER_CACHE_VERSION = "latent_operator_v2"
+CRITIC_CACHE_VERSION = "within_state_rank_v2"
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -379,9 +380,7 @@ def rollout_k_step_return(
 
 def critic_ranking_validation(cfg: dict, val_raw: list[RawCorrectionTransition], actor: DeterministicNeuralOperatorActor, supervised_actor: DeterministicNeuralOperatorActor, critic: TwinOperatorCritic, decoder: CorrectionOperatorDecoder, pde: ReactionDiffusionPDE, stats: dict, device: torch.device, label: str) -> pd.DataFrame:
     rows = []
-    qs: list[float] = []
-    rs: list[float] = []
-    pair_ok = pair_total = 0
+    group_metrics: list[dict[str, float]] = []
     latent_std = stats.get("latent_std", torch.ones(int(cfg["solver_v2"]["latent_dim"]))).to(device).view(1, -1)
     latent_mean = stats.get("latent_mean", torch.zeros(int(cfg["solver_v2"]["latent_dim"]))).to(device).view(1, -1)
     actor.eval()
@@ -400,33 +399,46 @@ def critic_ranking_validation(cfg: dict, val_raw: list[RawCorrectionTransition],
             for name, z in candidates:
                 rv, _, _, _ = rollout_k_step_return(cfg, case, u, z, supervised_actor, decoder, pde, stats, device, tr.step_idx)
                 qv = float(critic.q_min(fields, scalars, z).item())
-                qs.append(qv)
-                rs.append(float(rv))
                 local_q.append(qv)
                 local_r.append(float(rv))
                 local_names.append(name)
                 rows.append({"variant": label, "state": idx, "candidate": name, "q": qv, "return": float(rv), "horizon": int(cfg["solver_v2"]["horizon"])})
+            pair_ok = pair_total = 0
             for a in range(len(local_q)):
                 for b in range(a + 1, len(local_q)):
                     dr = local_r[a] - local_r[b]
                     dq = local_q[a] - local_q[b]
-                    if abs(dr) > 1e-9:
+                    if abs(dr) >= float(cfg["solver_v2"]["critic_return_margin"]):
                         pair_total += 1
                         pair_ok += int(np.sign(dr) == np.sign(dq))
-    pearson, spearman = _corr_metrics(qs, rs)
-    pairwise = float(pair_ok / max(1, pair_total))
-    top1 = 0.0
-    if rows:
-        detail = pd.DataFrame(rows)
-        top1 = float(np.mean([
-            g.loc[g["q"].idxmax(), "candidate"] == g.loc[g["return"].idxmax(), "candidate"]
-            for _, g in detail.groupby("state")
-        ]))
-    out = pd.DataFrame(rows + [{"variant": label, "state": -1, "candidate": "summary", "q": pearson, "return": spearman, "horizon": int(cfg["solver_v2"]["horizon"])}])
-    out["pearson"] = pearson
-    out["spearman"] = spearman
-    out["pairwise"] = pairwise
-    out["top1"] = top1
+            _, local_spearman = _corr_metrics(local_q, local_r)
+            best_return = int(np.argmax(local_r))
+            top_q = np.argsort(local_q)[-2:]
+            group_metrics.append({
+                "spearman": local_spearman,
+                "pairwise": float(pair_ok / max(1, pair_total)),
+                "top1": float(int(np.argmax(local_q)) == best_return),
+                "top2": float(best_return in top_q),
+            })
+    metrics = pd.DataFrame(group_metrics)
+    summary = {
+        "variant": label,
+        "state": -1,
+        "candidate": "summary",
+        "q": float("nan"),
+        "return": float("nan"),
+        "horizon": int(cfg["solver_v2"]["horizon"]),
+        "pearson": float("nan"),
+        "spearman": float(metrics["spearman"].mean()) if not metrics.empty else 0.0,
+        "pairwise": float(metrics["pairwise"].mean()) if not metrics.empty else 0.0,
+        "top1": float(metrics["top1"].mean()) if not metrics.empty else 0.0,
+        "top2": float(metrics["top2"].mean()) if not metrics.empty else 0.0,
+    }
+    out = pd.DataFrame(rows + [summary])
+    for key, value in summary.items():
+        if key not in out:
+            out[key] = value
+    out.loc[out["candidate"].eq("summary"), list(summary)] = list(summary.values())
     return out
 
 
@@ -447,7 +459,7 @@ def critic_candidate_transitions(
     actor.eval()
     supervised_actor.eval()
     decoder.eval()
-    for idx, tr in enumerate(base_rows[: min(len(base_rows), 160)]):
+    for idx, tr in enumerate(base_rows[: min(len(base_rows), int(cfg["solver_v2"]["critic_candidate_groups"]))]):
         fields = tr.state_fields.unsqueeze(0).to(device)
         scalars = tr.state_scalars.unsqueeze(0).to(device)
         case, u = raw_case_from_transition(tr, stats, pde, device)
@@ -483,6 +495,8 @@ def critic_candidate_transitions(
                         source_policy=f"critic_candidate_{label}_{name}",
                         action=z.squeeze(0).detach().cpu(),
                         mc_return=float(k_return),
+                        group_id=f"{label}_state_{idx}",
+                        candidate_name=name,
                     )
                 )
     return rows
@@ -555,6 +569,7 @@ def policy_shift_diagnostics(
     stats: dict,
     device: torch.device,
     seed: int,
+    policy_label: str,
 ) -> pd.DataFrame:
     rows = []
     actor_rl.eval()
@@ -570,6 +585,7 @@ def policy_shift_diagnostics(
             d_rl = decoder(fields, scalars, z_rl, stats, float(cfg["solver_v2"]["temperature"]))
         rows.append({
             "Seed": seed,
+            "Policy": policy_label,
             "state": idx,
             "latent_policy_shift": float(torch.norm(z_rl - z_sup).detach().cpu()),
             "correction_policy_shift": float(torch.norm(d_rl - d_sup).detach().cpu()),
@@ -579,6 +595,7 @@ def policy_shift_diagnostics(
         return df
     return pd.concat([df, pd.DataFrame([{
         "Seed": seed,
+        "Policy": policy_label,
         "state": -1,
         "latent_policy_shift": float(df["latent_policy_shift"].mean()),
         "correction_policy_shift": float(df["correction_policy_shift"].mean()),
@@ -614,19 +631,32 @@ def train_td3_variant(cfg: dict, transitions: list[SolverTransition], val_raw: l
         local_cfg["solver_v2"]["td3_epochs"] = int(epochs_override)
     critic = TwinOperatorCritic(width=int(cfg["solver_v2"]["width"]), modes=int(cfg["solver_v2"]["modes"]), depth=int(cfg["solver_v2"]["critic_depth"]), latent_dim=int(cfg["solver_v2"]["latent_dim"]), state_dim=int(cfg["solver_v2"]["state_dim"])).to(device)
     trainer = TD3BCTrainer(actor, critic, decoder, local_cfg, stats, device, allow_actor_update=False, variant=variant)
-    ckpt = ROOT / "checkpoints" / "solver_v2" / f"td3_{V2_CACHE_VERSION}_{variant}_seed{seed}.pt"
+    ckpt = ROOT / "checkpoints" / "solver_v2" / f"td3_{CRITIC_CACHE_VERSION}_{variant}_seed{seed}.pt"
     if ckpt.exists():
-        actor, critic, hist = trainer.fit(transitions, ckpt)
+        actor, critic, hist = trainer.fit(transitions, [], ckpt)
         rank = critic_ranking_validation(cfg, val_raw, actor, supervised_actor, critic, decoder, pde, stats, device, variant)
         return actor, critic, hist, rank
-    critic_rows = transitions + critic_candidate_transitions(cfg, [tr for tr in transitions if tr.split == "train"], actor, supervised_actor, decoder, pde, stats, device, variant)
+    candidate_cache = ROOT / "checkpoints" / "solver_v2" / f"critic_candidates_{CRITIC_CACHE_VERSION}_seed{seed}.pt"
+    if candidate_cache.exists():
+        critic_rows = torch.load(candidate_cache, map_location="cpu", weights_only=False)
+    else:
+        critic_rows = critic_candidate_transitions(cfg, [tr for tr in transitions if tr.split == "train"], supervised_actor, supervised_actor, decoder, pde, stats, device, "shared")
+        torch.save(critic_rows, candidate_cache)
     trainer.pretrain_critic_mc(critic_rows)
     rank = critic_ranking_validation(cfg, val_raw, actor, supervised_actor, critic, decoder, pde, stats, device, variant)
-    spearman = float(rank["spearman"].iloc[0])
-    pairwise = float(rank["pairwise"].iloc[0])
-    trainer.allow_actor_update = bool(controllability_ok and spearman > 0.5 and pairwise > 0.65)
-    actor, critic, hist = trainer.fit(transitions, ckpt)
-    return actor, critic, hist, rank
+    summary = rank[rank["candidate"].eq("summary")].iloc[0]
+    trainer.allow_actor_update = bool(
+        controllability_ok
+        and float(summary["spearman"]) > float(cfg["solver_v2"]["critic_gate_spearman"])
+        and float(summary["pairwise"]) > float(cfg["solver_v2"]["critic_gate_pairwise"])
+        and float(summary["top1"]) > float(cfg["solver_v2"]["critic_gate_top1"])
+    )
+    if not trainer.allow_actor_update:
+        torch.save({"actor": trainer.actor.state_dict(), "critic": trainer.critic.state_dict(), "history": trainer.history, "actor_updates": trainer.actor_updates}, ckpt)
+        return trainer.actor.eval(), trainer.critic.eval(), trainer.history, rank
+    actor, critic, hist = trainer.fit(transitions, critic_rows, ckpt)
+    final_rank = critic_ranking_validation(cfg, val_raw, actor, supervised_actor, critic, decoder, pde, stats, device, variant)
+    return actor, critic, hist, final_rank
 
 
 def rollout_method(method: str, cfg: dict, initializer: FNOInitializer, actor: DeterministicNeuralOperatorActor | None, critic: TwinOperatorCritic | None, decoder: CorrectionOperatorDecoder | None, pde: ReactionDiffusionPDE, stats: dict, case: ReactionDiffusionCase, steps: int, device: torch.device) -> tuple[torch.Tensor, list[dict[str, float]], float]:
@@ -664,7 +694,7 @@ def rollout_method(method: str, cfg: dict, initializer: FNOInitializer, actor: D
 def evaluate_methods(cfg: dict, npz_path: Path, seed: int, initializer: FNOInitializer, actors: dict[str, DeterministicNeuralOperatorActor], critics: dict[str, TwinOperatorCritic | None], decoder: CorrectionOperatorDecoder, pde: ReactionDiffusionPDE, stats: dict, device: torch.device) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     ds = ReactionDiffusionDataset(npz_path, "test", int(cfg["solver_v2"]["eval_cases"]))
     rows, per_case, conv = [], [], []
-    methods = ["Base FNO Initializer", "Supervised Latent Neural Operator Corrector", "TD3 from scratch", "TD3+BC", "Full RL Neural Operator Solver", "Gradient baseline", "PINN-style baseline"]
+    methods = ["Base FNO Initializer", "Supervised Latent Neural Operator Corrector", "TD3+BC", "Best Actual RL Policy", "Selected Production Policy", "Gradient baseline", "PINN-style baseline"]
     for steps in tqdm(cfg["solver_v2"]["eval_steps"], desc=f"v2:evaluate:{seed}"):
         method_rows = {m: [] for m in methods}
         for i in range(len(ds)):
@@ -738,7 +768,7 @@ def residual_accuracy_quadrants(transitions: list[SolverTransition]) -> pd.DataF
     return pd.DataFrame(rows)
 
 
-def build_training_summary(seed: int, histories: dict[str, list[dict[str, float]]], rankings: list[pd.DataFrame]) -> pd.DataFrame:
+def build_training_summary(cfg: dict, seed: int, histories: dict[str, list[dict[str, float]]], rankings: list[pd.DataFrame]) -> pd.DataFrame:
     rows = []
     for variant, hist in histories.items():
         for h in hist:
@@ -748,11 +778,26 @@ def build_training_summary(seed: int, histories: dict[str, list[dict[str, float]
             rows.append(row)
     for rank in rankings:
         summary = rank[rank["candidate"].eq("summary")].iloc[0]
-        rows.append({"Seed": seed, "variant": str(summary["variant"]) + "_ranking", "epoch": -999.0, "critic_loss": np.nan, "actor_loss": np.nan, "actor_updates_enabled": float(summary["spearman"] > 0.5 and summary["pairwise"] > 0.65), "ranking_spearman": float(summary["spearman"]), "ranking_pairwise": float(summary["pairwise"]), "ranking_top1": float(summary.get("top1", np.nan))})
+        rows.append({
+            "Seed": seed,
+            "variant": str(summary["variant"]) + "_ranking",
+            "epoch": -999.0,
+            "critic_loss": np.nan,
+            "actor_loss": np.nan,
+            "actor_updates_enabled": float(
+                float(summary["spearman"]) > float(cfg["solver_v2"]["critic_gate_spearman"])
+                and float(summary["pairwise"]) > float(cfg["solver_v2"]["critic_gate_pairwise"])
+                and float(summary["top1"]) > float(cfg["solver_v2"]["critic_gate_top1"])
+            ),
+            "ranking_spearman": float(summary["spearman"]),
+            "ranking_pairwise": float(summary["pairwise"]),
+            "ranking_top1": float(summary.get("top1", np.nan)),
+            "ranking_top2": float(summary.get("top2", np.nan)),
+        })
     return pd.DataFrame(rows)
 
 
-def run_seed(cfg: dict, npz_path: Path, seed: int, device: torch.device) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, list[SolverTransition], pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+def run_seed(cfg: dict, npz_path: Path, seed: int, device: torch.device) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, list[SolverTransition], pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     set_seed(seed)
     s = cfg["solver_v2"]
     pde = ReactionDiffusionPDE(float(cfg["benchmark"]["diffusion"]), float(cfg["benchmark"]["reaction"]))
@@ -776,8 +821,9 @@ def run_seed(cfg: dict, npz_path: Path, seed: int, device: torch.device) -> tupl
         and float(cont_summary["reward_variance"].iloc[0]) > 1e-8
     )
     actor_full = deepcopy(actor_sup).to(device)
-    best_actor = deepcopy(actor_sup).to(device)
-    best_val = sup_val
+    best_actual_actor: DeterministicNeuralOperatorActor | None = None
+    best_actual_val = float("inf")
+    best_actual_updates = 0
     histories: dict[str, list[dict[str, float]]] = {"supervised": [{"epoch": 0.0, "critic_loss": np.nan, "actor_loss": np.nan, "val_error": sup_val}]}
     rankings: list[pd.DataFrame] = []
     critic_full: TwinOperatorCritic | None = None
@@ -788,26 +834,52 @@ def run_seed(cfg: dict, npz_path: Path, seed: int, device: torch.device) -> tupl
         histories[f"full_cycle{cycle}"] = hist
         rankings.append(rank)
         val_error = validation_solver_error(cfg, npz_path, initializer, actor_full, decoder, pde, stats, device)
-        if val_error <= best_val:
-            best_val = val_error
-            best_actor = deepcopy(actor_full).to(device)
-        else:
-            actor_full = deepcopy(best_actor).to(device)
-    torch.save({"actor": best_actor.state_dict(), "validation_error": best_val}, ROOT / "checkpoints" / "solver_v2" / f"actor_selected_{V2_CACHE_VERSION}_seed{seed}.pt")
+        updates = int(max((float(row.get("actor_updates", 0.0)) for row in hist), default=0.0))
+        cycle_shift = policy_shift_diagnostics(cfg, val_raw, actor_full, actor_sup, decoder, stats, device, seed, f"cycle_{cycle}")
+        cycle_summary = cycle_shift[cycle_shift["state"].eq(-1)].iloc[0]
+        shifted = float(cycle_summary["latent_policy_shift"]) > 1e-8 or float(cycle_summary["correction_policy_shift"]) > 1e-8
+        if updates > 0 and shifted and val_error < best_actual_val:
+            best_actual_actor = deepcopy(actor_full).to(device)
+            best_actual_val = val_error
+            best_actual_updates = updates
+        actor_full = deepcopy(best_actual_actor if best_actual_actor is not None else actor_sup).to(device)
+    actual_actor = deepcopy(best_actual_actor if best_actual_actor is not None else actor_sup).to(device)
+    production_actor = deepcopy(actual_actor if best_actual_actor is not None and best_actual_val <= sup_val else actor_sup).to(device)
+    production_source = "best_actual_rl" if best_actual_actor is not None and best_actual_val <= sup_val else "supervised"
+    torch.save({"actor": actor_sup.state_dict(), "validation_error": sup_val}, ROOT / "checkpoints" / "solver_v2" / f"actor_best_supervised_{CRITIC_CACHE_VERSION}_seed{seed}.pt")
+    torch.save({"actor": actual_actor.state_dict(), "validation_error": best_actual_val, "actor_updates": best_actual_updates}, ROOT / "checkpoints" / "solver_v2" / f"actor_best_actual_rl_{CRITIC_CACHE_VERSION}_seed{seed}.pt")
+    torch.save({"actor": production_actor.state_dict(), "validation_error": min(sup_val, best_actual_val), "source": production_source}, ROOT / "checkpoints" / "solver_v2" / f"actor_selected_{CRITIC_CACHE_VERSION}_seed{seed}.pt")
     actor_td3bc, critic_td3bc, hist_td3bc, rank_td3bc = train_td3_variant(cfg, replay, val_raw, deepcopy(actor_sup).to(device), actor_sup, decoder, seed, "td3_bc", stats, pde, device, controllability_ok=controllability_ok)
-    actor_scratch = DeterministicNeuralOperatorActor(width=int(s["width"]), modes=int(s["modes"]), depth=int(s["actor_depth"]), latent_dim=int(s["latent_dim"]), state_dim=int(s["state_dim"])).to(device)
-    actor_scratch, critic_scratch, hist_scratch, rank_scratch = train_td3_variant(cfg, replay, val_raw, actor_scratch, actor_sup, decoder, seed, "scratch", stats, pde, device, int(s["td3_scratch_epochs"]), controllability_ok)
     histories["td3_bc"] = hist_td3bc
-    histories["scratch"] = hist_scratch
-    rankings.extend([rank_td3bc, rank_scratch])
-    actors = {"Supervised Latent Neural Operator Corrector": actor_sup, "TD3 from scratch": actor_scratch, "TD3+BC": actor_td3bc, "Full RL Neural Operator Solver": best_actor}
-    critics = {"TD3 from scratch": critic_scratch, "TD3+BC": critic_td3bc, "Full RL Neural Operator Solver": critic_full}
+    rankings.append(rank_td3bc)
+    actors = {
+        "Supervised Latent Neural Operator Corrector": actor_sup,
+        "TD3+BC": actor_td3bc,
+        "Best Actual RL Policy": actual_actor,
+        "Selected Production Policy": production_actor,
+    }
+    critics = {"TD3+BC": critic_td3bc, "Best Actual RL Policy": critic_full, "Selected Production Policy": critic_full}
     eval_df, per_case, conv = evaluate_methods(cfg, npz_path, seed, initializer, actors, critics, decoder, pde, stats, device)
-    training_summary = build_training_summary(seed, histories, rankings)
+    if best_actual_actor is None:
+        eval_df = eval_df[~eval_df["Method"].eq("Best Actual RL Policy")].reset_index(drop=True)
+        per_case = per_case[~per_case["Method"].eq("Best Actual RL Policy")].reset_index(drop=True)
+        conv = conv[~conv["Method"].eq("Best Actual RL Policy")].reset_index(drop=True)
+    training_summary = build_training_summary(cfg, seed, histories, rankings)
     ranking_df = pd.concat(rankings, ignore_index=True)
     ranking_df["Seed"] = seed
-    policy_shift_df = policy_shift_diagnostics(cfg, val_raw, best_actor, actor_sup, decoder, stats, device, seed)
-    return eval_df, per_case, conv, full_replay, training_summary, ranking_df, controllability_df, policy_shift_df
+    policy_shift_df = pd.concat([
+        policy_shift_diagnostics(cfg, val_raw, actual_actor, actor_sup, decoder, stats, device, seed, "Best Actual RL Policy"),
+        policy_shift_diagnostics(cfg, val_raw, production_actor, actor_sup, decoder, stats, device, seed, "Selected Production Policy"),
+    ], ignore_index=True)
+    selection_df = pd.DataFrame([{
+        "Seed": seed,
+        "SupervisedValidationError": sup_val,
+        "BestActualRLValidationError": best_actual_val if best_actual_actor is not None else float("nan"),
+        "ActualRLPolicyAvailable": bool(best_actual_actor is not None),
+        "ActualRLActorUpdates": best_actual_updates,
+        "SelectedProductionSource": production_source,
+    }])
+    return eval_df, per_case, conv, full_replay, training_summary, ranking_df, controllability_df, policy_shift_df, selection_df
 
 
 def generate_figures(tables: dict[str, pd.DataFrame]) -> None:
@@ -830,7 +902,7 @@ def generate_figures(tables: dict[str, pd.DataFrame]) -> None:
     for metric, fname in [("Relative L2", "figure3_l2_vs_step.png"), ("PDE residual norm", "figure4_residual_vs_step.png")]:
         plt.figure(figsize=(6, 4))
         for method, g in conv[conv["StepCap"].eq(10)].groupby("Method"):
-            if method in ["Gradient baseline", "Supervised Latent Neural Operator Corrector", "Full RL Neural Operator Solver"]:
+            if method in ["Gradient baseline", "Supervised Latent Neural Operator Corrector", "Best Actual RL Policy", "Selected Production Policy"]:
                 gg = g.groupby("step")[metric].mean()
                 plt.plot(gg.index, gg.values, marker="o", label=method)
         plt.xlabel("solver step")
@@ -850,16 +922,16 @@ def generate_figures(tables: dict[str, pd.DataFrame]) -> None:
     plt.tight_layout()
     plt.savefig(fig_dir / "figure5_training_curve.png", dpi=180)
     plt.close()
-    paired = main[(main["Steps"].eq(10)) & (main["Method"].isin(["Supervised Latent Neural Operator Corrector", "Full RL Neural Operator Solver"]))]
+    paired = main[(main["Steps"].eq(10)) & (main["Method"].isin(["Supervised Latent Neural Operator Corrector", "Best Actual RL Policy"]))]
     pivot = paired.pivot_table(index=["Seed", "Case"], columns="Method", values="paired improvement")
     plt.figure(figsize=(5, 4))
-    if {"Supervised Latent Neural Operator Corrector", "Full RL Neural Operator Solver"}.issubset(pivot.columns):
-        plt.scatter(pivot["Supervised Latent Neural Operator Corrector"], pivot["Full RL Neural Operator Solver"], s=18, alpha=0.7)
+    if {"Supervised Latent Neural Operator Corrector", "Best Actual RL Policy"}.issubset(pivot.columns):
+        plt.scatter(pivot["Supervised Latent Neural Operator Corrector"], pivot["Best Actual RL Policy"], s=18, alpha=0.7)
         lo = float(np.nanmin(pivot.values))
         hi = float(np.nanmax(pivot.values))
         plt.plot([lo, hi], [lo, hi], color="black", linewidth=0.8)
     plt.xlabel("Supervised paired improvement")
-    plt.ylabel("Full RL paired improvement")
+    plt.ylabel("Best actual RL paired improvement")
     plt.tight_layout()
     plt.savefig(fig_dir / "figure6_supervised_vs_rl_paired.png", dpi=180)
     plt.close()
@@ -904,7 +976,7 @@ def generate_representative_figure(cfg: dict, npz_path: Path, seed: int, device:
     decoder = CorrectionOperatorDecoder(latent_dim=int(cfg["solver_v2"]["latent_dim"]), width=int(cfg["solver_v2"]["width"]), modes=int(cfg["solver_v2"]["modes"]), depth=int(cfg["solver_v2"]["actor_depth"])).to(device)
     decoder.load_state_dict(ae["decoder"])
     actor = DeterministicNeuralOperatorActor(width=int(cfg["solver_v2"]["width"]), modes=int(cfg["solver_v2"]["modes"]), depth=int(cfg["solver_v2"]["actor_depth"]), latent_dim=int(cfg["solver_v2"]["latent_dim"]), state_dim=int(cfg["solver_v2"]["state_dim"])).to(device)
-    selected = ROOT / "checkpoints" / "solver_v2" / f"actor_selected_{V2_CACHE_VERSION}_seed{seed}.pt"
+    selected = ROOT / "checkpoints" / "solver_v2" / f"actor_selected_{CRITIC_CACHE_VERSION}_seed{seed}.pt"
     fallback = ROOT / "checkpoints" / "solver_v2" / f"actor_pretrain_{V2_CACHE_VERSION}_seed{seed}.pt"
     actor.load_state_dict(torch.load(selected if selected.exists() else fallback, map_location=device)["actor"])
     ds = ReactionDiffusionDataset(npz_path, "test", 1)
@@ -938,7 +1010,8 @@ def write_docs(tables: dict[str, pd.DataFrame]) -> None:
 
     base = metric("Base FNO Initializer")
     sup = metric("Supervised Latent Neural Operator Corrector")
-    rl = metric("Full RL Neural Operator Solver")
+    actual_rl = metric("Best Actual RL Policy")
+    production = metric("Selected Production Policy")
     td3bc = metric("TD3+BC")
     rank_summary = tables["critic_long_horizon_ranking"][tables["critic_long_horizon_ranking"]["candidate"].eq("summary")]
     full_rank_summary = rank_summary[rank_summary["variant"].astype(str).str.contains("full_cycle")]
@@ -946,17 +1019,19 @@ def write_docs(tables: dict[str, pd.DataFrame]) -> None:
     pairwise = float(rank_summary["pairwise"].mean()) if not rank_summary.empty else float("nan")
     full_spearman = float(full_rank_summary["spearman"].mean()) if not full_rank_summary.empty else float("nan")
     full_pairwise = float(full_rank_summary["pairwise"].mean()) if not full_rank_summary.empty else float("nan")
+    full_top1 = float(full_rank_summary["top1"].mean()) if not full_rank_summary.empty else float("nan")
     controllability = tables["latent_controllability"]
     cont_summary = controllability[controllability["candidate"].eq("summary")]
     correction_change = float(cont_summary["correction_change_norm"].mean()) if not cont_summary.empty else float("nan")
     reward_var = float(cont_summary["reward_variance"].mean()) if not cont_summary.empty and "reward_variance" in cont_summary else float("nan")
     contribution = tables["rl_contribution"]
-    actor_updates = int(contribution["ActorUpdatesEnabled"].sum()) if not contribution.empty else 0
+    actor_updates = int(contribution["ActorUpdates"].sum()) if not contribution.empty else 0
     latent_shift = float(contribution["MeanLatentPolicyShift"].mean()) if not contribution.empty else float("nan")
     correction_shift = float(contribution["MeanCorrectionPolicyShift"].mean()) if not contribution.empty else float("nan")
-    if rl < base and rl < sup and spearman > 0.5 and pairwise > 0.65:
-        claim = "The latent-action RL neural-operator solver improves over both the corrected FNO initializer and the supervised latent corrector in this run."
-    elif rl < base:
+    available = bool(tables["policy_selection"]["ActualRLPolicyAvailable"].all())
+    if available and actual_rl < base and actual_rl < sup and full_spearman > 0.5 and full_pairwise > 0.65 and full_top1 > 0.25:
+        claim = "The actual RL policy improves over both the corrected FNO initializer and the supervised latent corrector across the reported three-seed evaluation."
+    elif production < base:
         claim = "The latent-action solver improves over the corrected FNO initializer, but the RL stage does not clearly beat the supervised latent corrector."
     else:
         claim = "The current latent-action RL stage is not yet a reliable improvement over the corrected FNO initializer."
@@ -965,23 +1040,24 @@ def write_docs(tables: dict[str, pd.DataFrame]) -> None:
         f"{claim}\n\n"
         f"- 10-step Base FNO Relative L2 mean: {base:.6f}\n"
         f"- 10-step Supervised Latent Corrector Relative L2 mean: {sup:.6f}\n"
-        f"- 10-step Full RL Solver Relative L2 mean: {rl:.6f}\n"
+        f"- 10-step Best Actual RL Policy Relative L2 mean: {actual_rl:.6f}\n"
+        f"- 10-step Selected Production Policy Relative L2 mean: {production:.6f}\n"
         f"- 10-step standalone TD3+BC Relative L2 mean: {td3bc:.6f}\n"
         f"- Mean critic Spearman on validation K-step candidate ranking: {spearman:.3f}\n"
         f"- Mean critic pairwise ranking accuracy: {pairwise:.3f}\n"
-        f"- Mean Full-cycle critic Spearman / pairwise: {full_spearman:.3f} / {full_pairwise:.3f}\n"
+        f"- Mean Full-cycle within-state critic Spearman / pairwise / top-1: {full_spearman:.3f} / {full_pairwise:.3f} / {full_top1:.3f}\n"
         f"- Mean non-supervised latent controllability correction shift: {correction_change:.6f}\n"
         f"- Mean per-state reward variance under latent alternatives: {reward_var:.6f}\n"
-        f"- Full-cycle actor update gates passed: {actor_updates}\n"
-        f"- Mean RL-vs-supervised latent policy shift: {latent_shift:.6f}\n"
-        f"- Mean RL-vs-supervised correction policy shift: {correction_shift:.6f}\n\n"
-        "The architecture used here is: corrected FNO initializer, residual-conditioned neural-operator state encoder, 32D latent action actor, frozen neural-operator correction decoder, hard IC/BC projection, Twin-Q critic over `(state,z)`, MC return critic pretraining, validation ranking gate, and conservative TD3+BC.\n\n"
+        f"- Actual Full-cycle actor updates: {actor_updates}\n"
+        f"- Mean best-actual-RL latent policy shift: {latent_shift:.6f}\n"
+        f"- Mean best-actual-RL correction policy shift: {correction_shift:.6f}\n\n"
+        "The architecture used here is: corrected FNO initializer, residual-conditioned neural-operator state encoder, 32D latent action actor, frozen neural-operator correction decoder, hard IC/BC projection, an action-sensitive Twin-Q critic over `(state,z)`, grouped MC-return/advantage/ranking critic supervision, validation ranking gate, and conservative TD3+BC.\n\n"
         "## Research Questions\n\n"
         f"1. Neural Operator correction effectiveness: {'yes' if sup < base else 'no'}, because the 10-step supervised latent corrector changes Relative L2 from {base:.6f} to {sup:.6f}.\n"
         f"2. Latent action controllability: {'yes' if correction_change > 1e-4 and reward_var > 1e-8 else 'not established'}, measured by `latent_controllability.csv`.\n"
-        f"3. Long-horizon critic quality: {'yes' if full_spearman > 0.5 and full_pairwise > 0.65 else 'not yet'}, using K-step continuation returns in `critic_long_horizon_ranking.csv`.\n"
-        f"4. RL improvement over supervised correction: {'yes' if rl < sup else 'no'} for the conservative Full RL policy; standalone TD3+BC is {'better' if td3bc < sup else 'not better'} than supervised by {sup - td3bc:.6f} Relative L2.\n"
-        f"5. Final Full policy shift: {'nonzero' if latent_shift > 1e-8 or correction_shift > 1e-8 else 'zero'}, so the selected Full policy {'changed from' if latent_shift > 1e-8 or correction_shift > 1e-8 else 'fell back to'} the supervised actor.\n\n"
+        f"3. Long-horizon critic quality: {'yes' if full_spearman > 0.5 and full_pairwise > 0.65 and full_top1 > 0.25 else 'not yet'}, using within-state K-step candidate returns in `critic_within_state_ranking.csv`.\n"
+        f"4. Actual RL improvement over supervised correction: {'yes' if available and actual_rl < sup else 'no'}; standalone TD3+BC is {'better' if td3bc < sup else 'not better'} than supervised by {sup - td3bc:.6f} Relative L2.\n"
+        f"5. Actual RL policy shift: {'nonzero' if latent_shift > 1e-8 or correction_shift > 1e-8 else 'zero'}; the selected production policy is separately reported and may use the supervised policy when validation rejects the best actual RL candidate.\n\n"
         "## Main Table\n\n"
         + main.to_markdown(index=False)
         + "\n"
@@ -994,6 +1070,7 @@ def rl_contribution_summary(tables: dict[str, pd.DataFrame]) -> pd.DataFrame:
     seed_df = tables["seed_results"]
     rank = tables["critic_long_horizon_ranking"]
     shift = tables["policy_shift"]
+    selection = tables["policy_selection"]
     rows = []
     for seed, g in seed_df.groupby("Seed"):
         def err(method: str) -> float:
@@ -1002,26 +1079,26 @@ def rl_contribution_summary(tables: dict[str, pd.DataFrame]) -> pd.DataFrame:
 
         base = err("Base FNO Initializer")
         sup = err("Supervised Latent Neural Operator Corrector")
-        rl = err("Full RL Neural Operator Solver")
-        td3bc = err("TD3+BC")
+        actual_rl = err("Best Actual RL Policy")
+        selection_row = selection[selection["Seed"].eq(seed)].iloc[0]
+        actual_available = bool(selection_row["ActualRLPolicyAvailable"])
         rsum = rank[(rank["Seed"].eq(seed)) & (rank["candidate"].eq("summary")) & (rank["variant"].astype(str).str.contains("full_cycle"))]
-        ssum = shift[(shift["Seed"].eq(seed)) & (shift["state"].eq(-1))]
-        full_gate_passes = int(((rsum["spearman"].astype(float) > 0.5) & (rsum["pairwise"].astype(float) > 0.65)).sum()) if len(rsum) else 0
+        ssum = shift[(shift["Seed"].eq(seed)) & (shift["state"].eq(-1)) & (shift["Policy"].eq("Best Actual RL Policy"))]
         latent_shift = float(ssum["latent_policy_shift"].iloc[0]) if len(ssum) else float("nan")
         correction_shift = float(ssum["correction_policy_shift"].iloc[0]) if len(ssum) else float("nan")
         rows.append({
             "Seed": int(seed),
             "BaseError": base,
             "SupervisedError": sup,
-            "RLError": rl,
-            "TD3BCError": td3bc,
-            "RL_vs_Base": base - rl,
-            "RL_vs_Supervised": sup - rl,
-            "TD3BC_vs_Supervised": sup - td3bc,
+            "ActualRLError": actual_rl if actual_available else float("nan"),
+            "RL_vs_Supervised": sup - actual_rl if actual_available else float("nan"),
+            "ActorUpdates": int(selection_row["ActualRLActorUpdates"]),
+            "LatentPolicyShift": latent_shift,
+            "CorrectionPolicyShift": correction_shift,
             "CriticSpearman": float(rsum["spearman"].max()) if len(rsum) else float("nan"),
             "CriticPairwise": float(rsum["pairwise"].max()) if len(rsum) else float("nan"),
-            "ActorUpdatesEnabled": full_gate_passes,
-            "SelectedRLPolicyShifted": bool(latent_shift > 1e-8 or correction_shift > 1e-8),
+            "CriticTop1": float(rsum["top1"].max()) if len(rsum) else float("nan"),
+            "ActualRLPolicyAvailable": actual_available,
             "MeanLatentPolicyShift": latent_shift,
             "MeanCorrectionPolicyShift": correction_shift,
         })
@@ -1033,9 +1110,9 @@ def run_pipeline(mode: str) -> None:
     ensure_dirs()
     npz_path = prepare_reaction_diffusion(cfg, ROOT)
     device = get_device(str(cfg.get("device", "cuda")))
-    all_eval, all_per_case, all_conv, all_transitions, all_training, all_ranking, all_controllability, all_shift = [], [], [], [], [], [], [], []
+    all_eval, all_per_case, all_conv, all_transitions, all_training, all_ranking, all_controllability, all_shift, all_selection = [], [], [], [], [], [], [], [], []
     for seed in cfg["solver_v2"]["seeds"]:
-        eval_df, per_case, conv, transitions, training_summary, ranking_df, controllability_df, policy_shift_df = run_seed(cfg, npz_path, int(seed), device)
+        eval_df, per_case, conv, transitions, training_summary, ranking_df, controllability_df, policy_shift_df, selection_df = run_seed(cfg, npz_path, int(seed), device)
         all_eval.append(eval_df)
         all_per_case.append(per_case)
         all_conv.append(conv)
@@ -1044,12 +1121,14 @@ def run_pipeline(mode: str) -> None:
         all_ranking.append(ranking_df)
         all_controllability.append(controllability_df)
         all_shift.append(policy_shift_df)
+        all_selection.append(selection_df)
     per_case_df = pd.concat(all_per_case, ignore_index=True)
     conv_df = pd.concat(all_conv, ignore_index=True)
     training_df = pd.concat(all_training, ignore_index=True)
     ranking_df = pd.concat(all_ranking, ignore_index=True)
     controllability_df = pd.concat(all_controllability, ignore_index=True)
     policy_shift_df = pd.concat(all_shift, ignore_index=True)
+    selection_df = pd.concat(all_selection, ignore_index=True)
     transition_df = pd.DataFrame([tr.__dict__ for tr in all_transitions])
     tables = {
         "main_results": summarize_main(per_case_df),
@@ -1059,6 +1138,7 @@ def run_pipeline(mode: str) -> None:
         "critic_long_horizon_ranking": ranking_df,
         "latent_controllability": controllability_df,
         "policy_shift": policy_shift_df,
+        "policy_selection": selection_df,
         "training_summary": training_df,
         "residual_accuracy_quadrants": residual_accuracy_quadrants(all_transitions),
         "physics_metrics": per_case_df[["Seed", "Method", "Steps", "Case", "PDE residual norm", "BC error", "IC error"]],
@@ -1066,8 +1146,10 @@ def run_pipeline(mode: str) -> None:
         "transition_debug": transition_df,
     }
     tables["rl_contribution"] = rl_contribution_summary(tables)
+    tables["critic_within_state_ranking"] = tables["critic_long_horizon_ranking"]
+    tables["actual_rl_contribution"] = tables["rl_contribution"]
     table_dir = ROOT / "results" / "solver_v2" / "tables"
-    for name in ["main_results", "seed_results", "convergence", "critic_ranking", "critic_long_horizon_ranking", "latent_controllability", "policy_shift", "rl_contribution", "training_summary", "residual_accuracy_quadrants", "physics_metrics", "per_case_results"]:
+    for name in ["main_results", "seed_results", "convergence", "critic_ranking", "critic_long_horizon_ranking", "critic_within_state_ranking", "latent_controllability", "policy_shift", "policy_selection", "rl_contribution", "actual_rl_contribution", "training_summary", "residual_accuracy_quadrants", "physics_metrics", "per_case_results"]:
         tables[name].to_csv(table_dir / f"{name}.csv", index=False)
     generate_figures(tables)
     generate_representative_figure(cfg, npz_path, int(cfg["solver_v2"]["seeds"][0]), device)

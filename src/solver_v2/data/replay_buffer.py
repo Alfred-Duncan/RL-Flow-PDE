@@ -34,6 +34,8 @@ class RawCorrectionTransition:
 class SolverTransition(RawCorrectionTransition):
     action: torch.Tensor
     mc_return: float = 0.0
+    group_id: str = ""
+    candidate_name: str = ""
 
 
 class ReplayDataset(Dataset):
@@ -55,6 +57,29 @@ class ReplayDataset(Dataset):
             "next_fields": tr.next_fields,
             "next_scalars": tr.next_scalars,
             "done": torch.tensor(tr.done, dtype=torch.float32),
+        }
+
+
+class GroupedReplayDataset(Dataset):
+    """Candidate action groups used for within-state critic supervision."""
+
+    def __init__(self, transitions: list[SolverTransition]):
+        groups: dict[str, list[SolverTransition]] = {}
+        for tr in transitions:
+            if tr.group_id:
+                groups.setdefault(tr.group_id, []).append(tr)
+        self.groups = [rows for rows in groups.values() if len(rows) >= 2]
+
+    def __len__(self) -> int:
+        return len(self.groups)
+
+    def __getitem__(self, idx: int) -> dict[str, torch.Tensor]:
+        rows = self.groups[idx]
+        return {
+            "state_fields": torch.stack([tr.state_fields for tr in rows]),
+            "state_scalars": torch.stack([tr.state_scalars for tr in rows]),
+            "action": torch.stack([tr.action.reshape(-1) for tr in rows]),
+            "mc_return": torch.tensor([tr.mc_return for tr in rows], dtype=torch.float32),
         }
 
 

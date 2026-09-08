@@ -56,7 +56,18 @@ solver_v2:
   td3_epochs: 50
   td3_scratch_epochs: 50
   autoencoder_epochs: 70
-  critic_mc_epochs: 70
+  critic_mc_epochs: 40
+  critic_group_batch_size: 8
+  critic_candidate_groups: 480
+  lambda_critic_return: 1.0
+  lambda_critic_advantage: 1.0
+  lambda_critic_rank: 1.0
+  critic_return_margin: 0.0001
+  critic_rank_temperature: 0.05
+  critic_hard_pair_weight: 2.0
+  critic_gate_spearman: 0.5
+  critic_gate_pairwise: 0.65
+  critic_gate_top1: 0.25
   lambda_decoder_wrong: 0.5
   lambda_decoder_sens: 0.2
   decoder_wrong_margin: 0.05

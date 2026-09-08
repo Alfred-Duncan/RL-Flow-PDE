@@ -7,13 +7,16 @@
     2026
   ],
   "tables": [
+    "actual_rl_contribution.csv",
     "convergence.csv",
     "critic_long_horizon_ranking.csv",
     "critic_ranking.csv",
+    "critic_within_state_ranking.csv",
     "latent_controllability.csv",
     "main_results.csv",
     "per_case_results.csv",
     "physics_metrics.csv",
+    "policy_selection.csv",
     "policy_shift.csv",
     "residual_accuracy_quadrants.csv",
     "rl_contribution.csv",

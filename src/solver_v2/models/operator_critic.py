@@ -19,8 +19,17 @@ class OperatorQ(nn.Module):
     ):
         super().__init__()
         self.encoder = NeuralOperatorStateEncoder(in_channels, scalar_dim, width, modes, depth, state_dim)
+        self.action_encoder = nn.Sequential(
+            nn.Linear(latent_dim, width),
+            nn.GELU(),
+            nn.LayerNorm(width),
+            nn.Linear(width, width),
+            nn.GELU(),
+        )
+        self.action_to_state = nn.Linear(width, state_dim)
+        self.action_projection = nn.Linear(width, state_dim)
         self.head = nn.Sequential(
-            nn.Linear(state_dim + latent_dim, width),
+            nn.Linear(state_dim + width + 2 * state_dim, width),
             nn.GELU(),
             nn.LayerNorm(width),
             nn.Linear(width, width),
@@ -29,7 +38,12 @@ class OperatorQ(nn.Module):
         )
 
     def forward(self, fields: torch.Tensor, scalars: torch.Tensor, action: torch.Tensor) -> torch.Tensor:
-        return self.head(torch.cat([self.encoder(fields, scalars), action], dim=1)).squeeze(-1)
+        state = self.encoder(fields, scalars)
+        latent = self.action_encoder(action.reshape(action.shape[0], -1))
+        action_state = self.action_to_state(latent)
+        projection = self.action_projection(latent)
+        interaction = torch.cat([state, latent, state * action_state, torch.abs(state - projection)], dim=1)
+        return self.head(interaction).squeeze(-1)
 
 
 class TwinOperatorCritic(nn.Module):

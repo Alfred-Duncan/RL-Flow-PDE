@@ -1,0 +1,4 @@
+Seed,SupervisedValidationError,BestActualRLValidationError,ActualRLPolicyAvailable,ActualRLActorUpdates,SelectedProductionSource
+42,0.4043683639417092,0.41799406583110493,True,760,supervised
+123,0.3065760576476653,0.3306549383948247,True,466,supervised
+2026,0.2953148235877355,,False,0,supervised
