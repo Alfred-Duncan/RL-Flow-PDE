@@ -412,20 +412,21 @@ def batched_pde_step(u: torch.Tensor, delta: torch.Tensor, case: ReactionDiffusi
     return out
 
 
-def oracle_local_candidates(z_current: torch.Tensor, z_supervised: torch.Tensor, latent_mean: torch.Tensor, latent_std: torch.Tensor, cfg: dict) -> torch.Tensor:
+def oracle_local_candidates(z_current: torch.Tensor, z_supervised: torch.Tensor, latent_mean: torch.Tensor, latent_std: torch.Tensor, cfg: dict, generator: torch.Generator | None = None) -> torch.Tensor:
     """Shared bounded local set for both immediate and long-horizon oracle choices."""
     n = int(cfg["solver_v2"]["oracle_headroom_candidates"])
     if n < 8:
         raise ValueError("oracle_headroom_candidates must be at least 8.")
     values = [z_current.squeeze(0), z_supervised.squeeze(0)]
     scale_values = [0.10, 0.25, 0.50]
+    def random_direction() -> torch.Tensor:
+        direction = torch.randn(z_supervised.squeeze(0).shape, device=z_supervised.device, dtype=z_supervised.dtype, generator=generator)
+        return direction / torch.sqrt(torch.mean(direction ** 2)).clamp_min(1e-6)
     for scale in scale_values:
-        direction = torch.randn_like(z_supervised.squeeze(0))
-        direction = direction / torch.sqrt(torch.mean(direction ** 2)).clamp_min(1e-6)
+        direction = random_direction()
         values.extend([z_supervised.squeeze(0) + scale * latent_std.squeeze(0) * direction, z_supervised.squeeze(0) - scale * latent_std.squeeze(0) * direction])
     for idx in range(n - len(values)):
-        direction = torch.randn_like(z_supervised.squeeze(0))
-        direction = direction / torch.sqrt(torch.mean(direction ** 2)).clamp_min(1e-6)
+        direction = random_direction()
         values.append(z_supervised.squeeze(0) + scale_values[idx % len(scale_values)] * latent_std.squeeze(0) * direction)
     lo = latent_mean.squeeze(0) - float(cfg["solver_v2"]["verified_candidate_clip_std"]) * latent_std.squeeze(0)
     hi = latent_mean.squeeze(0) + float(cfg["solver_v2"]["verified_candidate_clip_std"]) * latent_std.squeeze(0)
@@ -547,6 +548,159 @@ def run_oracle_headroom_stage(cfg: dict, npz_path: Path, seeds: list[int], horiz
     summary.to_csv(summary_path, index=False)
     print("Oracle long-horizon headroom diagnostic completed.")
     print(summary.to_string(index=False))
+    return summary
+
+
+@torch.no_grad()
+def select_sequential_oracle_action(
+    cfg: dict,
+    case: ReactionDiffusionCase,
+    u: torch.Tensor,
+    actor: DeterministicNeuralOperatorActor,
+    decoder: CorrectionOperatorDecoder,
+    pde: ReactionDiffusionPDE,
+    stats: dict,
+    latent_mean: torch.Tensor,
+    latent_std: torch.Tensor,
+    horizon: int,
+    step: int,
+    candidate_seed: int,
+    device: torch.device,
+) -> dict[str, torch.Tensor | float | int | bool]:
+    """Evaluate identical local candidates by immediate and remaining-horizon objectives."""
+    fields, scalars = state_from_u(pde, case, u, step / max(1, horizon), stats)
+    z_reference = actor(fields.unsqueeze(0), scalars.unsqueeze(0), stats, float(cfg["solver_v2"]["temperature"]))
+    generator = torch.Generator(device=device.type).manual_seed(int(candidate_seed))
+    candidates = oracle_local_candidates(z_reference, z_reference, latent_mean, latent_std, cfg, generator)
+    immediate, returns, projected_errors = oracle_candidate_rollouts(cfg, case, u, candidates, actor, decoder, pde, stats, horizon, step, device)
+    greedy_idx = int(torch.argmax(immediate).item())
+    long_idx = int(torch.argmax(returns).item())
+
+    def execute(index: int) -> tuple[torch.Tensor, float, float]:
+        z = candidates[index : index + 1]
+        delta = decoder(fields.unsqueeze(0), scalars.unsqueeze(0), z, stats, float(cfg["solver_v2"]["temperature"])).squeeze(0)
+        nxt = pde.step(u, delta, case).detach()
+        return nxt, float(immediate[index].cpu()), float(torch.norm(z).cpu())
+
+    greedy_next, greedy_reward, greedy_norm = execute(greedy_idx)
+    long_next, long_reward, long_norm = execute(long_idx)
+    return {
+        "greedy_next": greedy_next,
+        "long_next": long_next,
+        "greedy_reward": greedy_reward,
+        "same_state_greedy_reward": greedy_reward,
+        "long_immediate_reward": long_reward,
+        "greedy_norm": greedy_norm,
+        "long_norm": long_norm,
+        "long_return": float(returns[long_idx].cpu()),
+        "greedy_projected_error": float(projected_errors[greedy_idx].cpu()),
+        "long_projected_error": float(projected_errors[long_idx].cpu()),
+        "actions_different": bool(not torch.allclose(candidates[greedy_idx], candidates[long_idx], atol=1e-6, rtol=1e-5)),
+    }
+
+
+def sequential_stage(horizon: int, step: int) -> str:
+    if horizon == 10:
+        return "Early" if step <= 4 else "Late"
+    if horizon == 20:
+        if step <= 5:
+            return "Early"
+        if step <= 12:
+            return "Middle"
+        return "Late"
+    return "Early" if step < horizon // 2 else "Late"
+
+
+def sequential_oracle_diagnostic(cfg: dict, npz_path: Path, seed: int, horizon: int, device: torch.device) -> pd.DataFrame:
+    initializer, actor, decoder, pde, stats = load_oracle_components(cfg, npz_path, seed, device)
+    latent_mean = stats["latent_mean"].to(device).view(1, -1)
+    latent_std = stats["latent_std"].to(device).view(1, -1)
+    ds = ReactionDiffusionDataset(npz_path, "val", int(cfg["solver_v2"]["val_cases"]))
+    rows = []
+    for case_idx in tqdm(range(len(ds)), desc=f"solver_v2:sequential_oracle:{seed}:K{horizon}"):
+        case = pde.make_case(ds[case_idx], device)
+        greedy_u = initial_solution(initializer, pde, case)
+        long_u = greedy_u.detach().clone()
+        case_rows: list[dict[str, float | int | bool | str]] = []
+        for step in range(horizon):
+            base_seed = int(seed * 1_000_000 + horizon * 10_000 + case_idx * 100 + step)
+            greedy_before = float(pde.relative_l2(greedy_u, case.gt).cpu())
+            long_before = float(pde.relative_l2(long_u, case.gt).cpu())
+            greedy_decision = select_sequential_oracle_action(cfg, case, greedy_u, actor, decoder, pde, stats, latent_mean, latent_std, horizon, step, base_seed, device)
+            long_decision = select_sequential_oracle_action(cfg, case, long_u, actor, decoder, pde, stats, latent_mean, latent_std, horizon, step, base_seed, device)
+            greedy_u = greedy_decision["greedy_next"]
+            long_u = long_decision["long_next"]
+            row = {
+                "Seed": seed, "Horizon": horizon, "Case": case_idx, "Step": step, "Stage": sequential_stage(horizon, step),
+                "GreedyErrorBefore": greedy_before,
+                "GreedyErrorAfter": float(pde.relative_l2(greedy_u, case.gt).cpu()),
+                "GreedyImmediateReward": float(greedy_decision["greedy_reward"]),
+                "GreedyChosenActionNorm": float(greedy_decision["greedy_norm"]),
+                "LongErrorBefore": long_before,
+                "LongErrorAfter": float(pde.relative_l2(long_u, case.gt).cpu()),
+                "LongImmediateReward": float(long_decision["long_immediate_reward"]),
+                "LongStateGreedyImmediateReward": float(long_decision["same_state_greedy_reward"]),
+                "LongChosenReturn": float(long_decision["long_return"]),
+                "LongChosenActionNorm": float(long_decision["long_norm"]),
+                "ActionsDifferent": bool(long_decision["actions_different"]),
+                "GreedyCurrentFinalProjectedError": float(greedy_decision["greedy_projected_error"]),
+                "LongCurrentFinalProjectedError": float(long_decision["long_projected_error"]),
+            }
+            case_rows.append(row)
+        greedy_final = float(pde.relative_l2(greedy_u, case.gt).cpu())
+        long_final = float(pde.relative_l2(long_u, case.gt).cpu())
+        for row in case_rows:
+            row["GreedyTrajectoryFinalError"] = greedy_final
+            row["LongTrajectoryFinalError"] = long_final
+            row["FinalTrajectoryGain"] = greedy_final - long_final
+            rows.append(row)
+    return pd.DataFrame(rows)
+
+
+def summarize_sequential_oracle(detail: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+    case_final = detail.groupby(["Seed", "Horizon", "Case"], as_index=False).agg(
+        GreedyFinalError=("GreedyTrajectoryFinalError", "first"),
+        LongFinalError=("LongTrajectoryFinalError", "first"),
+    )
+    case_final["RelativeGain"] = (case_final["GreedyFinalError"] - case_final["LongFinalError"]) / case_final["GreedyFinalError"].clip(lower=1e-8)
+    summary_rows = []
+    for (seed, horizon), group in case_final.groupby(["Seed", "Horizon"]):
+        steps = detail[(detail["Seed"].eq(seed)) & (detail["Horizon"].eq(horizon))]
+        greedy = float(group["GreedyFinalError"].mean())
+        long = float(group["LongFinalError"].mean())
+        summary_rows.append({
+            "Seed": int(seed), "Horizon": int(horizon), "Cases": len(group),
+            "GreedyFinalErrorMean": greedy, "LongHorizonFinalErrorMean": long,
+            "AbsoluteSequentialGain": greedy - long,
+            "RelativeSequentialGain": (greedy - long) / max(greedy, 1e-8),
+            "MedianCaseRelativeGain": float(group["RelativeGain"].median()),
+            "PositiveCaseRate": float((group["RelativeGain"] > 0.0).mean()),
+            "ActionsDifferentRate": float(steps["ActionsDifferent"].mean()),
+            "EarlyActionsDifferentRate": float(steps[steps["Stage"].eq("Early")]["ActionsDifferent"].mean()),
+            "LateActionsDifferentRate": float(steps[steps["Stage"].eq("Late")]["ActionsDifferent"].mean()),
+        })
+    stage = detail.groupby(["Horizon", "Stage"], as_index=False).agg(
+        MeanImmediateGain=("LongImmediateReward", lambda x: float(x.mean())),
+        MeanFinalTrajectoryGain=("FinalTrajectoryGain", "mean"),
+        ActionsDifferentRate=("ActionsDifferent", "mean"),
+        Cases=("Case", "nunique"),
+    )
+    # Immediate gain is compared to the greedy action evaluated at the same long-policy state.
+    immediate_reference = detail.groupby(["Horizon", "Stage"], as_index=False).agg(GreedyAtLongState=("LongStateGreedyImmediateReward", "mean"))
+    stage = stage.merge(immediate_reference, on=["Horizon", "Stage"])
+    stage["MeanImmediateGain"] = stage["MeanImmediateGain"] - stage.pop("GreedyAtLongState")
+    return pd.DataFrame(summary_rows), stage
+
+
+def run_sequential_oracle_stage(cfg: dict, npz_path: Path, seeds: list[int], horizons: list[int], device: torch.device) -> pd.DataFrame:
+    detail = pd.concat([sequential_oracle_diagnostic(cfg, npz_path, seed, horizon, device) for horizon in horizons for seed in seeds], ignore_index=True)
+    summary, stage = summarize_sequential_oracle(detail)
+    table_dir = ROOT / "results" / "solver_v2" / "tables"
+    detail.to_csv(table_dir / "sequential_oracle_trajectory.csv", index=False)
+    summary.to_csv(table_dir / "sequential_oracle_headroom.csv", index=False)
+    stage.to_csv(table_dir / "sequential_oracle_by_stage.csv", index=False)
+    print("Sequential long-horizon oracle diagnostic completed.")
+    print(summary.groupby("Horizon", as_index=False).agg(RelativeSequentialGain=("RelativeSequentialGain", "mean"), PositiveCaseRate=("PositiveCaseRate", "mean"), ActionsDifferentRate=("ActionsDifferentRate", "mean")).to_string(index=False))
     return summary
 
 
@@ -1337,11 +1491,22 @@ def write_docs(tables: dict[str, pd.DataFrame]) -> None:
     positive_test_seeds = int((contribution["RL_vs_Supervised"] > 0.0).sum())
     headroom_path = ROOT / "results" / "solver_v2" / "tables" / "oracle_headroom_by_horizon.csv"
     headroom = pd.read_csv(headroom_path) if headroom_path.exists() else pd.DataFrame()
+    sequential_path = ROOT / "results" / "solver_v2" / "tables" / "sequential_oracle_headroom.csv"
+    sequential = pd.read_csv(sequential_path) if sequential_path.exists() else pd.DataFrame()
+    stage_path = ROOT / "results" / "solver_v2" / "tables" / "sequential_oracle_by_stage.csv"
+    sequential_stage = pd.read_csv(stage_path) if stage_path.exists() else pd.DataFrame()
+    sequential_summary = sequential.groupby("Horizon", as_index=False).agg(
+        RelativeSequentialGain=("RelativeSequentialGain", "mean"),
+        PositiveCaseRate=("PositiveCaseRate", "mean"),
+        ActionsDifferentRate=("ActionsDifferentRate", "mean"),
+    ) if not sequential.empty else pd.DataFrame()
     headroom_sufficient = bool(
         not headroom.empty
         and ((headroom["MeanRelativeOracleGain"] >= 0.02) & (headroom["PositiveGainRate"] >= 0.60) & (headroom["ActionsDifferentRate"] > 0.0)).any()
     )
-    if not headroom.empty and not headroom_sufficient:
+    if not sequential_summary.empty and float(sequential_summary["RelativeSequentialGain"].max()) < 0.02:
+        claim = "Even sequential long-horizon oracle planning provides limited improvement over greedy neural-operator correction, indicating insufficient sequential decision structure in the current benchmark."
+    elif not headroom.empty and not headroom_sufficient:
         claim = "Current PDE formulation provides insufficient long-horizon policy headroom for meaningful RL improvement."
     elif np.isfinite(rl_gain) and rl_gain > 0.0 and accepted > 0.0:
         claim = (
@@ -1358,10 +1523,18 @@ def write_docs(tables: dict[str, pd.DataFrame]) -> None:
         oracle_section = "## Oracle Long-Horizon Headroom\n\n" + headroom.to_markdown(index=False) + "\n\n"
         if not headroom_sufficient:
             oracle_section += "No further Greedy-vs-RL policy training was run after this validation result.\n\n"
+    sequential_section = ""
+    if not sequential_summary.empty:
+        sequential_section = "## Sequential Oracle\n\n" + sequential_summary.to_markdown(index=False) + "\n\n"
+        if not sequential_stage.empty:
+            sequential_section += "### By Stage\n\n" + sequential_stage.to_markdown(index=False) + "\n\n"
+        if float(sequential_summary["RelativeSequentialGain"].max()) < 0.02:
+            sequential_section += "The sequential oracle does not meet the 2% headroom threshold; no early-only hybrid or new RL policy was trained.\n\n"
     text = (
         "# Solver V2 Results\n\n"
         + claim + "\n\n"
         + oracle_section
+        + sequential_section
         + "The main RL algorithm uses critic screening only: candidate actions are ranked by Twin-Q, then 10-12 candidates per state receive true K-step PDE rollout returns. Actor regression uses only verified positive-advantage targets and a supervised-policy trust penalty; no Q-gradient enters the actor.\n\n"
         + "## Final Contribution\n\n" + contribution.to_markdown(index=False) + "\n\n"
         + "## Verified Cycles\n\n" + tables["verified_policy_improvement"].to_markdown(index=False) + "\n\n"
@@ -1443,7 +1616,7 @@ def run_pipeline(mode: str, seeds: list[int] | None = None) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--mode", default="paper", choices=["paper"])
-    parser.add_argument("--stage", default="paper", choices=["paper", "oracle-headroom"])
+    parser.add_argument("--stage", default="paper", choices=["paper", "oracle-headroom", "sequential-oracle"])
     parser.add_argument("--oracle-horizon", type=int, default=None)
     parser.add_argument("--seeds", default=None, help="Optional comma-separated seed subset for a smoke run.")
     args = parser.parse_args()
@@ -1454,6 +1627,12 @@ def main() -> None:
         npz_path = prepare_reaction_diffusion(cfg, ROOT)
         active_seeds = seeds if seeds is not None else [int(seed) for seed in cfg["solver_v2"]["seeds"]]
         run_oracle_headroom_stage(cfg, npz_path, active_seeds, int(args.oracle_horizon or cfg["solver_v2"]["oracle_headroom_horizon"]), get_device(str(cfg.get("device", "cuda"))))
+    elif args.stage == "sequential-oracle":
+        cfg = load_config()
+        ensure_dirs()
+        npz_path = prepare_reaction_diffusion(cfg, ROOT)
+        active_seeds = seeds if seeds is not None else [int(seed) for seed in cfg["solver_v2"]["seeds"]]
+        run_sequential_oracle_stage(cfg, npz_path, active_seeds, [10, 20], get_device(str(cfg.get("device", "cuda"))))
     else:
         run_pipeline(args.mode, seeds)
 

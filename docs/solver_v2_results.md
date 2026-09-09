@@ -1,6 +1,6 @@
 # Solver V2 Results
 
-Current PDE formulation provides insufficient long-horizon policy headroom for meaningful RL improvement.
+Even sequential long-horizon oracle planning provides limited improvement over greedy neural-operator correction, indicating insufficient sequential decision structure in the current benchmark.
 
 ## Oracle Long-Horizon Headroom
 
@@ -11,6 +11,25 @@ Current PDE formulation provides insufficient long-horizon policy headroom for m
 |        20 |               0.00542758 |                          0 |           0.344444 |               0.344444 |      1440 |
 
 No further Greedy-vs-RL policy training was run after this validation result.
+
+## Sequential Oracle
+
+|   Horizon |   RelativeSequentialGain |   PositiveCaseRate |   ActionsDifferentRate |
+|----------:|-------------------------:|-------------------:|-----------------------:|
+|        10 |              0.000423221 |           0.486111 |               0.427778 |
+|        20 |              0.0120479   |           0.569444 |               0.530556 |
+
+### By Stage
+
+|   Horizon | Stage   |   MeanImmediateGain |   MeanFinalTrajectoryGain |   ActionsDifferentRate |   Cases |
+|----------:|:--------|--------------------:|--------------------------:|-----------------------:|--------:|
+|        10 | Early   |         -0.0111017  |                0.00021167 |               0.522222 |      24 |
+|        10 | Late    |         -0.00254923 |                0.00021167 |               0.333333 |      24 |
+|        20 | Early   |         -0.0202887  |                0.00414961 |               0.675926 |      24 |
+|        20 | Late    |         -0.00297882 |                0.00414961 |               0.347222 |      24 |
+|        20 | Middle  |         -0.0138377  |                0.00414961 |               0.589286 |      24 |
+
+The sequential oracle does not meet the 2% headroom threshold; no early-only hybrid or new RL policy was trained.
 
 The main RL algorithm uses critic screening only: candidate actions are ranked by Twin-Q, then 10-12 candidates per state receive true K-step PDE rollout returns. Actor regression uses only verified positive-advantage targets and a supervised-policy trust penalty; no Q-gradient enters the actor.
 
