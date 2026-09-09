@@ -113,3 +113,24 @@ solver_v2:
   lambda_bc_end: 2.0
   lambda_phys: 0.05
   lambda_step: 0.0005
+brusselator:
+  official_npz: data/official/brusselator/Brusselator_force_train.npz
+  downsample: 2
+  validation_cases: 64
+  test_cases: 100
+  split_seed: 2026
+  fno_seed: 42
+  fno_epochs: 60
+  fno_batch_size: 16
+  fno_lr: 0.001
+  fno_width: 20
+  fno_modes_t: 8
+  fno_modes_x: 6
+  fno_modes_y: 6
+  fno_depth: 3
+  latent_dim: 16
+  correction_scale_fraction: 0.04
+  correction_retention: 0.92
+  action_cost: 0.00001
+  candidates: 64
+  horizons: [5, 10, 20]

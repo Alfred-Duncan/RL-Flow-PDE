@@ -1,0 +1,3 @@
+Method,Split,Mean Relative L2,Cases
+FNO baseline (not LNO),validation,0.13812610507011414,64
+FNO baseline (not LNO),test,0.13752125203609467,100

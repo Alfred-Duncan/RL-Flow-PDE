@@ -1,0 +1,18 @@
+{
+  "device": "cuda",
+  "baseline": [
+    {
+      "Method": "FNO baseline (not LNO)",
+      "Split": "validation",
+      "Mean Relative L2": 0.13812610507011414,
+      "Cases": 64
+    },
+    {
+      "Method": "FNO baseline (not LNO)",
+      "Split": "test",
+      "Mean Relative L2": 0.13752125203609467,
+      "Cases": 100
+    }
+  ],
+  "correction_scale": 0.09886738777160645
+}
