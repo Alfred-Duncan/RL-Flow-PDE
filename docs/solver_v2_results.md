@@ -1,6 +1,16 @@
 # Solver V2 Results
 
-The three-seed mean favors rollout-verified conservative policy improvement over the supervised latent corrector by 0.000045 Relative L2, but the result is small and seed-level outcomes are mixed (1/3 positive test differences).
+Current PDE formulation provides insufficient long-horizon policy headroom for meaningful RL improvement.
+
+## Oracle Long-Horizon Headroom
+
+|   Horizon |   MeanRelativeOracleGain |   MedianRelativeOracleGain |   PositiveGainRate |   ActionsDifferentRate |   Samples |
+|----------:|-------------------------:|---------------------------:|-------------------:|-----------------------:|----------:|
+|         5 |               0.00150709 |                          0 |           0.211111 |               0.211111 |       360 |
+|        10 |               0.00583992 |                          0 |           0.35     |               0.352778 |       720 |
+|        20 |               0.00542758 |                          0 |           0.344444 |               0.344444 |      1440 |
+
+No further Greedy-vs-RL policy training was run after this validation result.
 
 The main RL algorithm uses critic screening only: candidate actions are ranked by Twin-Q, then 10-12 candidates per state receive true K-step PDE rollout returns. Actor regression uses only verified positive-advantage targets and a supervised-policy trust penalty; no Q-gradient enters the actor.
 

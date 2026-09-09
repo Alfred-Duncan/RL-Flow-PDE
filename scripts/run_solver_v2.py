@@ -380,6 +380,176 @@ def rollout_k_step_return(
     return total, cur, first_delta, first_reward
 
 
+def batched_state_from_u(pde: ReactionDiffusionPDE, case: ReactionDiffusionCase, u: torch.Tensor, step_frac: float, stats: dict) -> tuple[torch.Tensor, torch.Tensor]:
+    """Vectorized state construction for oracle candidate rollouts, with no model changes."""
+    dx = (case.x[1] - case.x[0]).abs().clamp_min(1e-6)
+    dt = (case.t[1] - case.t[0]).abs().clamp_min(1e-6)
+    ut = torch.zeros_like(u)
+    ut[:, :, 1:-1] = (u[:, :, 2:] - u[:, :, :-2]) / (2.0 * dt)
+    ut[:, :, 0] = (u[:, :, 1] - u[:, :, 0]) / dt
+    ut[:, :, -1] = (u[:, :, -1] - u[:, :, -2]) / dt
+    uxx = torch.zeros_like(u)
+    uxx[:, 1:-1, :] = (u[:, 2:, :] - 2.0 * u[:, 1:-1, :] + u[:, :-2, :]) / (dx * dx)
+    residual = ut - pde.diffusion * uxx - pde.reaction * (u ** 2) - case.source.unsqueeze(0)
+    u_mean, u_std = stats["u_mean"].to(u.device), stats["u_std"].to(u.device).clamp_min(1e-6)
+    residual_rms = stats["residual_rms"].to(u.device).clamp_min(1e-6)
+    s_mean, s_std = stats["source_mean"].to(u.device), stats["source_std"].to(u.device).clamp_min(1e-6)
+    ic = case.ic.view(1, -1, 1).expand_as(u)
+    bc = torch.zeros_like(u)
+    bc[:, 0, :] = case.bc_left
+    bc[:, -1, :] = case.bc_right
+    source = case.source.unsqueeze(0).expand_as(u)
+    fields = torch.stack([(u - u_mean) / u_std, residual / residual_rms, (source - s_mean) / s_std, (ic - u_mean) / u_std, (bc - u_mean) / u_std], dim=1)
+    scalars = torch.tensor([pde.diffusion, pde.reaction, float(step_frac), 1.0], dtype=torch.float32, device=u.device).view(1, -1).expand(u.shape[0], -1)
+    return fields, scalars
+
+
+def batched_pde_step(u: torch.Tensor, delta: torch.Tensor, case: ReactionDiffusionCase) -> torch.Tensor:
+    out = (u + delta).clamp(-8.0, 8.0)
+    out[:, :, 0] = case.ic
+    out[:, 0, :] = case.bc_left
+    out[:, -1, :] = case.bc_right
+    return out
+
+
+def oracle_local_candidates(z_current: torch.Tensor, z_supervised: torch.Tensor, latent_mean: torch.Tensor, latent_std: torch.Tensor, cfg: dict) -> torch.Tensor:
+    """Shared bounded local set for both immediate and long-horizon oracle choices."""
+    n = int(cfg["solver_v2"]["oracle_headroom_candidates"])
+    if n < 8:
+        raise ValueError("oracle_headroom_candidates must be at least 8.")
+    values = [z_current.squeeze(0), z_supervised.squeeze(0)]
+    scale_values = [0.10, 0.25, 0.50]
+    for scale in scale_values:
+        direction = torch.randn_like(z_supervised.squeeze(0))
+        direction = direction / torch.sqrt(torch.mean(direction ** 2)).clamp_min(1e-6)
+        values.extend([z_supervised.squeeze(0) + scale * latent_std.squeeze(0) * direction, z_supervised.squeeze(0) - scale * latent_std.squeeze(0) * direction])
+    for idx in range(n - len(values)):
+        direction = torch.randn_like(z_supervised.squeeze(0))
+        direction = direction / torch.sqrt(torch.mean(direction ** 2)).clamp_min(1e-6)
+        values.append(z_supervised.squeeze(0) + scale_values[idx % len(scale_values)] * latent_std.squeeze(0) * direction)
+    lo = latent_mean.squeeze(0) - float(cfg["solver_v2"]["verified_candidate_clip_std"]) * latent_std.squeeze(0)
+    hi = latent_mean.squeeze(0) + float(cfg["solver_v2"]["verified_candidate_clip_std"]) * latent_std.squeeze(0)
+    return torch.stack(values[:n], dim=0).clamp(lo, hi)
+
+
+@torch.no_grad()
+def oracle_candidate_rollouts(
+    cfg: dict,
+    case: ReactionDiffusionCase,
+    u: torch.Tensor,
+    candidates: torch.Tensor,
+    continuation_actor: DeterministicNeuralOperatorActor,
+    decoder: CorrectionOperatorDecoder,
+    pde: ReactionDiffusionPDE,
+    stats: dict,
+    horizon: int,
+    start_step: int,
+    device: torch.device,
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Return immediate rewards, true K-step returns, and final errors for every candidate."""
+    count = candidates.shape[0]
+    cur = u.unsqueeze(0).expand(count, -1, -1).clone()
+    fields, scalars = state_from_u(pde, case, u, start_step / max(1, horizon), stats)
+    fields_b, scalars_b = fields.unsqueeze(0).expand(count, -1, -1, -1), scalars.unsqueeze(0).expand(count, -1)
+    delta = decoder(fields_b.to(device), scalars_b.to(device), candidates, stats, float(cfg["solver_v2"]["temperature"]))
+    nxt = batched_pde_step(cur, delta, case)
+    e0 = pde.relative_l2(u, case.gt)
+    e1 = torch.sqrt(torch.sum((nxt - case.gt.unsqueeze(0)) ** 2, dim=(1, 2))) / torch.norm(case.gt).clamp_min(1e-8)
+    immediate = torch.log((e0 + 1e-8) / (e1 + 1e-8)) - float(cfg["solver_v2"]["lambda_action"]) * torch.mean(delta ** 2, dim=(1, 2))
+    returns = immediate.clone()
+    cur = nxt
+    for k in range(start_step + 1, horizon):
+        fields_b, scalars_b = batched_state_from_u(pde, case, cur, k / max(1, horizon), stats)
+        z = continuation_actor(fields_b, scalars_b, stats, float(cfg["solver_v2"]["temperature"]))
+        delta = decoder(fields_b, scalars_b, z, stats, float(cfg["solver_v2"]["temperature"]))
+        nxt = batched_pde_step(cur, delta, case)
+        e_prev = torch.sqrt(torch.sum((cur - case.gt.unsqueeze(0)) ** 2, dim=(1, 2))) / torch.norm(case.gt).clamp_min(1e-8)
+        e_next = torch.sqrt(torch.sum((nxt - case.gt.unsqueeze(0)) ** 2, dim=(1, 2))) / torch.norm(case.gt).clamp_min(1e-8)
+        returns += torch.log((e_prev + 1e-8) / (e_next + 1e-8)) - float(cfg["solver_v2"]["lambda_action"]) * torch.mean(delta ** 2, dim=(1, 2))
+        cur = nxt
+    final_error = torch.sqrt(torch.sum((cur - case.gt.unsqueeze(0)) ** 2, dim=(1, 2))) / torch.norm(case.gt).clamp_min(1e-8)
+    return immediate, returns, final_error
+
+
+def load_oracle_components(cfg: dict, npz_path: Path, seed: int, device: torch.device) -> tuple[FNOInitializer, DeterministicNeuralOperatorActor, CorrectionOperatorDecoder, ReactionDiffusionPDE, dict]:
+    set_seed(seed)
+    pde = ReactionDiffusionPDE(float(cfg["benchmark"]["diffusion"]), float(cfg["benchmark"]["reaction"]))
+    stats = fit_train_stats(cfg, npz_path, pde, device, ROOT / "checkpoints" / "solver_v2")
+    initializer = train_initializer(cfg, npz_path, seed, pde, device)
+    train_raw = generate_positive_trajectories(cfg, npz_path, initializer, pde, stats, seed, "train", device)
+    encoder, decoder, zmeta = train_correction_autoencoder(cfg, train_raw, stats, seed, device)
+    del encoder
+    stats.update(zmeta)
+    actor = DeterministicNeuralOperatorActor(width=int(cfg["solver_v2"]["width"]), modes=int(cfg["solver_v2"]["modes"]), depth=int(cfg["solver_v2"]["actor_depth"]), latent_dim=int(cfg["solver_v2"]["latent_dim"]), state_dim=int(cfg["solver_v2"]["state_dim"])).to(device)
+    payload = torch.load(ROOT / "checkpoints" / "solver_v2" / f"actor_pretrain_{V2_CACHE_VERSION}_seed{seed}.pt", map_location=device)
+    actor.load_state_dict(payload["actor"])
+    actor.eval()
+    decoder.eval()
+    return initializer, actor, decoder, pde, stats
+
+
+def oracle_headroom_diagnostic(cfg: dict, npz_path: Path, seed: int, horizon: int, device: torch.device) -> pd.DataFrame:
+    initializer, actor, decoder, pde, stats = load_oracle_components(cfg, npz_path, seed, device)
+    latent_mean = stats["latent_mean"].to(device).view(1, -1)
+    latent_std = stats["latent_std"].to(device).view(1, -1)
+    ds = ReactionDiffusionDataset(npz_path, "val", int(cfg["solver_v2"]["val_cases"]))
+    rows = []
+    for case_idx in tqdm(range(len(ds)), desc=f"solver_v2:oracle_headroom:{seed}:K{horizon}"):
+        case = pde.make_case(ds[case_idx], device)
+        u = initial_solution(initializer, pde, case)
+        for step in range(horizon):
+            fields, scalars = state_from_u(pde, case, u, step / max(1, horizon), stats)
+            z_sup = actor(fields.unsqueeze(0), scalars.unsqueeze(0), stats, float(cfg["solver_v2"]["temperature"]))
+            candidates = oracle_local_candidates(z_sup, z_sup, latent_mean, latent_std, cfg)
+            immediate, returns, final_errors = oracle_candidate_rollouts(cfg, case, u, candidates, actor, decoder, pde, stats, horizon, step, device)
+            greedy_idx = int(torch.argmax(immediate).item())
+            long_idx = int(torch.argmax(returns).item())
+            greedy_error = float(final_errors[greedy_idx].cpu())
+            long_error = float(final_errors[long_idx].cpu())
+            gain = greedy_error - long_error
+            rows.append({
+                "Seed": seed, "Case": case_idx, "Step": step, "Horizon": horizon,
+                "GreedyImmediateReward": float(immediate[greedy_idx].cpu()), "GreedyFinalError": greedy_error,
+                "LongHorizonReturn": float(returns[long_idx].cpu()), "LongHorizonFinalError": long_error,
+                "AbsoluteOracleGain": gain, "RelativeOracleGain": gain / max(greedy_error, 1e-8),
+                "GreedyActionShift": float(normalized_rms_shift(candidates[greedy_idx : greedy_idx + 1], z_sup, latent_std).item()),
+                "LongActionShift": float(normalized_rms_shift(candidates[long_idx : long_idx + 1], z_sup, latent_std).item()),
+                "ActionsDifferent": bool(not torch.allclose(candidates[greedy_idx], candidates[long_idx], atol=1e-6, rtol=1e-5)),
+            })
+            with torch.no_grad():
+                z_continue = actor(fields.unsqueeze(0), scalars.unsqueeze(0), stats, float(cfg["solver_v2"]["temperature"]))
+                delta_continue = decoder(fields.unsqueeze(0), scalars.unsqueeze(0), z_continue, stats, float(cfg["solver_v2"]["temperature"])).squeeze(0)
+            u = pde.step(u, delta_continue, case).detach()
+    return pd.DataFrame(rows)
+
+
+def run_oracle_headroom_stage(cfg: dict, npz_path: Path, seeds: list[int], horizon: int, device: torch.device) -> pd.DataFrame:
+    diagnostics = [oracle_headroom_diagnostic(cfg, npz_path, seed, horizon, device) for seed in seeds]
+    detail = pd.concat(diagnostics, ignore_index=True)
+    summary = pd.DataFrame([{
+        "Horizon": horizon,
+        "MeanRelativeOracleGain": float(detail["RelativeOracleGain"].mean()),
+        "MedianRelativeOracleGain": float(detail["RelativeOracleGain"].median()),
+        "PositiveGainRate": float((detail["AbsoluteOracleGain"] > 0.0).mean()),
+        "ActionsDifferentRate": float(detail["ActionsDifferent"].mean()),
+        "Samples": len(detail),
+    }])
+    table_dir = ROOT / "results" / "solver_v2" / "tables"
+    detail_path = table_dir / "oracle_headroom.csv"
+    summary_path = table_dir / "oracle_headroom_by_horizon.csv"
+    if detail_path.exists():
+        old = pd.read_csv(detail_path)
+        detail = pd.concat([old[~old["Horizon"].eq(horizon)], detail], ignore_index=True)
+    if summary_path.exists():
+        old_summary = pd.read_csv(summary_path)
+        summary = pd.concat([old_summary[~old_summary["Horizon"].eq(horizon)], summary], ignore_index=True).sort_values("Horizon")
+    detail.to_csv(detail_path, index=False)
+    summary.to_csv(summary_path, index=False)
+    print("Oracle long-horizon headroom diagnostic completed.")
+    print(summary.to_string(index=False))
+    return summary
+
+
 def critic_ranking_validation(cfg: dict, val_raw: list[RawCorrectionTransition], actor: DeterministicNeuralOperatorActor, supervised_actor: DeterministicNeuralOperatorActor, critic: TwinOperatorCritic, decoder: CorrectionOperatorDecoder, pde: ReactionDiffusionPDE, stats: dict, device: torch.device, label: str) -> pd.DataFrame:
     rows = []
     group_metrics: list[dict[str, float]] = []
@@ -1165,7 +1335,15 @@ def write_docs(tables: dict[str, pd.DataFrame]) -> None:
     rl_gain = float(mean.get("RL_vs_Supervised", float("nan")))
     accepted = float(mean.get("AcceptedCycles", 0.0))
     positive_test_seeds = int((contribution["RL_vs_Supervised"] > 0.0).sum())
-    if np.isfinite(rl_gain) and rl_gain > 0.0 and accepted > 0.0:
+    headroom_path = ROOT / "results" / "solver_v2" / "tables" / "oracle_headroom_by_horizon.csv"
+    headroom = pd.read_csv(headroom_path) if headroom_path.exists() else pd.DataFrame()
+    headroom_sufficient = bool(
+        not headroom.empty
+        and ((headroom["MeanRelativeOracleGain"] >= 0.02) & (headroom["PositiveGainRate"] >= 0.60) & (headroom["ActionsDifferentRate"] > 0.0)).any()
+    )
+    if not headroom.empty and not headroom_sufficient:
+        claim = "Current PDE formulation provides insufficient long-horizon policy headroom for meaningful RL improvement."
+    elif np.isfinite(rl_gain) and rl_gain > 0.0 and accepted > 0.0:
         claim = (
             f"The three-seed mean favors rollout-verified conservative policy improvement over the supervised latent corrector "
             f"by {rl_gain:.6f} Relative L2, but the result is small and seed-level outcomes are mixed "
@@ -1175,9 +1353,15 @@ def write_docs(tables: dict[str, pd.DataFrame]) -> None:
         claim = "Rollout-verified updates were accepted on validation, but the final three-seed test result does not establish an improvement over supervised correction."
     else:
         claim = "No rollout-verified policy cycle met the validation acceptance criterion; the reported RL policy remains at the supervised trust-region anchor."
+    oracle_section = ""
+    if not headroom.empty:
+        oracle_section = "## Oracle Long-Horizon Headroom\n\n" + headroom.to_markdown(index=False) + "\n\n"
+        if not headroom_sufficient:
+            oracle_section += "No further Greedy-vs-RL policy training was run after this validation result.\n\n"
     text = (
         "# Solver V2 Results\n\n"
         + claim + "\n\n"
+        + oracle_section
         + "The main RL algorithm uses critic screening only: candidate actions are ranked by Twin-Q, then 10-12 candidates per state receive true K-step PDE rollout returns. Actor regression uses only verified positive-advantage targets and a supervised-policy trust penalty; no Q-gradient enters the actor.\n\n"
         + "## Final Contribution\n\n" + contribution.to_markdown(index=False) + "\n\n"
         + "## Verified Cycles\n\n" + tables["verified_policy_improvement"].to_markdown(index=False) + "\n\n"
@@ -1259,10 +1443,19 @@ def run_pipeline(mode: str, seeds: list[int] | None = None) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--mode", default="paper", choices=["paper"])
+    parser.add_argument("--stage", default="paper", choices=["paper", "oracle-headroom"])
+    parser.add_argument("--oracle-horizon", type=int, default=None)
     parser.add_argument("--seeds", default=None, help="Optional comma-separated seed subset for a smoke run.")
     args = parser.parse_args()
     seeds = [int(value) for value in args.seeds.split(",")] if args.seeds else None
-    run_pipeline(args.mode, seeds)
+    if args.stage == "oracle-headroom":
+        cfg = load_config()
+        ensure_dirs()
+        npz_path = prepare_reaction_diffusion(cfg, ROOT)
+        active_seeds = seeds if seeds is not None else [int(seed) for seed in cfg["solver_v2"]["seeds"]]
+        run_oracle_headroom_stage(cfg, npz_path, active_seeds, int(args.oracle_horizon or cfg["solver_v2"]["oracle_headroom_horizon"]), get_device(str(cfg.get("device", "cuda"))))
+    else:
+        run_pipeline(args.mode, seeds)
 
 
 if __name__ == "__main__":

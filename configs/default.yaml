@@ -87,6 +87,8 @@ solver_v2:
   verified_advantage_margin_floor: 0.0001
   verified_advantage_std_fraction: 0.05
   verified_candidate_clip_std: 3.0
+  oracle_headroom_candidates: 64
+  oracle_headroom_horizon: 5
   horizon: 5
   eval_steps: [1, 2, 5, 10]
   width: 32
