@@ -131,6 +131,7 @@ brusselator:
   latent_dim: 16
   correction_scale_fraction: 0.04
   correction_retention: 0.92
+  pca_step_rms_quantile: 0.90
   action_cost: 0.00001
   candidates: 64
   horizons: [5, 10, 20]

@@ -1,0 +1,5 @@
+{
+  "device": "cuda",
+  "pca_cache": "checkpoints/solver_v2/brusselator/pca_corrections_v2.pt",
+  "max_step_rms": 0.041194457560777664
+}
