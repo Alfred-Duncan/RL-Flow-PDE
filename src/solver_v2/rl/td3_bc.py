@@ -45,10 +45,17 @@ class TD3BCTrainer:
         cfg: dict,
         stats: dict,
         device: torch.device,
+        supervised_actor: DeterministicNeuralOperatorActor | None = None,
         allow_actor_update: bool = True,
         variant: str = "td3_bc",
     ):
         self.actor = actor.to(device)
+        for p in self.actor.parameters():
+            p.requires_grad_(True)
+        self.supervised_actor = supervised_actor.to(device).eval() if supervised_actor is not None else None
+        if self.supervised_actor is not None:
+            for p in self.supervised_actor.parameters():
+                p.requires_grad_(False)
         self.critic = critic.to(device)
         self.decoder = decoder.to(device).eval()
         for p in self.decoder.parameters():
@@ -206,7 +213,13 @@ class TD3BCTrainer:
                     residual = batch_residual(u_next_norm, fields[:, 2], self.stats, self.cfg["benchmark"]["diffusion"], self.cfg["benchmark"]["reaction"])
                     phys_loss = torch.mean((residual / self.stats["residual_rms"].to(self.device).clamp_min(1e-6)) ** 2)
                     step_loss = torch.mean(pred_delta ** 2)
-                    bc_loss = F.mse_loss(pred_action, action)
+                    # Replay actions include online exploration noise.  The BC prior is the
+                    # deterministic supervised latent policy, never a stored noisy action.
+                    if self.supervised_actor is None:
+                        raise RuntimeError("TD3+BC requires a frozen supervised actor anchor.")
+                    with torch.no_grad():
+                        z_sup = self.supervised_actor(fields, scalars, self.stats, float(self.cfg["solver_v2"]["temperature"]))
+                    bc_loss = F.mse_loss(pred_action, z_sup)
                     actor_loss = -lambda_q * q_actor.mean() + lambda_bc * bc_loss + lambda_phys * phys_loss + lambda_step * step_loss
                     self.actor_opt.zero_grad(set_to_none=True)
                     actor_loss.backward()

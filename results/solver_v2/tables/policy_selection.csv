@@ -1,4 +1,4 @@
-Seed,SupervisedValidationError,BestActualRLValidationError,ActualRLPolicyAvailable,ActualRLActorUpdates,SelectedProductionSource
-42,0.4043683639417092,0.41799406583110493,True,760,supervised
-123,0.3065760576476653,0.3306549383948247,True,466,supervised
-2026,0.2953148235877355,,False,0,supervised
+Seed,SupervisedValidationError,VerifiedPolicyValidationError,AcceptedCycles,SelectedProductionSource
+42,0.4043683639417092,0.40418229065835476,1,rollout_verified
+123,0.3065760576476653,0.3067967817187309,0,supervised_anchor
+2026,0.2953148235877355,0.2958993874490261,1,rollout_verified

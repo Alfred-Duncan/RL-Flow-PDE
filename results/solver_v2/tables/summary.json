@@ -11,7 +11,9 @@
     "convergence.csv",
     "critic_long_horizon_ranking.csv",
     "critic_ranking.csv",
+    "critic_screening.csv",
     "critic_within_state_ranking.csv",
+    "final_rl_contribution.csv",
     "latent_controllability.csv",
     "main_results.csv",
     "per_case_results.csv",
@@ -21,6 +23,7 @@
     "residual_accuracy_quadrants.csv",
     "rl_contribution.csv",
     "seed_results.csv",
-    "training_summary.csv"
+    "training_summary.csv",
+    "verified_policy_improvement.csv"
   ]
 }

@@ -13,6 +13,7 @@ if str(ROOT) not in sys.path:
 V2_CACHE_VERSION = "latent_operator_v3"
 INITIALIZER_CACHE_VERSION = "latent_operator_v2"
 CRITIC_CACHE_VERSION = "within_state_rank_v2"
+VERIFIED_PI_CACHE_VERSION = "verified_pi_v1"
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -32,6 +33,7 @@ from src.solver_v2.models.operator_actor import DeterministicNeuralOperatorActor
 from src.solver_v2.models.operator_critic import TwinOperatorCritic
 from src.solver_v2.pde.reaction_diffusion import ReactionDiffusionCase, ReactionDiffusionPDE
 from src.solver_v2.rl.td3_bc import TD3BCTrainer
+from src.solver_v2.rl.rollout_verified_pi import TrustedPolicy, VerifiedTarget, normalized_rms_shift, project_to_trust_region, train_verified_policy
 from src.solver_v2.training.pretrain_actor import pretrain_actor
 from src.utils.seed import get_device, set_seed
 
@@ -347,7 +349,7 @@ def rollout_k_step_return(
     case: ReactionDiffusionCase,
     u: torch.Tensor,
     first_z: torch.Tensor,
-    supervised_actor: DeterministicNeuralOperatorActor,
+    continuation_actor: DeterministicNeuralOperatorActor,
     decoder: CorrectionOperatorDecoder,
     pde: ReactionDiffusionPDE,
     stats: dict,
@@ -365,7 +367,7 @@ def rollout_k_step_return(
             if k == start_step:
                 z = first_z
             else:
-                z = supervised_actor(fields.unsqueeze(0).to(device), scalars.unsqueeze(0).to(device), stats, float(cfg["solver_v2"]["temperature"]))
+                z = continuation_actor(fields.unsqueeze(0).to(device), scalars.unsqueeze(0).to(device), stats, float(cfg["solver_v2"]["temperature"]))
             delta = decoder(fields.unsqueeze(0).to(device), scalars.unsqueeze(0).to(device), z, stats, float(cfg["solver_v2"]["temperature"])).squeeze(0)
         nxt = pde.step(cur, delta, case)
         reward = pde.reward(cur, nxt, delta, case, float(cfg["solver_v2"]["lambda_action"]))
@@ -630,8 +632,9 @@ def train_td3_variant(cfg: dict, transitions: list[SolverTransition], val_raw: l
     if epochs_override is not None:
         local_cfg["solver_v2"]["td3_epochs"] = int(epochs_override)
     critic = TwinOperatorCritic(width=int(cfg["solver_v2"]["width"]), modes=int(cfg["solver_v2"]["modes"]), depth=int(cfg["solver_v2"]["critic_depth"]), latent_dim=int(cfg["solver_v2"]["latent_dim"]), state_dim=int(cfg["solver_v2"]["state_dim"])).to(device)
-    trainer = TD3BCTrainer(actor, critic, decoder, local_cfg, stats, device, allow_actor_update=False, variant=variant)
-    ckpt = ROOT / "checkpoints" / "solver_v2" / f"td3_{CRITIC_CACHE_VERSION}_{variant}_seed{seed}.pt"
+    trainer = TD3BCTrainer(actor, critic, decoder, local_cfg, stats, device, supervised_actor=supervised_actor, allow_actor_update=False, variant=variant)
+    cache_version = f"{CRITIC_CACHE_VERSION}_td3bc_sup_anchor_v1" if variant == "td3_bc" else CRITIC_CACHE_VERSION
+    ckpt = ROOT / "checkpoints" / "solver_v2" / f"td3_{cache_version}_{variant}_seed{seed}.pt"
     if ckpt.exists():
         actor, critic, hist = trainer.fit(transitions, [], ckpt)
         rank = critic_ranking_validation(cfg, val_raw, actor, supervised_actor, critic, decoder, pde, stats, device, variant)
@@ -694,7 +697,7 @@ def rollout_method(method: str, cfg: dict, initializer: FNOInitializer, actor: D
 def evaluate_methods(cfg: dict, npz_path: Path, seed: int, initializer: FNOInitializer, actors: dict[str, DeterministicNeuralOperatorActor], critics: dict[str, TwinOperatorCritic | None], decoder: CorrectionOperatorDecoder, pde: ReactionDiffusionPDE, stats: dict, device: torch.device) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     ds = ReactionDiffusionDataset(npz_path, "test", int(cfg["solver_v2"]["eval_cases"]))
     rows, per_case, conv = [], [], []
-    methods = ["Base FNO Initializer", "Supervised Latent Neural Operator Corrector", "TD3+BC", "Best Actual RL Policy", "Selected Production Policy", "Gradient baseline", "PINN-style baseline"]
+    methods = ["Base FNO Initializer", "Supervised Latent Neural Operator Corrector", "TD3+BC", "Rollout-Verified RL Neural Operator Solver", "Gradient baseline", "PINN-style baseline"]
     for steps in tqdm(cfg["solver_v2"]["eval_steps"], desc=f"v2:evaluate:{seed}"):
         method_rows = {m: [] for m in methods}
         for i in range(len(ds)):
@@ -797,7 +800,164 @@ def build_training_summary(cfg: dict, seed: int, histories: dict[str, list[dict[
     return pd.DataFrame(rows)
 
 
-def run_seed(cfg: dict, npz_path: Path, seed: int, device: torch.device) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, list[SolverTransition], pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+def verified_decision_states(
+    cfg: dict,
+    raw_rows: list[RawCorrectionTransition],
+    initializer: FNOInitializer,
+    policy: DeterministicNeuralOperatorActor,
+    decoder: CorrectionOperatorDecoder,
+    pde: ReactionDiffusionPDE,
+    stats: dict,
+    device: torch.device,
+) -> list[tuple[ReactionDiffusionCase, torch.Tensor, torch.Tensor, torch.Tensor, int]]:
+    """One on-policy state per physical training case, stratified across solver steps."""
+    count = min(len(raw_rows), int(cfg["solver_v2"]["verified_states_per_cycle"]))
+    if count <= 0:
+        return []
+    indices = np.linspace(0, len(raw_rows) - 1, count, dtype=int)
+    rows = []
+    policy.eval()
+    for idx in tqdm(indices, desc="solver_v2:verified_states"):
+        tr = raw_rows[int(idx)]
+        case, _ = raw_case_from_transition(tr, stats, pde, device)
+        u = initial_solution(initializer, pde, case)
+        for k in range(tr.step_idx):
+            fields, scalars = state_from_u(pde, case, u, k / max(1, int(cfg["solver_v2"]["horizon"])), stats)
+            with torch.no_grad():
+                z = policy(fields.unsqueeze(0), scalars.unsqueeze(0), stats, float(cfg["solver_v2"]["temperature"]))
+                delta = decoder(fields.unsqueeze(0).to(device), scalars.unsqueeze(0).to(device), z, stats, float(cfg["solver_v2"]["temperature"])).squeeze(0)
+            u = pde.step(u, delta, case).detach()
+        fields, scalars = state_from_u(pde, case, u, tr.step_idx / max(1, int(cfg["solver_v2"]["horizon"])), stats)
+        rows.append((case, u.detach(), fields.detach().cpu(), scalars.detach().cpu(), int(tr.step_idx)))
+    return rows
+
+
+def verified_candidates(z0: torch.Tensor, z_sup: torch.Tensor, latent_mean: torch.Tensor, latent_std: torch.Tensor, cfg: dict) -> torch.Tensor:
+    """Exactly 48 bounded local candidates: current, supervised, and symmetric local probes."""
+    n = int(cfg["solver_v2"]["verified_candidates"])
+    if n < 2:
+        raise ValueError("verified_candidates must include current and supervised policies.")
+    scale_cycle = [0.10, 0.25, 0.50]
+    values = [z0.squeeze(0), z_sup.squeeze(0)]
+    for i in range(n - 2):
+        center = z0.squeeze(0) if i % 2 == 0 else z_sup.squeeze(0)
+        scale = scale_cycle[i % len(scale_cycle)]
+        values.append(center + scale * latent_std.squeeze(0) * torch.randn_like(center))
+    lo = latent_mean.squeeze(0) - float(cfg["solver_v2"]["verified_candidate_clip_std"]) * latent_std.squeeze(0)
+    hi = latent_mean.squeeze(0) + float(cfg["solver_v2"]["verified_candidate_clip_std"]) * latent_std.squeeze(0)
+    return torch.stack(values, dim=0).clamp(lo, hi)
+
+
+def run_verified_policy_improvement(
+    cfg: dict,
+    npz_path: Path,
+    seed: int,
+    initializer: FNOInitializer,
+    train_raw: list[RawCorrectionTransition],
+    actor_sup: DeterministicNeuralOperatorActor,
+    critic: TwinOperatorCritic,
+    decoder: CorrectionOperatorDecoder,
+    pde: ReactionDiffusionPDE,
+    stats: dict,
+    device: torch.device,
+) -> tuple[TrustedPolicy, pd.DataFrame, pd.DataFrame, list[dict[str, float]], int]:
+    ckpt = ROOT / "checkpoints" / "solver_v2" / f"verified_policy_{VERIFIED_PI_CACHE_VERSION}_seed{seed}.pt"
+    latent_std = stats["latent_std"].to(device).view(1, -1)
+    latent_mean = stats["latent_mean"].to(device).view(1, -1)
+    raw_actor = deepcopy(actor_sup).to(device)
+    if ckpt.exists():
+        saved = torch.load(ckpt, map_location=device, weights_only=False)
+        raw_actor.load_state_dict(saved["actor"])
+        policy = TrustedPolicy(raw_actor, actor_sup, latent_std, float(saved["trust_radius"])).to(device).eval()
+        return policy, pd.DataFrame(saved["cycles"]), pd.DataFrame(saved["screening"]), saved.get("history", []), int(saved["accepted_cycles"])
+
+    critic.eval()
+    actor_sup.eval()
+    current: TrustedPolicy = TrustedPolicy(raw_actor, actor_sup, latent_std, float(cfg["solver_v2"]["verified_trust_radius_initial"])).to(device).eval()
+    trust_radius = float(cfg["solver_v2"]["verified_trust_radius_initial"])
+    accepted = 0
+    cycle_rows: list[dict[str, float]] = []
+    screening_rows: list[dict[str, float]] = []
+    history: list[dict[str, float]] = []
+    for cycle in range(int(cfg["solver_v2"]["online_cycles"])):
+        val_before = validation_solver_error(cfg, npz_path, initializer, current, decoder, pde, stats, device)
+        continuation = actor_sup if cycle == 0 else current
+        targets: list[VerifiedTarget] = []
+        states = verified_decision_states(cfg, train_raw, initializer, current, decoder, pde, stats, device)
+        positive_advantages: list[float] = []
+        for state_idx, (case, u, fields_cpu, scalars_cpu, start_step) in enumerate(tqdm(states, desc=f"solver_v2:verified_search:{seed}:{cycle}")):
+            fields = fields_cpu.unsqueeze(0).to(device)
+            scalars = scalars_cpu.unsqueeze(0).to(device)
+            with torch.no_grad():
+                z0 = current(fields, scalars, stats, float(cfg["solver_v2"]["temperature"]))
+                z_sup = actor_sup(fields, scalars, stats, float(cfg["solver_v2"]["temperature"]))
+                candidates = verified_candidates(z0, z_sup, latent_mean, latent_std, cfg)
+                q = critic.q_min(fields.expand(len(candidates), -1, -1, -1), scalars.expand(len(candidates), -1), candidates)
+            top_m = torch.topk(q, k=min(int(cfg["solver_v2"]["verified_top_m"]), len(candidates))).indices.tolist()
+            selected = set(top_m)
+            selected.add(0)  # The true current-policy baseline is always measured.
+            remaining = [i for i in range(len(candidates)) if i not in selected]
+            random_count = min(int(cfg["solver_v2"]["verified_random_candidates"]), len(remaining))
+            # Convert random offsets back to candidate indices.
+            if random_count:
+                random_offsets = torch.randperm(len(remaining), device=device)[:random_count].cpu().tolist()
+                selected.update(remaining[i] for i in random_offsets)
+            selected_idx = sorted(selected)
+            returns: dict[int, float] = {}
+            for candidate_idx in selected_idx:
+                value, _, _, _ = rollout_k_step_return(cfg, case, u, candidates[candidate_idx : candidate_idx + 1], continuation, decoder, pde, stats, device, start_step)
+                returns[candidate_idx] = float(value)
+            base_return = returns[0]
+            values = np.asarray(list(returns.values()), dtype=float)
+            margin = max(float(cfg["solver_v2"]["verified_advantage_margin_floor"]), float(cfg["solver_v2"]["verified_advantage_std_fraction"]) * float(values.std()))
+            best_idx = max(returns, key=returns.get)
+            advantage = returns[best_idx] - base_return
+            positives_top = [returns[i] - base_return > 0.0 for i in top_m if i in returns]
+            top1 = int(torch.argmax(q).item())
+            top1_positive = float(returns[top1] - base_return > 0.0) if top1 in returns else float("nan")
+            top_m_best = max((returns[i] for i in top_m if i in returns), default=base_return)
+            screening_rows.append({
+                "Seed": seed, "Cycle": cycle, "PrecisionAtM": float(np.mean(positives_top)) if positives_top else 0.0,
+                "Top1TruePositiveRate": top1_positive, "BestFoundRegret": float(max(returns.values()) - top_m_best),
+                "CandidateReturnSpread": float(values.std()), "State": state_idx,
+            })
+            if advantage > margin:
+                target = project_to_trust_region(candidates[best_idx : best_idx + 1], z_sup, latent_std, trust_radius).squeeze(0).detach().cpu()
+                targets.append(VerifiedTarget(fields_cpu, scalars_cpu, target, float(advantage)))
+                positive_advantages.append(float(advantage))
+        if targets:
+            proposed_raw = deepcopy(current.actor).to(device)
+            proposed, fit_history = train_verified_policy(proposed_raw, actor_sup, targets, stats, latent_std, trust_radius, cfg, device)
+            history.extend([{**row, "cycle": float(cycle)} for row in fit_history])
+            val_after = validation_solver_error(cfg, npz_path, initializer, proposed, decoder, pde, stats, device)
+        else:
+            proposed = current
+            val_after = val_before
+        accepted_cycle = bool(targets and val_after < val_before)
+        if accepted_cycle:
+            current = proposed.eval()
+            accepted += 1
+            trust_radius = float(cfg["solver_v2"]["verified_trust_radius_expanded"])
+        shifts = []
+        for target in targets:
+            with torch.no_grad():
+                f = target.fields.unsqueeze(0).to(device)
+                sc = target.scalars.unsqueeze(0).to(device)
+                z_sup = actor_sup(f, sc, stats, float(cfg["solver_v2"]["temperature"]))
+                shifts.append(float(normalized_rms_shift(target.target.unsqueeze(0).to(device), z_sup, latent_std).item()))
+        cycle_rows.append({
+            "Seed": seed, "Cycle": cycle, "StatesEvaluated": len(states), "StatesWithPositiveCandidate": len(targets),
+            "PositiveCandidateRate": float(len(targets) / max(1, len(states))),
+            "MeanVerifiedAdvantage": float(np.mean(positive_advantages)) if positive_advantages else 0.0,
+            "MedianVerifiedAdvantage": float(np.median(positive_advantages)) if positive_advantages else 0.0,
+            "MeanTargetLatentShift": float(np.mean(shifts)) if shifts else 0.0,
+            "ValErrorBefore": val_before, "ValErrorAfter": val_after, "CycleAccepted": accepted_cycle,
+        })
+    torch.save({"actor": current.actor.state_dict(), "trust_radius": current.radius, "cycles": cycle_rows, "screening": screening_rows, "history": history, "accepted_cycles": accepted}, ckpt)
+    return current.eval(), pd.DataFrame(cycle_rows), pd.DataFrame(screening_rows), history, accepted
+
+
+def run_seed(cfg: dict, npz_path: Path, seed: int, device: torch.device) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, list[SolverTransition], pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     set_seed(seed)
     s = cfg["solver_v2"]
     pde = ReactionDiffusionPDE(float(cfg["benchmark"]["diffusion"]), float(cfg["benchmark"]["reaction"]))
@@ -820,66 +980,56 @@ def run_seed(cfg: dict, npz_path: Path, seed: int, device: torch.device) -> tupl
         and float(cont_summary["correction_change_norm"].iloc[0]) > 1e-4
         and float(cont_summary["reward_variance"].iloc[0]) > 1e-8
     )
-    actor_full = deepcopy(actor_sup).to(device)
-    best_actual_actor: DeterministicNeuralOperatorActor | None = None
-    best_actual_val = float("inf")
-    best_actual_updates = 0
     histories: dict[str, list[dict[str, float]]] = {"supervised": [{"epoch": 0.0, "critic_loss": np.nan, "actor_loss": np.nan, "val_error": sup_val}]}
     rankings: list[pd.DataFrame] = []
-    critic_full: TwinOperatorCritic | None = None
-    full_replay = list(replay)
-    for cycle in range(int(s["online_cycles"])):
-        full_replay.extend(rollout_actor_to_replay(cfg, npz_path, initializer, actor_full, decoder, pde, stats, seed, cycle, device))
-        actor_full, critic_full, hist, rank = train_td3_variant(cfg, full_replay, val_raw, actor_full, actor_sup, decoder, seed, f"full_cycle{cycle}", stats, pde, device, controllability_ok=controllability_ok)
-        histories[f"full_cycle{cycle}"] = hist
-        rankings.append(rank)
-        val_error = validation_solver_error(cfg, npz_path, initializer, actor_full, decoder, pde, stats, device)
-        updates = int(max((float(row.get("actor_updates", 0.0)) for row in hist), default=0.0))
-        cycle_shift = policy_shift_diagnostics(cfg, val_raw, actor_full, actor_sup, decoder, stats, device, seed, f"cycle_{cycle}")
-        cycle_summary = cycle_shift[cycle_shift["state"].eq(-1)].iloc[0]
-        shifted = float(cycle_summary["latent_policy_shift"]) > 1e-8 or float(cycle_summary["correction_policy_shift"]) > 1e-8
-        if updates > 0 and shifted and val_error < best_actual_val:
-            best_actual_actor = deepcopy(actor_full).to(device)
-            best_actual_val = val_error
-            best_actual_updates = updates
-        actor_full = deepcopy(best_actual_actor if best_actual_actor is not None else actor_sup).to(device)
-    actual_actor = deepcopy(best_actual_actor if best_actual_actor is not None else actor_sup).to(device)
-    production_actor = deepcopy(actual_actor if best_actual_actor is not None and best_actual_val <= sup_val else actor_sup).to(device)
-    production_source = "best_actual_rl" if best_actual_actor is not None and best_actual_val <= sup_val else "supervised"
-    torch.save({"actor": actor_sup.state_dict(), "validation_error": sup_val}, ROOT / "checkpoints" / "solver_v2" / f"actor_best_supervised_{CRITIC_CACHE_VERSION}_seed{seed}.pt")
-    torch.save({"actor": actual_actor.state_dict(), "validation_error": best_actual_val, "actor_updates": best_actual_updates}, ROOT / "checkpoints" / "solver_v2" / f"actor_best_actual_rl_{CRITIC_CACHE_VERSION}_seed{seed}.pt")
-    torch.save({"actor": production_actor.state_dict(), "validation_error": min(sup_val, best_actual_val), "source": production_source}, ROOT / "checkpoints" / "solver_v2" / f"actor_selected_{CRITIC_CACHE_VERSION}_seed{seed}.pt")
+    _, critic_verified, critic_hist, rank_verified = train_td3_variant(
+        cfg, replay, val_raw, deepcopy(actor_sup).to(device), actor_sup, decoder, seed,
+        "verified_screening", stats, pde, device, controllability_ok=False,
+    )
+    histories["verified_critic"] = critic_hist
+    rankings.append(rank_verified)
+    verified_actor, verified_df, screening_df, verified_history, accepted_cycles = run_verified_policy_improvement(
+        cfg, npz_path, seed, initializer, train_raw, actor_sup, critic_verified, decoder, pde, stats, device,
+    )
+    histories["rollout_verified"] = verified_history
     actor_td3bc, critic_td3bc, hist_td3bc, rank_td3bc = train_td3_variant(cfg, replay, val_raw, deepcopy(actor_sup).to(device), actor_sup, decoder, seed, "td3_bc", stats, pde, device, controllability_ok=controllability_ok)
     histories["td3_bc"] = hist_td3bc
     rankings.append(rank_td3bc)
     actors = {
         "Supervised Latent Neural Operator Corrector": actor_sup,
         "TD3+BC": actor_td3bc,
-        "Best Actual RL Policy": actual_actor,
-        "Selected Production Policy": production_actor,
+        "Rollout-Verified RL Neural Operator Solver": verified_actor,
     }
-    critics = {"TD3+BC": critic_td3bc, "Best Actual RL Policy": critic_full, "Selected Production Policy": critic_full}
+    critics = {"TD3+BC": critic_td3bc, "Rollout-Verified RL Neural Operator Solver": critic_verified}
     eval_df, per_case, conv = evaluate_methods(cfg, npz_path, seed, initializer, actors, critics, decoder, pde, stats, device)
-    if best_actual_actor is None:
-        eval_df = eval_df[~eval_df["Method"].eq("Best Actual RL Policy")].reset_index(drop=True)
-        per_case = per_case[~per_case["Method"].eq("Best Actual RL Policy")].reset_index(drop=True)
-        conv = conv[~conv["Method"].eq("Best Actual RL Policy")].reset_index(drop=True)
     training_summary = build_training_summary(cfg, seed, histories, rankings)
     ranking_df = pd.concat(rankings, ignore_index=True)
     ranking_df["Seed"] = seed
     policy_shift_df = pd.concat([
-        policy_shift_diagnostics(cfg, val_raw, actual_actor, actor_sup, decoder, stats, device, seed, "Best Actual RL Policy"),
-        policy_shift_diagnostics(cfg, val_raw, production_actor, actor_sup, decoder, stats, device, seed, "Selected Production Policy"),
+        policy_shift_diagnostics(cfg, val_raw, verified_actor, actor_sup, decoder, stats, device, seed, "Rollout-Verified RL Neural Operator Solver"),
+        policy_shift_diagnostics(cfg, val_raw, actor_td3bc, actor_sup, decoder, stats, device, seed, "TD3+BC"),
     ], ignore_index=True)
     selection_df = pd.DataFrame([{
         "Seed": seed,
         "SupervisedValidationError": sup_val,
-        "BestActualRLValidationError": best_actual_val if best_actual_actor is not None else float("nan"),
-        "ActualRLPolicyAvailable": bool(best_actual_actor is not None),
-        "ActualRLActorUpdates": best_actual_updates,
-        "SelectedProductionSource": production_source,
+        "VerifiedPolicyValidationError": float(verified_df.iloc[-1]["ValErrorAfter"]) if not verified_df.empty else sup_val,
+        "AcceptedCycles": accepted_cycles,
+        "SelectedProductionSource": "rollout_verified" if accepted_cycles else "supervised_anchor",
     }])
-    return eval_df, per_case, conv, full_replay, training_summary, ranking_df, controllability_df, policy_shift_df, selection_df
+    seed_results = seed_summary(per_case)
+    def err(method: str) -> float:
+        values = seed_results[(seed_results["Seed"].eq(seed)) & (seed_results["Method"].eq(method))]["relative_l2"]
+        return float(values.iloc[0]) if len(values) else float("nan")
+    verified_shift = policy_shift_df[(policy_shift_df["Policy"].eq("Rollout-Verified RL Neural Operator Solver")) & (policy_shift_df["state"].eq(-1))].iloc[0]
+    final_df = pd.DataFrame([{
+        "Seed": seed, "BaseError": err("Base FNO Initializer"), "SupervisedError": err("Supervised Latent Neural Operator Corrector"),
+        "VerifiedRLError": err("Rollout-Verified RL Neural Operator Solver"),
+        "RL_vs_Supervised": err("Supervised Latent Neural Operator Corrector") - err("Rollout-Verified RL Neural Operator Solver"),
+        "AcceptedCycles": accepted_cycles,
+        "MeanVerifiedAdvantage": float(verified_df["MeanVerifiedAdvantage"].mean()) if not verified_df.empty else 0.0,
+        "LatentPolicyShift": float(verified_shift["latent_policy_shift"]), "CorrectionPolicyShift": float(verified_shift["correction_policy_shift"]),
+    }])
+    return eval_df, per_case, conv, replay, training_summary, ranking_df, controllability_df, policy_shift_df, selection_df, verified_df, screening_df, final_df
 
 
 def generate_figures(tables: dict[str, pd.DataFrame]) -> None:
@@ -902,7 +1052,7 @@ def generate_figures(tables: dict[str, pd.DataFrame]) -> None:
     for metric, fname in [("Relative L2", "figure3_l2_vs_step.png"), ("PDE residual norm", "figure4_residual_vs_step.png")]:
         plt.figure(figsize=(6, 4))
         for method, g in conv[conv["StepCap"].eq(10)].groupby("Method"):
-            if method in ["Gradient baseline", "Supervised Latent Neural Operator Corrector", "Best Actual RL Policy", "Selected Production Policy"]:
+            if method in ["Gradient baseline", "Supervised Latent Neural Operator Corrector", "Rollout-Verified RL Neural Operator Solver"]:
                 gg = g.groupby("step")[metric].mean()
                 plt.plot(gg.index, gg.values, marker="o", label=method)
         plt.xlabel("solver step")
@@ -922,16 +1072,16 @@ def generate_figures(tables: dict[str, pd.DataFrame]) -> None:
     plt.tight_layout()
     plt.savefig(fig_dir / "figure5_training_curve.png", dpi=180)
     plt.close()
-    paired = main[(main["Steps"].eq(10)) & (main["Method"].isin(["Supervised Latent Neural Operator Corrector", "Best Actual RL Policy"]))]
+    paired = main[(main["Steps"].eq(10)) & (main["Method"].isin(["Supervised Latent Neural Operator Corrector", "Rollout-Verified RL Neural Operator Solver"]))]
     pivot = paired.pivot_table(index=["Seed", "Case"], columns="Method", values="paired improvement")
     plt.figure(figsize=(5, 4))
-    if {"Supervised Latent Neural Operator Corrector", "Best Actual RL Policy"}.issubset(pivot.columns):
-        plt.scatter(pivot["Supervised Latent Neural Operator Corrector"], pivot["Best Actual RL Policy"], s=18, alpha=0.7)
+    if {"Supervised Latent Neural Operator Corrector", "Rollout-Verified RL Neural Operator Solver"}.issubset(pivot.columns):
+        plt.scatter(pivot["Supervised Latent Neural Operator Corrector"], pivot["Rollout-Verified RL Neural Operator Solver"], s=18, alpha=0.7)
         lo = float(np.nanmin(pivot.values))
         hi = float(np.nanmax(pivot.values))
         plt.plot([lo, hi], [lo, hi], color="black", linewidth=0.8)
     plt.xlabel("Supervised paired improvement")
-    plt.ylabel("Best actual RL paired improvement")
+    plt.ylabel("Rollout-verified RL paired improvement")
     plt.tight_layout()
     plt.savefig(fig_dir / "figure6_supervised_vs_rl_paired.png", dpi=180)
     plt.close()
@@ -975,10 +1125,17 @@ def generate_representative_figure(cfg: dict, npz_path: Path, seed: int, device:
     stats.update(ae.get("latent_stats", {}))
     decoder = CorrectionOperatorDecoder(latent_dim=int(cfg["solver_v2"]["latent_dim"]), width=int(cfg["solver_v2"]["width"]), modes=int(cfg["solver_v2"]["modes"]), depth=int(cfg["solver_v2"]["actor_depth"])).to(device)
     decoder.load_state_dict(ae["decoder"])
+    actor_sup = DeterministicNeuralOperatorActor(width=int(cfg["solver_v2"]["width"]), modes=int(cfg["solver_v2"]["modes"]), depth=int(cfg["solver_v2"]["actor_depth"]), latent_dim=int(cfg["solver_v2"]["latent_dim"]), state_dim=int(cfg["solver_v2"]["state_dim"])).to(device)
     actor = DeterministicNeuralOperatorActor(width=int(cfg["solver_v2"]["width"]), modes=int(cfg["solver_v2"]["modes"]), depth=int(cfg["solver_v2"]["actor_depth"]), latent_dim=int(cfg["solver_v2"]["latent_dim"]), state_dim=int(cfg["solver_v2"]["state_dim"])).to(device)
-    selected = ROOT / "checkpoints" / "solver_v2" / f"actor_selected_{CRITIC_CACHE_VERSION}_seed{seed}.pt"
+    selected = ROOT / "checkpoints" / "solver_v2" / f"verified_policy_{VERIFIED_PI_CACHE_VERSION}_seed{seed}.pt"
     fallback = ROOT / "checkpoints" / "solver_v2" / f"actor_pretrain_{V2_CACHE_VERSION}_seed{seed}.pt"
-    actor.load_state_dict(torch.load(selected if selected.exists() else fallback, map_location=device)["actor"])
+    actor_sup.load_state_dict(torch.load(fallback, map_location=device)["actor"])
+    if selected.exists():
+        payload = torch.load(selected, map_location=device)
+        actor.load_state_dict(payload["actor"])
+        actor = TrustedPolicy(actor, actor_sup, stats["latent_std"].to(device), float(payload["trust_radius"])).to(device).eval()
+    else:
+        actor = actor_sup.eval()
     ds = ReactionDiffusionDataset(npz_path, "test", 1)
     case = pde.make_case(ds[0], device)
     u0 = initial_solution(initializer, pde, case)
@@ -1003,116 +1160,42 @@ def generate_representative_figure(cfg: dict, npz_path: Path, seed: int, device:
 
 def write_docs(tables: dict[str, pd.DataFrame]) -> None:
     main = tables["main_results"]
-    sub = main[main["Steps"].eq(10)]
-
-    def metric(method: str) -> float:
-        return float(sub[sub["Method"].eq(method)]["Relative L2 mean"].iloc[0])
-
-    base = metric("Base FNO Initializer")
-    sup = metric("Supervised Latent Neural Operator Corrector")
-    actual_rl = metric("Best Actual RL Policy")
-    production = metric("Selected Production Policy")
-    td3bc = metric("TD3+BC")
-    rank_summary = tables["critic_long_horizon_ranking"][tables["critic_long_horizon_ranking"]["candidate"].eq("summary")]
-    full_rank_summary = rank_summary[rank_summary["variant"].astype(str).str.contains("full_cycle")]
-    spearman = float(rank_summary["spearman"].mean()) if not rank_summary.empty else float("nan")
-    pairwise = float(rank_summary["pairwise"].mean()) if not rank_summary.empty else float("nan")
-    full_spearman = float(full_rank_summary["spearman"].mean()) if not full_rank_summary.empty else float("nan")
-    full_pairwise = float(full_rank_summary["pairwise"].mean()) if not full_rank_summary.empty else float("nan")
-    full_top1 = float(full_rank_summary["top1"].mean()) if not full_rank_summary.empty else float("nan")
-    controllability = tables["latent_controllability"]
-    cont_summary = controllability[controllability["candidate"].eq("summary")]
-    correction_change = float(cont_summary["correction_change_norm"].mean()) if not cont_summary.empty else float("nan")
-    reward_var = float(cont_summary["reward_variance"].mean()) if not cont_summary.empty and "reward_variance" in cont_summary else float("nan")
-    contribution = tables["rl_contribution"]
-    actor_updates = int(contribution["ActorUpdates"].sum()) if not contribution.empty else 0
-    latent_shift = float(contribution["MeanLatentPolicyShift"].mean()) if not contribution.empty else float("nan")
-    correction_shift = float(contribution["MeanCorrectionPolicyShift"].mean()) if not contribution.empty else float("nan")
-    available = bool(tables["policy_selection"]["ActualRLPolicyAvailable"].all())
-    if available and actual_rl < base and actual_rl < sup and full_spearman > 0.5 and full_pairwise > 0.65 and full_top1 > 0.25:
-        claim = "The actual RL policy improves over both the corrected FNO initializer and the supervised latent corrector across the reported three-seed evaluation."
-    elif production < base:
-        claim = "The latent-action solver improves over the corrected FNO initializer, but the RL stage does not clearly beat the supervised latent corrector."
+    contribution = tables["final_rl_contribution"]
+    mean = contribution.mean(numeric_only=True)
+    rl_gain = float(mean.get("RL_vs_Supervised", float("nan")))
+    accepted = float(mean.get("AcceptedCycles", 0.0))
+    positive_test_seeds = int((contribution["RL_vs_Supervised"] > 0.0).sum())
+    if np.isfinite(rl_gain) and rl_gain > 0.0 and accepted > 0.0:
+        claim = (
+            f"The three-seed mean favors rollout-verified conservative policy improvement over the supervised latent corrector "
+            f"by {rl_gain:.6f} Relative L2, but the result is small and seed-level outcomes are mixed "
+            f"({positive_test_seeds}/3 positive test differences)."
+        )
+    elif accepted > 0.0:
+        claim = "Rollout-verified updates were accepted on validation, but the final three-seed test result does not establish an improvement over supervised correction."
     else:
-        claim = "The current latent-action RL stage is not yet a reliable improvement over the corrected FNO initializer."
+        claim = "No rollout-verified policy cycle met the validation acceptance criterion; the reported RL policy remains at the supervised trust-region anchor."
     text = (
         "# Solver V2 Results\n\n"
-        f"{claim}\n\n"
-        f"- 10-step Base FNO Relative L2 mean: {base:.6f}\n"
-        f"- 10-step Supervised Latent Corrector Relative L2 mean: {sup:.6f}\n"
-        f"- 10-step Best Actual RL Policy Relative L2 mean: {actual_rl:.6f}\n"
-        f"- 10-step Selected Production Policy Relative L2 mean: {production:.6f}\n"
-        f"- 10-step standalone TD3+BC Relative L2 mean: {td3bc:.6f}\n"
-        f"- Mean critic Spearman on validation K-step candidate ranking: {spearman:.3f}\n"
-        f"- Mean critic pairwise ranking accuracy: {pairwise:.3f}\n"
-        f"- Mean Full-cycle within-state critic Spearman / pairwise / top-1: {full_spearman:.3f} / {full_pairwise:.3f} / {full_top1:.3f}\n"
-        f"- Mean non-supervised latent controllability correction shift: {correction_change:.6f}\n"
-        f"- Mean per-state reward variance under latent alternatives: {reward_var:.6f}\n"
-        f"- Actual Full-cycle actor updates: {actor_updates}\n"
-        f"- Mean best-actual-RL latent policy shift: {latent_shift:.6f}\n"
-        f"- Mean best-actual-RL correction policy shift: {correction_shift:.6f}\n\n"
-        "The architecture used here is: corrected FNO initializer, residual-conditioned neural-operator state encoder, 32D latent action actor, frozen neural-operator correction decoder, hard IC/BC projection, an action-sensitive Twin-Q critic over `(state,z)`, grouped MC-return/advantage/ranking critic supervision, validation ranking gate, and conservative TD3+BC.\n\n"
-        "## Research Questions\n\n"
-        f"1. Neural Operator correction effectiveness: {'yes' if sup < base else 'no'}, because the 10-step supervised latent corrector changes Relative L2 from {base:.6f} to {sup:.6f}.\n"
-        f"2. Latent action controllability: {'yes' if correction_change > 1e-4 and reward_var > 1e-8 else 'not established'}, measured by `latent_controllability.csv`.\n"
-        f"3. Long-horizon critic quality: {'yes' if full_spearman > 0.5 and full_pairwise > 0.65 and full_top1 > 0.25 else 'not yet'}, using within-state K-step candidate returns in `critic_within_state_ranking.csv`.\n"
-        f"4. Actual RL improvement over supervised correction: {'yes' if available and actual_rl < sup else 'no'}; standalone TD3+BC is {'better' if td3bc < sup else 'not better'} than supervised by {sup - td3bc:.6f} Relative L2.\n"
-        f"5. Actual RL policy shift: {'nonzero' if latent_shift > 1e-8 or correction_shift > 1e-8 else 'zero'}; the selected production policy is separately reported and may use the supervised policy when validation rejects the best actual RL candidate.\n\n"
-        "## Main Table\n\n"
-        + main.to_markdown(index=False)
-        + "\n"
+        + claim + "\n\n"
+        + "The main RL algorithm uses critic screening only: candidate actions are ranked by Twin-Q, then 10-12 candidates per state receive true K-step PDE rollout returns. Actor regression uses only verified positive-advantage targets and a supervised-policy trust penalty; no Q-gradient enters the actor.\n\n"
+        + "## Final Contribution\n\n" + contribution.to_markdown(index=False) + "\n\n"
+        + "## Verified Cycles\n\n" + tables["verified_policy_improvement"].to_markdown(index=False) + "\n\n"
+        + "## Main Table\n\n" + main.to_markdown(index=False) + "\n"
     )
     (ROOT / "docs" / "solver_v2_results.md").write_text(text, encoding="utf-8")
     (ROOT / "docs" / "solver_v2_claims.md").write_text("# Solver V2 Claims\n\n" + claim + "\n", encoding="utf-8")
 
 
-def rl_contribution_summary(tables: dict[str, pd.DataFrame]) -> pd.DataFrame:
-    seed_df = tables["seed_results"]
-    rank = tables["critic_long_horizon_ranking"]
-    shift = tables["policy_shift"]
-    selection = tables["policy_selection"]
-    rows = []
-    for seed, g in seed_df.groupby("Seed"):
-        def err(method: str) -> float:
-            vals = g[g["Method"].eq(method)]["relative_l2"]
-            return float(vals.iloc[0]) if len(vals) else float("nan")
-
-        base = err("Base FNO Initializer")
-        sup = err("Supervised Latent Neural Operator Corrector")
-        actual_rl = err("Best Actual RL Policy")
-        selection_row = selection[selection["Seed"].eq(seed)].iloc[0]
-        actual_available = bool(selection_row["ActualRLPolicyAvailable"])
-        rsum = rank[(rank["Seed"].eq(seed)) & (rank["candidate"].eq("summary")) & (rank["variant"].astype(str).str.contains("full_cycle"))]
-        ssum = shift[(shift["Seed"].eq(seed)) & (shift["state"].eq(-1)) & (shift["Policy"].eq("Best Actual RL Policy"))]
-        latent_shift = float(ssum["latent_policy_shift"].iloc[0]) if len(ssum) else float("nan")
-        correction_shift = float(ssum["correction_policy_shift"].iloc[0]) if len(ssum) else float("nan")
-        rows.append({
-            "Seed": int(seed),
-            "BaseError": base,
-            "SupervisedError": sup,
-            "ActualRLError": actual_rl if actual_available else float("nan"),
-            "RL_vs_Supervised": sup - actual_rl if actual_available else float("nan"),
-            "ActorUpdates": int(selection_row["ActualRLActorUpdates"]),
-            "LatentPolicyShift": latent_shift,
-            "CorrectionPolicyShift": correction_shift,
-            "CriticSpearman": float(rsum["spearman"].max()) if len(rsum) else float("nan"),
-            "CriticPairwise": float(rsum["pairwise"].max()) if len(rsum) else float("nan"),
-            "CriticTop1": float(rsum["top1"].max()) if len(rsum) else float("nan"),
-            "ActualRLPolicyAvailable": actual_available,
-            "MeanLatentPolicyShift": latent_shift,
-            "MeanCorrectionPolicyShift": correction_shift,
-        })
-    return pd.DataFrame(rows)
-
-
-def run_pipeline(mode: str) -> None:
+def run_pipeline(mode: str, seeds: list[int] | None = None) -> None:
     cfg = load_config()
     ensure_dirs()
     npz_path = prepare_reaction_diffusion(cfg, ROOT)
     device = get_device(str(cfg.get("device", "cuda")))
-    all_eval, all_per_case, all_conv, all_transitions, all_training, all_ranking, all_controllability, all_shift, all_selection = [], [], [], [], [], [], [], [], []
-    for seed in cfg["solver_v2"]["seeds"]:
-        eval_df, per_case, conv, transitions, training_summary, ranking_df, controllability_df, policy_shift_df, selection_df = run_seed(cfg, npz_path, int(seed), device)
+    active_seeds = seeds if seeds is not None else [int(seed) for seed in cfg["solver_v2"]["seeds"]]
+    all_eval, all_per_case, all_conv, all_transitions, all_training, all_ranking, all_controllability, all_shift, all_selection, all_verified, all_screening, all_final = [], [], [], [], [], [], [], [], [], [], [], []
+    for seed in active_seeds:
+        eval_df, per_case, conv, transitions, training_summary, ranking_df, controllability_df, policy_shift_df, selection_df, verified_df, screening_df, final_df = run_seed(cfg, npz_path, int(seed), device)
         all_eval.append(eval_df)
         all_per_case.append(per_case)
         all_conv.append(conv)
@@ -1122,6 +1205,9 @@ def run_pipeline(mode: str) -> None:
         all_controllability.append(controllability_df)
         all_shift.append(policy_shift_df)
         all_selection.append(selection_df)
+        all_verified.append(verified_df)
+        all_screening.append(screening_df)
+        all_final.append(final_df)
     per_case_df = pd.concat(all_per_case, ignore_index=True)
     conv_df = pd.concat(all_conv, ignore_index=True)
     training_df = pd.concat(all_training, ignore_index=True)
@@ -1129,6 +1215,9 @@ def run_pipeline(mode: str) -> None:
     controllability_df = pd.concat(all_controllability, ignore_index=True)
     policy_shift_df = pd.concat(all_shift, ignore_index=True)
     selection_df = pd.concat(all_selection, ignore_index=True)
+    verified_df = pd.concat(all_verified, ignore_index=True)
+    screening_df = pd.concat(all_screening, ignore_index=True)
+    final_df = pd.concat(all_final, ignore_index=True)
     transition_df = pd.DataFrame([tr.__dict__ for tr in all_transitions])
     tables = {
         "main_results": summarize_main(per_case_df),
@@ -1139,22 +1228,28 @@ def run_pipeline(mode: str) -> None:
         "latent_controllability": controllability_df,
         "policy_shift": policy_shift_df,
         "policy_selection": selection_df,
+        "verified_policy_improvement": verified_df,
+        "critic_screening": screening_df.groupby(["Seed", "Cycle"], as_index=False).agg(
+            PrecisionAtM=("PrecisionAtM", "mean"), Top1TruePositiveRate=("Top1TruePositiveRate", "mean"),
+            BestFoundRegret=("BestFoundRegret", "mean"), CandidateReturnSpread=("CandidateReturnSpread", "mean"),
+        ),
+        "final_rl_contribution": final_df,
         "training_summary": training_df,
         "residual_accuracy_quadrants": residual_accuracy_quadrants(all_transitions),
         "physics_metrics": per_case_df[["Seed", "Method", "Steps", "Case", "PDE residual norm", "BC error", "IC error"]],
         "per_case_results": per_case_df,
         "transition_debug": transition_df,
     }
-    tables["rl_contribution"] = rl_contribution_summary(tables)
+    tables["rl_contribution"] = tables["final_rl_contribution"]
     tables["critic_within_state_ranking"] = tables["critic_long_horizon_ranking"]
     tables["actual_rl_contribution"] = tables["rl_contribution"]
     table_dir = ROOT / "results" / "solver_v2" / "tables"
-    for name in ["main_results", "seed_results", "convergence", "critic_ranking", "critic_long_horizon_ranking", "critic_within_state_ranking", "latent_controllability", "policy_shift", "policy_selection", "rl_contribution", "actual_rl_contribution", "training_summary", "residual_accuracy_quadrants", "physics_metrics", "per_case_results"]:
+    for name in ["main_results", "seed_results", "convergence", "critic_ranking", "critic_long_horizon_ranking", "critic_within_state_ranking", "latent_controllability", "policy_shift", "policy_selection", "verified_policy_improvement", "critic_screening", "final_rl_contribution", "rl_contribution", "actual_rl_contribution", "training_summary", "residual_accuracy_quadrants", "physics_metrics", "per_case_results"]:
         tables[name].to_csv(table_dir / f"{name}.csv", index=False)
     generate_figures(tables)
     generate_representative_figure(cfg, npz_path, int(cfg["solver_v2"]["seeds"][0]), device)
     write_docs(tables)
-    summary = {"mode": mode, "device": str(device), "seeds": cfg["solver_v2"]["seeds"], "tables": sorted(p.name for p in table_dir.glob("*.csv"))}
+    summary = {"mode": mode, "device": str(device), "seeds": active_seeds, "tables": sorted(p.name for p in table_dir.glob("*.csv"))}
     (table_dir / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     step10 = tables["main_results"][tables["main_results"]["Steps"].eq(10)]
     print("Solver V2 latent paper pipeline completed.")
@@ -1164,8 +1259,10 @@ def run_pipeline(mode: str) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--mode", default="paper", choices=["paper"])
+    parser.add_argument("--seeds", default=None, help="Optional comma-separated seed subset for a smoke run.")
     args = parser.parse_args()
-    run_pipeline(args.mode)
+    seeds = [int(value) for value in args.seeds.split(",")] if args.seeds else None
+    run_pipeline(args.mode, seeds)
 
 
 if __name__ == "__main__":
