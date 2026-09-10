@@ -512,8 +512,21 @@ def main() -> None:
         print("Solver V5 policy stage completed."); return
     policies = {"BeamBC": beam, "RV-PI": rvpi, "ImmediateOnlyPI": immediate}
     rows, timeline = evaluate_methods(data, refiner, selector, selector_stats, policies, c, "test", int(c["seed"]))
-    pd.DataFrame(rows).to_csv(result / "accuracy_compute.csv", index=False); pd.DataFrame(rows).to_csv(result / "final_comparison.csv", index=False); pd.DataFrame(timeline).to_csv(result / "macro_action_timeline.csv", index=False)
-    summary = {"selector": selector_table.to_dict(orient="records"), "results": rows, "condition": "official condition field a(x,y)", "history": "u_(t-1), u_t", "status": "completed"}; (result / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    table = pd.DataFrame(rows)
+    reference_myopic = float(table.loc[table["Method"] == "SetAwareMyopicMacro", "TrajectoryRelativeL2"].iloc[0])
+    reference_beam = float(table.loc[table["Method"] == "BeamBC", "TrajectoryRelativeL2"].iloc[0])
+    table["Seed"] = int(c["seed"])
+    table["RelativeGainVsMyopic"] = 100.0 * (reference_myopic - table["TrajectoryRelativeL2"]) / reference_myopic
+    table["RelativeGainVsBeamBC"] = 100.0 * (reference_beam - table["TrajectoryRelativeL2"]) / reference_beam
+    table.to_csv(result / "accuracy_compute.csv", index=False); table.to_csv(result / "final_comparison.csv", index=False); pd.DataFrame(timeline).to_csv(result / "macro_action_timeline.csv", index=False)
+    by_method = table.set_index("Method")
+    best_non_rl = table[table["Method"].isin(["RandomMacro", "UniformMacro", "GradientMacro", "SetAwareMyopicMacro", "BeamBC"])].sort_values("TrajectoryRelativeL2").iloc[0]
+    rv = by_method.loc["RV-PI"]; immediate_row = by_method.loc["ImmediateOnlyPI"]
+    document = f"""### Main Result
+
+Coarse: {by_method.loc['CoarseOnly', 'TrajectoryRelativeL2']:.6f} trajectory Relative L2.\n\nBest non-RL: {best_non_rl['Method']} at {best_non_rl['TrajectoryRelativeL2']:.6f}.\n\nBeamBC: {by_method.loc['BeamBC', 'TrajectoryRelativeL2']:.6f}.\n\nRL: {rv['TrajectoryRelativeL2']:.6f}.\n\nRL gain over strongest deployable baseline: {100.0 * (best_non_rl['TrajectoryRelativeL2'] - rv['TrajectoryRelativeL2']) / best_non_rl['TrajectoryRelativeL2']:.2f}%.\n\nFull-horizon vs immediate-only: RV-PI {rv['TrajectoryRelativeL2']:.6f}; Immediate-Only PI {immediate_row['TrajectoryRelativeL2']:.6f}.\n\n3-seed: this run reports seed 42 only. Additional seeds are run only when the seed-42 validation-selected RV-PI checkpoint provides a positive improvement.\n\nThe official operator input is called the official condition field a(x,y). Spatial refinement is GT-free at deployment; GT is used only for train returns and held-out metrics.\n"""
+    (ROOT / "docs" / "solver_v5_final_results.md").write_text(document, encoding="utf-8")
+    summary = {"selector": selector_table.to_dict(orient="records"), "results": table.to_dict(orient="records"), "condition": "official condition field a(x,y)", "history": "u_(t-1), u_t", "status": "completed"}; (result / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     print("Solver V5 completed.")
 
 
