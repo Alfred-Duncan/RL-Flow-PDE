@@ -437,7 +437,9 @@ def continuation_return(data: OfficialShallowWater, refiner: ConditionalRefiner,
 
 
 def rvpi_train(data: OfficialShallowWater, refiner: ConditionalRefiner, selector: SetAwareSelectorV5, stats: dict[str, torch.Tensor], beam: MacroPolicy, c: dict, device: torch.device, checkpoint: Path, result: Path, immediate_only: bool = False) -> MacroPolicy:
-    name = "immediate_pi_policy.pt" if immediate_only else "rvpi_policy.pt"; path = checkpoint / name; policy = copy.deepcopy(beam).to(device); history = []
+    prefix = "immediate_pi_policy" if immediate_only else "rvpi_policy"
+    name = f"{prefix}.pt" if int(c["seed"]) == 42 else f"{prefix}_seed{int(c['seed'])}.pt"
+    path = checkpoint / name; policy = copy.deepcopy(beam).to(device); history = []
     if path.exists(): policy.load_state_dict(torch.load(path, map_location=device)["model"]); return policy.eval()
     best_val = np.inf; cycles = int(c["macro"]["immediate_cycles"] if immediate_only else c["macro"]["rvpi_cycles"])
     for cycle in range(cycles):
@@ -470,7 +472,9 @@ def rvpi_train(data: OfficialShallowWater, refiner: ConditionalRefiner, selector
         if not accepted: policy.load_state_dict(old_policy.state_dict())
         changes = np.mean([np.argmax(row["advantages"]) != row["old"] for row in samples])
         history.append({"Cycle": cycle + 1, "States": len(samples), "MeanFeasibleActions": np.mean([row["feasible"].sum().item() for row in samples]), "ReturnMean": np.mean([np.max(row["advantages"]) for row in samples]), "ReturnStd": np.std([np.max(row["advantages"]) for row in samples]), "PositiveAdvantageRate": np.mean([np.max(row["advantages"]) > 0 for row in samples]), "MeanBestAdvantage": np.mean([np.max(row["advantages"]) for row in samples]), "PolicyChangeRate": changes, "OldValError": old_error, "NewValError": new_error, "Accepted": accepted})
-    pd.DataFrame(history).to_csv(result / ("immediate_return_diagnostics.csv" if immediate_only else "rvpi_return_diagnostics.csv"), index=False)
+    diagnostic = "immediate_return_diagnostics" if immediate_only else "rvpi_return_diagnostics"
+    suffix = "" if int(c["seed"]) == 42 else f"_seed{int(c['seed'])}"
+    pd.DataFrame(history).to_csv(result / f"{diagnostic}{suffix}.csv", index=False)
     torch.save({"model": policy.state_dict(), "validation_selected": True, "immediate_only": immediate_only}, path); return policy.eval()
 
 
@@ -496,8 +500,10 @@ def evaluate_methods(data: OfficialShallowWater, refiner: ConditionalRefiner, se
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(); parser.add_argument("--stage", choices=("all", "coarse", "local", "selector", "teacher", "policy", "eval"), default="all"); args = parser.parse_args()
-    c, device = config(), get_device(str(config()["device"])); result, checkpoint = paths(); data = OfficialShallowWater(ROOT / c["data"]["official_dir"], **{"train_cases": c["data"]["train_cases"], "validation_cases": c["data"]["validation_cases"], "test_cases": c["data"]["test_cases"]})
+    parser = argparse.ArgumentParser(); parser.add_argument("--stage", choices=("all", "coarse", "local", "selector", "teacher", "policy", "eval"), default="all"); parser.add_argument("--seed", type=int, default=None); args = parser.parse_args()
+    c, device = config(), get_device(str(config()["device"]));
+    if args.seed is not None: c["seed"] = args.seed
+    result, checkpoint = paths(); data = OfficialShallowWater(ROOT / c["data"]["official_dir"], **{"train_cases": c["data"]["train_cases"], "validation_cases": c["data"]["validation_cases"], "test_cases": c["data"]["test_cases"]})
     stats = model_stats(data); coarse = train_coarse(data, c, stats, device, checkpoint / "conditional_coarse.pt"); refiner = ConditionalRefiner(coarse, local_model(data, c, device), int(c["model"]["patch_core"]), int(c["model"]["patch_halo"]), **stats)
     coarse_metrics(data, refiner, c, result)
     if args.stage == "coarse":
@@ -522,15 +528,17 @@ def main() -> None:
     table["Seed"] = int(c["seed"])
     table["RelativeGainVsMyopic"] = 100.0 * (reference_myopic - table["TrajectoryRelativeL2"]) / reference_myopic
     table["RelativeGainVsBeamBC"] = 100.0 * (reference_beam - table["TrajectoryRelativeL2"]) / reference_beam
-    table.to_csv(result / "accuracy_compute.csv", index=False); table.to_csv(result / "final_comparison.csv", index=False); pd.DataFrame(timeline).to_csv(result / "macro_action_timeline.csv", index=False)
+    suffix = "" if int(c["seed"]) == 42 else f"_seed{int(c['seed'])}"
+    table.to_csv(result / f"accuracy_compute{suffix}.csv", index=False); table.to_csv(result / f"final_comparison{suffix}.csv", index=False); pd.DataFrame(timeline).to_csv(result / f"macro_action_timeline{suffix}.csv", index=False)
     by_method = table.set_index("Method")
     best_non_rl = table[table["Method"].isin(["RandomMacro", "UniformMacro", "GradientMacro", "SetAwareMyopicMacro", "BeamBC"])].sort_values("TrajectoryRelativeL2").iloc[0]
     rv = by_method.loc["RV-PI"]; immediate_row = by_method.loc["ImmediateOnlyPI"]
     document = f"""### Main Result
 
 Coarse: {by_method.loc['CoarseOnly', 'TrajectoryRelativeL2']:.6f} trajectory Relative L2.\n\nBest non-RL: {best_non_rl['Method']} at {best_non_rl['TrajectoryRelativeL2']:.6f}.\n\nBeamBC: {by_method.loc['BeamBC', 'TrajectoryRelativeL2']:.6f}.\n\nRL: {rv['TrajectoryRelativeL2']:.6f}.\n\nRL gain over strongest deployable baseline: {100.0 * (best_non_rl['TrajectoryRelativeL2'] - rv['TrajectoryRelativeL2']) / best_non_rl['TrajectoryRelativeL2']:.2f}%.\n\nFull-horizon vs immediate-only: RV-PI {rv['TrajectoryRelativeL2']:.6f}; Immediate-Only PI {immediate_row['TrajectoryRelativeL2']:.6f}.\n\n3-seed: this run reports seed 42 only. Additional seeds are run only when the seed-42 validation-selected RV-PI checkpoint provides a positive improvement.\n\nThe official operator input is called the official condition field a(x,y). Spatial refinement is GT-free at deployment; GT is used only for train returns and held-out metrics.\n"""
-    (ROOT / "docs" / "solver_v5_final_results.md").write_text(document, encoding="utf-8")
-    summary = {"selector": selector_table.to_dict(orient="records"), "results": table.to_dict(orient="records"), "condition": "official condition field a(x,y)", "history": "u_(t-1), u_t", "status": "completed"}; (result / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    if int(c["seed"]) == 42:
+        (ROOT / "docs" / "solver_v5_final_results.md").write_text(document, encoding="utf-8")
+    summary = {"selector": selector_table.to_dict(orient="records"), "results": table.to_dict(orient="records"), "condition": "official condition field a(x,y)", "history": "u_(t-1), u_t", "status": "completed"}; (result / f"summary{suffix}.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     print("Solver V5 completed.")
 
 
