@@ -395,7 +395,9 @@ def teacher_dataset(data: OfficialShallowWater, refiner: ConditionalRefiner, sel
                     future_target = data.frame(case, future_t + 4).unsqueeze(0).to(device); future_sse += float((cur_c - future_target).square().sum()); future_norm += float(future_target.square().sum())
                 returns.append(-future_sse / max(future_norm, 1e-12))
             action = beam_actions[step]
-            samples.append({"obs": tuple(value.cpu() for value in obs), "teacher_q": action, "returns": torch.tensor(returns), "feasible": torch.tensor([q in feasible for q in ACTIONS])})
+            # Teacher labels are immutable supervised data. Detaching avoids
+            # carrying selector autograd graphs into BeamBC mini-batches.
+            samples.append({"obs": tuple(value.detach().cpu() for value in obs), "teacher_q": action, "returns": torch.tensor(returns), "feasible": torch.tensor([q in feasible for q in ACTIONS])})
             selected, _, _ = select_patches(selector, stats, bundle, action, t / 71.0); previous, current, remaining = current, bundle.apply_set(selected), remaining - action
     payload = {"samples": samples, "actions": ACTIONS, "selection": "GT-free selector; train GT only for future rollout returns"}; torch.save(payload, path); return payload
 
