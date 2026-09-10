@@ -462,8 +462,10 @@ def rvpi_train(data: OfficialShallowWater, refiner: ConditionalRefiner, selector
                 with torch.no_grad(): old_logits = old_policy(*obs).masked_fill(~feasible, -1e9)
                 loss = -(target * F.log_softmax(logits, -1)).sum(-1).mean() + float(c["macro"]["lambda_bc"]) * F.cross_entropy(logits, old_action) + float(c["macro"]["lambda_kl"]) * F.kl_div(F.log_softmax(logits, -1), F.softmax(old_logits, -1), reduction="batchmean")
                 opt.zero_grad(set_to_none=True); loss.backward(); torch.nn.utils.clip_grad_norm_(policy.parameters(), 1.0); opt.step()
-        old_error = evaluate_methods(data, refiner, selector, stats, {"old": old_policy}, c, "val", seed=int(c["seed"]))[0]["TrajectoryRelativeL2"]
-        new_error = evaluate_methods(data, refiner, selector, stats, {"new": policy}, c, "val", seed=int(c["seed"]))[0]["TrajectoryRelativeL2"]
+        old_rows, _ = evaluate_methods(data, refiner, selector, stats, {"old": old_policy}, c, "val", seed=int(c["seed"]))
+        new_rows, _ = evaluate_methods(data, refiner, selector, stats, {"new": policy}, c, "val", seed=int(c["seed"]))
+        old_error = next(row["TrajectoryRelativeL2"] for row in old_rows if row["Method"] == "old")
+        new_error = next(row["TrajectoryRelativeL2"] for row in new_rows if row["Method"] == "new")
         accepted = new_error < old_error
         if not accepted: policy.load_state_dict(old_policy.state_dict())
         changes = np.mean([np.argmax(row["advantages"]) != row["old"] for row in samples])
