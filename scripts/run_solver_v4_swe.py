@@ -28,6 +28,7 @@ from src.solver_v3.data.official_shallow_water import OfficialShallowWater
 from src.solver_v3.env.hybrid_rollout import HybridRefiner, relative_l2
 from src.solver_v3.models.patch_policy import PatchUtilityNet
 from src.solver_v4.models.set_aware_selector import SetAwareSelector
+from src.solver_v4.env.frozen_patch_bundle import FrozenPatchBundle
 from src.utils.seed import get_device, set_seed
 
 
@@ -300,19 +301,266 @@ def validate_independent_selector(data: OfficialShallowWater, refiner: HybridRef
     pd.DataFrame(rows).to_csv(result / "independent_selector_validation.csv", index=False)
 
 
+def v2_paths() -> tuple[Path, Path]:
+    result = ROOT / "results" / "solver_v4" / "shallow_water" / "selector_semantics_v2"
+    checkpoint = ROOT / "checkpoints" / "solver_v4" / "shallow_water"
+    result.mkdir(parents=True, exist_ok=True)
+    return result, checkpoint
+
+
+def overlap_features(selected: list[int], device: torch.device, dtype: torch.dtype) -> torch.Tensor:
+    rows = torch.arange(8, device=device).repeat_interleave(8)
+    cols = torch.arange(8, device=device).repeat(8)
+    if not selected:
+        return torch.stack([torch.ones(64, device=device, dtype=dtype), torch.zeros(64, device=device, dtype=dtype), torch.zeros(64, device=device, dtype=dtype), torch.zeros(64, device=device, dtype=dtype), torch.zeros(64, device=device, dtype=dtype)], dim=1)
+    chosen = torch.as_tensor(selected, device=device)
+    dr, dc = (rows[:, None] - rows[chosen]).abs(), (cols[:, None] - cols[chosen]).abs()
+    distance = torch.sqrt((dr.float() ** 2 + dc.float() ** 2).min(1).values) / np.sqrt(98.0)
+    adjacent = ((dr + dc) == 1).sum(1).to(dtype)
+    halo_overlap = ((dr <= 1) & (dc <= 1) & ((dr + dc) > 0)).sum(1).to(dtype)
+    overlap_area = ((48 - 32 * dr).clamp_min(0) * (48 - 32 * dc).clamp_min(0)).sum(1).to(dtype) / float(48 * 48)
+    cosine_strength = (overlap_area / max(len(selected), 1)).clamp_max(1.0)
+    return torch.stack([distance.to(dtype), adjacent, overlap_area, halo_overlap, cosine_strength], dim=1)
+
+
+def correction_features(bundle: FrozenPatchBundle, time_fraction: float, selected: list[int]) -> torch.Tensor:
+    base = patch_features_from_inputs(bundle.patch_inputs, bundle.current, time_fraction)
+    correction, provisional = bundle.corrections, bundle.patch_inputs[:, bundle.current.shape[1] : 2 * bundle.current.shape[1]]
+    dx, dy = correction[..., 1:] - correction[..., :-1], correction[..., 1:, :] - correction[..., :-1, :]
+    high = correction - F.avg_pool2d(correction, 3, stride=1, padding=1)
+    flat = correction.flatten(1)
+    corr_rms = flat.square().mean(1).sqrt()
+    proposal = torch.stack([flat.mean(1), flat.std(1), flat.abs().mean(1), corr_rms, flat.abs().amax(1), dx.flatten(1).abs().mean(1), dy.flatten(1).abs().mean(1), high.flatten(1).abs().mean(1), provisional.flatten(1).square().mean(1).sqrt(), corr_rms / provisional.flatten(1).square().mean(1).sqrt().clamp_min(1e-8)], dim=1)
+    return torch.cat([base, proposal, overlap_features(selected, base.device, base.dtype)], dim=1)
+
+
+def frozen_gains(bundle: FrozenPatchBundle, target: torch.Tensor, selected: list[int]) -> tuple[torch.Tensor, float, torch.Tensor]:
+    base = bundle.apply_set(selected)
+    base_error = F.mse_loss(base, target)
+    candidates = bundle.candidate_fields(selected)
+    errors = ((candidates - target.expand_as(candidates)) ** 2).flatten(1).mean(1)
+    gains = base_error - errors
+    if selected:
+        gains[torch.as_tensor(selected, device=gains.device)] = -torch.inf
+    return gains, float(base_error), base
+
+
+def source_frozen_set(source: str, bundle: FrozenPatchBundle, target: torch.Tensor, utility: PatchUtilityNet, utility_stats: dict[str, torch.Tensor], time_fraction: float, generator: np.random.Generator) -> list[int]:
+    if source == "coarse":
+        return []
+    count = int(generator.choice([0, 1, 2, 4]))
+    if not count:
+        return []
+    if source == "random":
+        return generator.choice(64, count, replace=False).tolist()
+    if source == "independent":
+        base = patch_features_from_inputs(bundle.patch_inputs, bundle.current, time_fraction)
+        return torch.topk(utility(normalized_features(base, utility_stats)), count).indices.tolist()
+    selected = []
+    for _ in range(count):
+        gains, _, _ = frozen_gains(bundle, target, selected)
+        selected.append(int(gains.argmax()))
+    return selected
+
+
+@torch.no_grad()
+def build_frozen_dataset(data: OfficialShallowWater, refiner: HybridRefiner, utility: PatchUtilityNet, utility_stats: dict[str, torch.Tensor], c: dict, checkpoint: Path) -> dict[str, torch.Tensor]:
+    cache = checkpoint / "selector_train_labels_frozen_semantics_v2.pt"
+    if cache.exists():
+        return torch.load(cache, map_location="cpu")
+    generator, stride = np.random.default_rng(int(c["seed"])), int(c["data"]["stride"])
+    rows = {key: [] for key in ("fields", "raw_features", "mask", "context", "gains")}
+    sources = ("coarse", "random", "independent", "privileged")
+    for source in sources:
+        for case in tqdm(data.case_ids("train"), desc=f"v4:v2-labels:{source}"):
+            state = data.frame(case, 0).unsqueeze(0).to(next(refiner.coarse_model.parameters()).device)
+            for time_index in range(0, 72 - stride, stride):
+                target = data.frame(case, time_index + stride).unsqueeze(0).to(state.device)
+                bundle = FrozenPatchBundle.create(refiner, state, time_index / 71.0)
+                q_target = int(generator.choice([1, 2, 4], p=c["training"]["q_target_probabilities"]))
+                size = int(generator.choice([0, 1, 2, 3], p=c["training"]["selected_size_probabilities"]))
+                selected = generator.choice(64, size, replace=False).tolist() if size else []
+                gains, _, _ = frozen_gains(bundle, target, selected)
+                mask = torch.zeros(64, dtype=torch.bool, device=state.device); mask[selected] = True
+                rows["fields"].append(field_tensor(state, bundle.provisional).cpu())
+                rows["raw_features"].append(correction_features(bundle, time_index / 71.0, selected).cpu())
+                rows["mask"].append(mask.cpu())
+                rows["context"].append(torch.tensor([q_target / 4.0, size / 4.0]))
+                rows["gains"].append(gains.cpu())
+                state = bundle.apply_set(source_frozen_set(source, bundle, target, utility, utility_stats, time_index / 71.0, generator))
+    data_rows = {"fields": torch.cat(rows["fields"]), "raw_features": torch.stack(rows["raw_features"]), "mask": torch.stack(rows["mask"]), "context": torch.stack(rows["context"]), "gains": torch.stack(rows["gains"])}
+    torch.save(data_rows, cache)
+    return data_rows
+
+
+def v2_loss(scores: torch.Tensor, gains: torch.Tensor, selected: torch.Tensor, mean: torch.Tensor, std: torch.Tensor, noise_threshold: torch.Tensor, c: dict) -> torch.Tensor:
+    valid = ~selected
+    safe_gains = torch.where(valid, gains, mean)
+    targets = (safe_gains - mean) / std
+    regression = F.huber_loss(scores[valid], targets[valid])
+    difference, score_difference = targets[:, :, None] - targets[:, None, :], scores[:, :, None] - scores[:, None, :]
+    pairs = valid[:, :, None] & valid[:, None, :] & (difference.abs() > 1e-8)
+    best = safe_gains.masked_fill(~valid, -torch.inf).amax(1)
+    state_weight = torch.where(best >= noise_threshold, torch.ones_like(best), torch.full_like(best, 0.25))
+    pair_loss = F.softplus(-difference.sign() * score_difference)
+    pairwise = (pair_loss * pairs * state_weight[:, None, None]).sum() / pairs.sum().clamp_min(1)
+    top = gains.masked_fill(~valid, -torch.inf).topk(8, dim=1).indices
+    batch = torch.arange(scores.shape[0], device=scores.device)[:, None]
+    top_scores, top_targets = scores[batch, top], targets[batch, top]
+    top_difference = top_scores[:, :, None] - scores[:, None, :]
+    target_difference = top_targets[:, :, None] - targets[:, None, :]
+    top_pairs = valid[:, None, :] & (target_difference > 0)
+    top_loss = (F.relu(0.1 - top_difference) * top_pairs * state_weight[:, None, None]).sum() / top_pairs.sum().clamp_min(1)
+    return regression + float(c["training"]["pairwise_weight"]) * pairwise + float(c["training"]["top_weight"]) * top_loss
+
+
+def train_selector_v2(dataset: dict[str, torch.Tensor], c: dict, device: torch.device, checkpoint: Path) -> tuple[SetAwareSelector, dict[str, torch.Tensor]]:
+    path = checkpoint / "set_aware_selector_v2.pt"
+    raw = dataset["raw_features"]
+    statistics = {"feature_mean": raw.mean((0, 1)), "feature_std": raw.std((0, 1)).clamp_min(1e-6), "gain_mean": dataset["gains"][torch.isfinite(dataset["gains"])].mean(), "gain_std": dataset["gains"][torch.isfinite(dataset["gains"])].std().clamp_min(1e-8)}
+    model = SetAwareSelector(raw.shape[-1], int(c["model"]["selector_dim"]), int(c["model"]["selector_heads"]), int(c["model"]["selector_layers"])).to(device)
+    if path.exists():
+        saved = torch.load(path, map_location=device)
+        if saved.get("feature_version") == "frozen_semantics_v2":
+            model.load_state_dict(saved["model"])
+            return model.eval(), {key: saved[key].to(device) for key in statistics}
+    set_seed(int(c["seed"])); optimizer = torch.optim.AdamW(model.parameters(), lr=float(c["training"]["selector_lr"]), weight_decay=1e-5)
+    threshold = dataset["gains"].masked_fill(dataset["mask"], -torch.inf).amax(1).quantile(0.1).to(device)
+    count, batch = len(dataset["gains"]), int(c["training"]["selector_batch_size"])
+    for _ in tqdm(range(int(c["training"]["selector_v2_epochs"])), desc="v4:set-selector-v2"):
+        for indices in torch.randperm(count).split(batch):
+            fields, features = dataset["fields"][indices].to(device), ((raw[indices] - statistics["feature_mean"]) / statistics["feature_std"]).to(device)
+            mask, context, gains = dataset["mask"][indices].to(device), dataset["context"][indices].to(device), dataset["gains"][indices].to(device)
+            loss = v2_loss(model(fields, features, mask, context), gains, mask, statistics["gain_mean"].to(device), statistics["gain_std"].to(device), threshold, c)
+            optimizer.zero_grad(set_to_none=True); loss.backward(); torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0); optimizer.step()
+    torch.save({"model": model.state_dict(), **{key: value.cpu() for key, value in statistics.items()}, "feature_version": "frozen_semantics_v2"}, path)
+    return model.eval(), {key: value.to(device) for key, value in statistics.items()}
+
+
+def selector_scores_v2(model: SetAwareSelector, stats: dict[str, torch.Tensor], bundle: FrozenPatchBundle, time_fraction: float, selected: list[int], q: int) -> torch.Tensor:
+    mask = torch.zeros(64, dtype=torch.bool, device=bundle.provisional.device); mask[selected] = True
+    features = (correction_features(bundle, time_fraction, selected) - stats["feature_mean"]) / stats["feature_std"]
+    context = torch.tensor([[q / 4.0, len(selected) / 4.0]], device=bundle.provisional.device)
+    return model(field_tensor(bundle.current, bundle.provisional), features.unsqueeze(0), mask.unsqueeze(0), context)[0]
+
+
+@torch.no_grad()
+def select_frozen(bundle: FrozenPatchBundle, target: torch.Tensor, q: int, time_fraction: float, model: SetAwareSelector | None, stats: dict[str, torch.Tensor] | None, utility: PatchUtilityNet | None, utility_stats: dict[str, torch.Tensor] | None, privileged: bool) -> tuple[list[int], dict[str, float]]:
+    selected, overlaps, spearman, pairwise = [], [], [], []
+    initial_error = float(F.mse_loss(bundle.provisional, target))
+    if q == 0:
+        return selected, {"initial_error": initial_error, "final_error": initial_error, "overlap": 1.0, "spearman": 1.0, "pairwise": 1.0}
+    for _ in range(q):
+        gains, _, _ = frozen_gains(bundle, target, selected)
+        valid = torch.isfinite(gains)
+        true = int(gains.argmax())
+        if privileged:
+            chosen = true
+        elif model is not None:
+            scores = selector_scores_v2(model, stats, bundle, time_fraction, selected, q)
+            chosen = int(scores.masked_fill(~valid, -torch.inf).argmax())
+            _, sp, pw = rank_metrics(scores, gains, valid); spearman.append(sp); pairwise.append(pw)
+        else:
+            base = patch_features_from_inputs(bundle.patch_inputs, bundle.current, time_fraction)
+            scores = utility(normalized_features(base, utility_stats))
+            chosen = int(scores.masked_fill(~valid, -torch.inf).argmax())
+            _, sp, pw = rank_metrics(scores, gains, valid); spearman.append(sp); pairwise.append(pw)
+        overlaps.append(float(chosen == true)); selected.append(chosen)
+    final = bundle.apply_set(selected)
+    final_error = float(F.mse_loss(final, target))
+    return selected, {"initial_error": initial_error, "final_error": final_error, "overlap": float(np.mean(overlaps)), "spearman": float(np.mean(spearman)) if spearman else 1.0, "pairwise": float(np.mean(pairwise)) if pairwise else 1.0}
+
+
+@torch.no_grad()
+def validate_selector_v2(data: OfficialShallowWater, refiner: HybridRefiner, model: SetAwareSelector, stats: dict[str, torch.Tensor], utility: PatchUtilityNet, utility_stats: dict[str, torch.Tensor], c: dict, result: Path) -> pd.DataFrame:
+    rows, stride = [], int(c["data"]["stride"])
+    for q in (1, 2, 4):
+        aggregates = {key: [] for key in ("overlap", "spearman", "pairwise", "pred", "priv", "initial", "regret", "positive")}
+        for case in tqdm(data.case_ids("val"), desc=f"v4:v2-selector-validation:q{q}"):
+            state = data.frame(case, 0).unsqueeze(0).to(next(refiner.coarse_model.parameters()).device)
+            for time_index in range(0, 72 - stride, stride):
+                target = data.frame(case, time_index + stride).unsqueeze(0).to(state.device)
+                bundle = FrozenPatchBundle.create(refiner, state, time_index / 71.0)
+                selected, pred = select_frozen(bundle, target, q, time_index / 71.0, model, stats, None, None, False)
+                _, priv = select_frozen(bundle, target, q, time_index / 71.0, None, None, None, None, True)
+                aggregates["overlap"].append(pred["overlap"]); aggregates["spearman"].append(pred["spearman"]); aggregates["pairwise"].append(pred["pairwise"])
+                aggregates["pred"].append(pred["final_error"]); aggregates["priv"].append(priv["final_error"]); aggregates["initial"].append(pred["initial_error"]); aggregates["regret"].append(pred["final_error"] - priv["final_error"]); aggregates["positive"].append(pred["final_error"] < pred["initial_error"])
+                state = bundle.apply_set(selected)
+        initial, pred, priv = np.asarray(aggregates["initial"]), np.asarray(aggregates["pred"]), np.asarray(aggregates["priv"])
+        rows.append({"Q": q, "States": len(pred), "Top1Overlap": np.mean(aggregates["overlap"]), "Spearman": np.mean(aggregates["spearman"]), "PairwiseAccuracy": np.mean(aggregates["pairwise"]), "AggregateGainRecovery": (initial - pred).sum() / max((initial - priv).sum(), 1e-12), "AggregateGapRecovery": (initial - pred).sum() / max((initial - priv).sum(), 1e-12), "MeanSetRegret": np.mean(aggregates["regret"]), "MedianSetRegret": np.median(aggregates["regret"]), "PositiveImprovementRate": np.mean(aggregates["positive"]), "PredictedFinalError": np.mean(pred), "PrivilegedFinalError": np.mean(priv), "ProvisionalError": np.mean(initial)})
+    table = pd.DataFrame(rows); table.to_csv(result / "set_selector_validation_v2.csv", index=False)
+    return table
+
+
+def is_budget_representable(remaining_budget: int, remaining_steps: int, actions: tuple[int, ...] = (0, 1, 2, 4)) -> bool:
+    reachable = {0}
+    for _ in range(remaining_steps):
+        reachable = {used + action for used in reachable for action in actions if used + action <= remaining_budget}
+    return remaining_budget in reachable
+
+
+@torch.no_grad()
+def macro_rollout(data: OfficialShallowWater, refiner: HybridRefiner, model: SetAwareSelector, stats: dict[str, torch.Tensor], c: dict, case: int, beam: bool) -> tuple[float, int]:
+    actions, budget, stride = tuple(int(x) for x in c["oracle"]["macro_actions"]), int(c["oracle"]["budget"]), int(c["data"]["stride"])
+    times, device = list(range(0, 72 - stride, stride)), next(refiner.coarse_model.parameters()).device
+    initial = data.frame(case, 0).unsqueeze(0).to(device)
+    branches = [(initial, budget, 0.0, [])]
+    for step, time_index in enumerate(times):
+        target = data.frame(case, time_index + stride).unsqueeze(0).to(device)
+        candidates = []
+        for state, remaining, score, trace in branches:
+            feasible = [q for q in actions if q <= remaining and is_budget_representable(remaining - q, len(times) - step - 1, actions)]
+            if not beam:
+                quota = remaining / (len(times) - step)
+                feasible = [min(feasible, key=lambda q: (abs(q - quota), -q))]
+            for q in feasible:
+                bundle = FrozenPatchBundle.create(refiner, state, time_index / 71.0)
+                selected, _ = select_frozen(bundle, target, q, time_index / 71.0, model, stats, None, None, False)
+                next_state = bundle.apply_set(selected)
+                candidates.append((next_state, remaining - q, score + float(relative_l2(next_state, target)[0]), trace + [(q, selected)]))
+        candidates.sort(key=lambda row: row[2])
+        branches = candidates[: int(c["oracle"]["beam_width"])] if beam else candidates[:1]
+    best = branches[0]
+    targets = torch.stack([data.frame(case, time_index).to(device) for time_index in [0] + [t + stride for t in times]])
+    # The beam score is the sum of per-frame relative errors; report trajectory L2 consistently with earlier tables.
+    states = [initial]
+    state = initial
+    for (q, selected), time_index in zip(best[3], times):
+        bundle = FrozenPatchBundle.create(refiner, state, time_index / 71.0)
+        state = bundle.apply_set(selected); states.append(state)
+    trajectory = torch.cat(states)
+    error = float(torch.linalg.vector_norm(trajectory - targets) / torch.linalg.vector_norm(targets).clamp_min(1e-8))
+    return error, budget - best[1]
+
+
+def evaluate_deployable_macro(data: OfficialShallowWater, refiner: HybridRefiner, model: SetAwareSelector, stats: dict[str, torch.Tensor], c: dict, result: Path) -> pd.DataFrame:
+    cases, rows = data.case_ids("val")[: int(c["oracle"]["validation_cases"])], []
+    greedy, beam, used, positive = [], [], [], 0
+    for case in tqdm(cases, desc="v4:v2-deployable-macro"):
+        greedy_error, _ = macro_rollout(data, refiner, model, stats, c, case, beam=False)
+        beam_error, calls = macro_rollout(data, refiner, model, stats, c, case, beam=True)
+        greedy.append(greedy_error); beam.append(beam_error); used.append(calls); positive += beam_error < greedy_error
+    table = pd.DataFrame([{"Budget": int(c["oracle"]["budget"]), "Cases": len(cases), "GreedyError": np.mean(greedy), "BeamError": np.mean(beam), "RelativeGain": 100.0 * (np.mean(greedy) - np.mean(beam)) / max(np.mean(greedy), 1e-12), "PositiveCaseRate": 100.0 * positive / len(cases), "MeanBudgetUsed": np.mean(used)}])
+    table.to_csv(result / "deployable_macro_headroom_v2.csv", index=False)
+    return table
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--stage", choices=("selector",), default="selector")
+    parser.add_argument("--stage", choices=("selector-v2",), default="selector-v2")
     parser.parse_args()
     c, device = config(), get_device(str(config()["device"]))
-    result, checkpoint = output_paths()
+    result, checkpoint = v2_paths()
     data, refiner, utility, utility_stats = load_v3_system(c, device)
-    dataset = build_selector_dataset(data, refiner, utility, utility_stats, c, checkpoint)
-    selector = train_selector(dataset, c, device, checkpoint)
-    table = validate_selector(data, refiner, selector, utility_stats, c, result)
-    validate_independent_selector(data, refiner, utility, utility_stats, c, result)
-    (result / "summary.json").write_text(json.dumps({"stage": "selector", "training_states": len(dataset["gains"]), "selector_gate": table.to_dict(orient="records")}, indent=2), encoding="utf-8")
-    print("Solver V4 selector stage completed.")
+    dataset = build_frozen_dataset(data, refiner, utility, utility_stats, c, checkpoint)
+    selector, statistics = train_selector_v2(dataset, c, device, checkpoint)
+    table = validate_selector_v2(data, refiner, selector, statistics, utility, utility_stats, c, result)
+    rows = table.set_index("Q")
+    noncatastrophic = rows.loc[1, "AggregateGapRecovery"] > 0 and rows.loc[2, "AggregateGapRecovery"] > 0 and rows.loc[4, "AggregateGapRecovery"] > -0.1
+    macro = evaluate_deployable_macro(data, refiner, selector, statistics, c, result) if noncatastrophic else None
+    payload = {"stage": "frozen_selector_v2", "training_states": len(dataset["gains"]), "selector": table.to_dict(orient="records"), "deployable_macro": None if macro is None else macro.to_dict(orient="records"), "fqi_run": False}
+    (result / "summary.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    print("Solver V4 frozen-semantics selector stage completed.")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,21 @@
+{
+  "input_shape": [
+    150,
+    256,
+    256
+  ],
+  "output_shape": [
+    150,
+    72,
+    256,
+    256
+  ],
+  "input_min": -0.00014577931103220573,
+  "input_max": 3.5309943038543634e-05,
+  "input_std": 7.115418698100519e-05,
+  "input_case_variation_mean_std": 3.8823109464860775e-08,
+  "input_case_variation_l2_std": 5.9415842108472685e-06,
+  "input_matches_output_t0_shape": true,
+  "input_output_t0_mean_correlation": -0.29812519450120156,
+  "interpretation": "Input arrays vary across cases. They are inspected only here; Solver V4 does not alter its Markov state with this diagnostic."
+}

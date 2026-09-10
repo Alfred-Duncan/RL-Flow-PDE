@@ -1,0 +1,63 @@
+{
+  "stage": "frozen_selector_v2",
+  "training_states": 15640,
+  "selector": [
+    {
+      "Q": 1,
+      "States": 340,
+      "Top1Overlap": 0.4323529411764706,
+      "Spearman": 0.8529424687536157,
+      "PairwiseAccuracy": 0.8562310340802989,
+      "AggregateGainRecovery": 0.8293690220229314,
+      "AggregateGapRecovery": 0.8293690220229314,
+      "MeanSetRegret": 5.647697274552604e-07,
+      "MedianSetRegret": 1.3504177331924438e-08,
+      "PositiveImprovementRate": 0.8705882352941177,
+      "PredictedFinalError": 0.003294650076885078,
+      "PrivilegedFinalError": 0.0032940853071576222,
+      "ProvisionalError": 0.0032973951969217843
+    },
+    {
+      "Q": 2,
+      "States": 340,
+      "Top1Overlap": 0.36323529411764705,
+      "Spearman": 0.897496056416805,
+      "PairwiseAccuracy": 0.8823976969820188,
+      "AggregateGainRecovery": 0.8387200516252157,
+      "AggregateGapRecovery": 0.8387200516252157,
+      "MeanSetRegret": 8.683793138890691e-07,
+      "MedianSetRegret": 5.844049155712128e-08,
+      "PositiveImprovementRate": 0.8676470588235294,
+      "PredictedFinalError": 0.0034009796543828354,
+      "PrivilegedFinalError": 0.0034001112750689463,
+      "ProvisionalError": 0.0034054955731335212
+    },
+    {
+      "Q": 4,
+      "States": 340,
+      "Top1Overlap": 0.26838235294117646,
+      "Spearman": 0.851598755383385,
+      "PairwiseAccuracy": 0.8575231524557204,
+      "AggregateGainRecovery": 0.814485613539268,
+      "AggregateGapRecovery": 0.814485613539268,
+      "MeanSetRegret": 1.3752895029028878e-06,
+      "MedianSetRegret": 2.76835635304451e-07,
+      "PositiveImprovementRate": 0.6617647058823529,
+      "PredictedFinalError": 0.0035253558610052363,
+      "PrivilegedFinalError": 0.0035239805715023336,
+      "ProvisionalError": 0.003531393956141341
+    }
+  ],
+  "deployable_macro": [
+    {
+      "Budget": 32,
+      "Cases": 16,
+      "GreedyError": 0.7452191784977913,
+      "BeamError": 0.7520049661397934,
+      "RelativeGain": -0.9105760879209871,
+      "PositiveCaseRate": 68.75,
+      "MeanBudgetUsed": 32.0
+    }
+  ],
+  "fqi_run": false
+}

@@ -18,6 +18,10 @@ training:
   selector_batch_size: 12
   selector_lr: 0.0005
   pairwise_weight: 0.5
+  top_weight: 1.0
+  selector_v2_epochs: 20
+  selected_size_probabilities: [0.2, 0.3, 0.3, 0.2]
+  q_target_probabilities: [0.25, 0.35, 0.4]
 oracle:
   budget: 32
   macro_actions: [0, 1, 2, 4]

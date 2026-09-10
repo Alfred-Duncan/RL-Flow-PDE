@@ -55,12 +55,12 @@ class HybridRefiner:
             inputs.append(torch.cat([current_patch, provisional_patch, coarse_patch, difference, time], dim=1))
         return torch.cat(inputs, dim=0)
 
-    def blend_corrections(self, provisional: torch.Tensor, patches: list[int], corrections: torch.Tensor) -> torch.Tensor:
-        """Cosine-blend batched local corrections into their native patch locations."""
-        if not patches:
-            return provisional
-        output, weights = torch.zeros_like(provisional), torch.zeros_like(provisional[:, :1])
+    def correction_canvases(self, provisional: torch.Tensor, patches: list[int], corrections: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+        """Return per-patch blend contributions using the canonical native-grid rule."""
+        output = torch.zeros((len(patches), *provisional.shape[1:]), device=provisional.device, dtype=provisional.dtype)
+        weights = torch.zeros((len(patches), 1, *provisional.shape[-2:]), device=provisional.device, dtype=provisional.dtype)
         for patch, correction in zip(patches, corrections.split(1, dim=0)):
+            index = patches.index(patch)
             top, bottom, left, right = self.patch_bounds(patch)
             window = self._flat_cosine_window(bottom - top, self.halo, provisional.device, provisional.dtype)[None, None]
             # Reflection is only an input-boundary rule.  Corrections outside the
@@ -70,8 +70,16 @@ class HybridRefiner:
             col_start, col_end = max(left, 0), min(right, provisional.shape[-1])
             patch_rows = slice(row_start - top, row_end - top)
             patch_cols = slice(col_start - left, col_end - left)
-            output[:, :, row_start:row_end, col_start:col_end] += correction[:, :, patch_rows, patch_cols] * window[:, :, patch_rows, patch_cols]
-            weights[:, :, row_start:row_end, col_start:col_end] += window[:, :, patch_rows, patch_cols]
+            output[index : index + 1, :, row_start:row_end, col_start:col_end] += correction[:, :, patch_rows, patch_cols] * window[:, :, patch_rows, patch_cols]
+            weights[index : index + 1, :, row_start:row_end, col_start:col_end] += window[:, :, patch_rows, patch_cols]
+        return output, weights
+
+    def blend_corrections(self, provisional: torch.Tensor, patches: list[int], corrections: torch.Tensor) -> torch.Tensor:
+        """Cosine-blend batched local corrections into their native patch locations."""
+        if not patches:
+            return provisional
+        output, weights = self.correction_canvases(provisional, patches, corrections)
+        output, weights = output.sum(0, keepdim=True), weights.sum(0, keepdim=True)
         return provisional + output / weights.clamp_min(1e-6)
 
     def apply_patches(self, current: torch.Tensor, provisional: torch.Tensor, patches: list[int], time_fraction: float) -> torch.Tensor:
