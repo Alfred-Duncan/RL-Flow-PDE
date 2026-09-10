@@ -2,6 +2,7 @@ __pycache__/
 *.pyc
 .pytest_cache/
 logs*.txt
+logs/
 checkpoints/
 data/processed/
 data/official/
