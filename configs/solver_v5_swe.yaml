@@ -1,0 +1,51 @@
+seed: 42
+device: cuda
+data:
+  official_dir: data/official/shallow_water
+  stride: 4
+  train_cases: 230
+  validation_cases: 20
+  test_cases: 50
+model:
+  coarse_width: 32
+  coarse_modes: 12
+  coarse_depth: 4
+  local_width: 32
+  local_modes: 12
+  local_depth: 4
+  patch_core: 32
+  patch_halo: 8
+  selector_dim: 64
+  selector_heads: 4
+  selector_layers: 2
+training:
+  coarse_epochs: 12
+  coarse_batch_size: 8
+  coarse_lr: 0.0005
+  local_epochs: 6
+  local_batch_size: 4
+  local_lr: 0.0005
+  local_patches_per_state: 4
+  selector_cases: 96
+  selector_epochs: 16
+  selector_batch_size: 12
+  selector_lr: 0.0005
+  pairwise_weight: 0.5
+  top_weight: 1.0
+macro:
+  actions: [0, 1, 2, 4]
+  budget: 32
+  teacher_cases: 32
+  teacher_beam_width: 16
+  beam_bc_epochs: 30
+  policy_batch_size: 32
+  policy_lr: 0.0005
+  rvpi_cycles: 5
+  rvpi_cases_per_source: 6
+  immediate_cycles: 3
+  advantage_temperature: 0.05
+  lambda_bc: 0.25
+  lambda_kl: 0.1
+evaluation:
+  validation_cases: 20
+  test_cases: 50

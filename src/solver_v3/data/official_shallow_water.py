@@ -102,5 +102,25 @@ class OfficialShallowWater:
             raise AssertionError(f"Adapter produced unexpected frame shape {value.shape}.")
         return torch.from_numpy(value.copy())
 
+    def condition(self, case_id: int) -> torch.Tensor:
+        """Return the official operator input field ``a(x,y)`` for one case.
+
+        The benchmark does not document a narrower physical interpretation for
+        this array, so callers must treat it as the official condition field.
+        """
+        archive_index, local_index = self._case_location(case_id)
+        value = np.asarray(self._load_archive(archive_index)["inputs"][local_index], dtype=np.float32)
+        if value.ndim == 2:
+            value = value[None]
+        elif value.ndim == 3:
+            # Preserve a leading channel layout if a future official variant
+            # contains multiple condition fields.
+            pass
+        else:
+            raise AssertionError(f"Unsupported official condition shape {value.shape}.")
+        if value.shape[-2:] != (256, 256):
+            raise AssertionError(f"Official condition must be 256x256, found {value.shape}.")
+        return torch.from_numpy(value.copy())
+
     def case_ids(self, split: str) -> list[int]:
         return self.splits[split]
