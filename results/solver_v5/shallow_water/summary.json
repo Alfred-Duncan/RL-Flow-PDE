@@ -1,0 +1,118 @@
+{
+  "selector": [
+    {
+      "Q": 1,
+      "Spearman": 0.6463439742796988,
+      "PairwiseAccuracy": 0.7574725723622782,
+      "AggregateGapRecovery": 0.6602635033771067,
+      "PositiveImprovementRate": 0.9323529411764706
+    },
+    {
+      "Q": 2,
+      "Spearman": 0.5406446733498081,
+      "PairwiseAccuracy": 0.7118551587301587,
+      "AggregateGapRecovery": 0.59230451719178,
+      "PositiveImprovementRate": 0.9676470588235294
+    },
+    {
+      "Q": 4,
+      "Spearman": 0.3908214633203088,
+      "PairwiseAccuracy": 0.6589504551820728,
+      "AggregateGapRecovery": 0.42230235565220936,
+      "PositiveImprovementRate": 0.888235294117647
+    }
+  ],
+  "results": [
+    {
+      "Method": "CoarseOnly",
+      "Budget": 32,
+      "TrajectoryRelativeL2": 0.7403468310832977,
+      "FinalFrameRelativeL2": 1.056560012102127,
+      "LocalCalls": 0.0,
+      "WallTime": 19.450031699998362,
+      "Seed": 42,
+      "RelativeGainVsMyopic": -0.4328986862361143,
+      "RelativeGainVsBeamBC": -0.12758348927819138
+    },
+    {
+      "Method": "RandomMacro",
+      "Budget": 32,
+      "TrajectoryRelativeL2": 0.7125880408287049,
+      "FinalFrameRelativeL2": 1.0317729747295379,
+      "LocalCalls": 32.0,
+      "WallTime": 26.509505900001386,
+      "Seed": 42,
+      "RelativeGainVsMyopic": 3.332763098542064,
+      "RelativeGainVsBeamBC": 3.6266307142339294
+    },
+    {
+      "Method": "UniformMacro",
+      "Budget": 32,
+      "TrajectoryRelativeL2": 0.737155693769455,
+      "FinalFrameRelativeL2": 1.0172574305534363,
+      "LocalCalls": 32.0,
+      "WallTime": 25.668674200001988,
+      "Seed": 42,
+      "RelativeGainVsMyopic": 0.0,
+      "RelativeGainVsBeamBC": 0.30399918846489
+    },
+    {
+      "Method": "GradientMacro",
+      "Budget": 32,
+      "TrajectoryRelativeL2": 0.7694246983528137,
+      "FinalFrameRelativeL2": 1.210167157649994,
+      "LocalCalls": 32.0,
+      "WallTime": 26.74749979999615,
+      "Seed": 42,
+      "RelativeGainVsMyopic": -4.377501911211011,
+      "RelativeGainVsBeamBC": -4.060195152461005
+    },
+    {
+      "Method": "SetAwareMyopicMacro",
+      "Budget": 32,
+      "TrajectoryRelativeL2": 0.737155693769455,
+      "FinalFrameRelativeL2": 1.0172574305534363,
+      "LocalCalls": 32.0,
+      "WallTime": 25.642762499999662,
+      "Seed": 42,
+      "RelativeGainVsMyopic": 0.0,
+      "RelativeGainVsBeamBC": 0.30399918846489
+    },
+    {
+      "Method": "BeamBC",
+      "Budget": 32,
+      "TrajectoryRelativeL2": 0.7394034743309021,
+      "FinalFrameRelativeL2": 1.080302882194519,
+      "LocalCalls": 32.0,
+      "WallTime": 26.6960923000006,
+      "Seed": 42,
+      "RelativeGainVsMyopic": -0.30492616152133195,
+      "RelativeGainVsBeamBC": 0.0
+    },
+    {
+      "Method": "RV-PI",
+      "Budget": 32,
+      "TrajectoryRelativeL2": 0.6852503514289856,
+      "FinalFrameRelativeL2": 0.9608875346183777,
+      "LocalCalls": 32.0,
+      "WallTime": 26.648325000001932,
+      "Seed": 42,
+      "RelativeGainVsMyopic": 7.041299793134713,
+      "RelativeGainVsBeamBC": 7.323893487371094
+    },
+    {
+      "Method": "ImmediateOnlyPI",
+      "Budget": 32,
+      "TrajectoryRelativeL2": 0.7299457705020904,
+      "FinalFrameRelativeL2": 1.081450527906418,
+      "LocalCalls": 32.0,
+      "WallTime": 26.53941379999742,
+      "Seed": 42,
+      "RelativeGainVsMyopic": 0.978073333531014,
+      "RelativeGainVsBeamBC": 1.2790991869993782
+    }
+  ],
+  "condition": "official condition field a(x,y)",
+  "history": "u_(t-1), u_t",
+  "status": "completed"
+}
