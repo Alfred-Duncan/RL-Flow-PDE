@@ -1,0 +1,33 @@
+{
+  "stage": "selector",
+  "training_states": 15640,
+  "selector_gate": [
+    {
+      "Q": 1,
+      "States": 340,
+      "TopKOverlap": 0.3352941176470588,
+      "Spearman": 0.8024353558907517,
+      "PairwiseAccuracy": 0.8260839752567694,
+      "ImmediateGainRecovery": 0.523973349937724,
+      "GlobalErrorAfterSelection": 0.7381794058663004
+    },
+    {
+      "Q": 2,
+      "States": 340,
+      "TopKOverlap": 0.36617647058823527,
+      "Spearman": 0.8025645323565824,
+      "PairwiseAccuracy": 0.8422502334267041,
+      "ImmediateGainRecovery": 0.05206243358028159,
+      "GlobalErrorAfterSelection": 0.7650669681237025
+    },
+    {
+      "Q": 4,
+      "States": 340,
+      "TopKOverlap": 0.28161764705882353,
+      "Spearman": 0.7242828507304583,
+      "PairwiseAccuracy": 0.8219289799253033,
+      "ImmediateGainRecovery": -4.422233063299457,
+      "GlobalErrorAfterSelection": 0.7658630916848779
+    }
+  ]
+}

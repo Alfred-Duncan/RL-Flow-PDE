@@ -1,0 +1,25 @@
+seed: 42
+device: cuda
+data:
+  official_dir: data/official/shallow_water
+  stride: 4
+  train_cases: 230
+  validation_cases: 20
+  test_cases: 50
+model:
+  patch_core: 32
+  patch_halo: 8
+  selector_dim: 64
+  selector_heads: 4
+  selector_layers: 2
+training:
+  selector_cases_per_source: 230
+  selector_epochs: 20
+  selector_batch_size: 12
+  selector_lr: 0.0005
+  pairwise_weight: 0.5
+oracle:
+  budget: 32
+  macro_actions: [0, 1, 2, 4]
+  beam_width: 8
+  validation_cases: 16
