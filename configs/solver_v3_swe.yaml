@@ -29,3 +29,14 @@ oracle:
   macro_actions: [0, 1, 2, 4]
   beam_width: 8
   max_refinements_per_time: 6
+ppo:
+  updates: 20
+  episodes_per_update: 16
+  epochs_per_update: 4
+  minibatch_size: 128
+  lr: 0.0003
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_ratio: 0.2
+  entropy_weight: 0.01
+  refinement_penalty: 0.001

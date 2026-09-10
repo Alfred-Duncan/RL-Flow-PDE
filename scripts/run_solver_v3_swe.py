@@ -20,7 +20,7 @@ if str(ROOT) not in sys.path:
 from src.solver_v3.data.official_shallow_water import OfficialShallowWater
 from src.solver_v3.env.hybrid_rollout import HybridRefiner, relative_l2
 from src.solver_v3.models.fno import FNO2d
-from src.solver_v3.models.patch_policy import PatchUtilityNet
+from src.solver_v3.models.patch_policy import AdaptivePatchPolicy, PatchUtilityNet
 from src.utils.seed import get_device, set_seed
 
 
@@ -149,6 +149,11 @@ def local_predictions(refiner: HybridRefiner, current: torch.Tensor, provisional
     patches = list(range(64))
     inputs = refiner.patch_inputs(current, provisional, patches, time_fraction)
     corrections = refiner.local_model(inputs)
+    return corrections, patch_features_from_inputs(inputs, current, time_fraction)
+
+
+def patch_features_from_inputs(inputs: torch.Tensor, current: torch.Tensor, time_fraction: float) -> torch.Tensor:
+    """Numerical patch descriptors available at deployment without target information."""
     channels = current.shape[1]
     current_patch, provisional_patch = inputs[:, :channels], inputs[:, channels : 2 * channels]
     coarse_patch = inputs[:, 2 * channels : 3 * channels]
@@ -170,7 +175,7 @@ def local_predictions(refiner: HybridRefiner, current: torch.Tensor, provisional
         provisional_patch.flatten(1).abs().amax(1), rows, cols,
         torch.full_like(rows, float(time_fraction)), boundary,
     ], dim=1)
-    return corrections, features
+    return features
 
 
 def immediate_patch_gains(refiner: HybridRefiner, provisional: torch.Tensor, target: torch.Tensor, corrections: torch.Tensor) -> torch.Tensor:
@@ -256,11 +261,13 @@ def trajectory_error(states: list[torch.Tensor], targets: list[torch.Tensor]) ->
 
 @torch.no_grad()
 def greedy_rollout(data: OfficialShallowWater, refiner: HybridRefiner, c: dict, case: int, budget: int, reservation: bool) -> tuple[float, float, int]:
-    stride, steps = int(c["data"]["stride"]), 18
+    stride = int(c["data"]["stride"])
+    time_indices = list(range(0, 72 - stride, stride))
+    steps = len(time_indices)
     state = data.frame(case, 0).unsqueeze(0).to(next(refiner.coarse_model.parameters()).device)
     states, targets, remaining, used = [state], [state], budget, 0
     macros = [int(value) for value in c["oracle"]["macro_actions"]]
-    for step, time_index in enumerate(range(0, 72 - stride, stride)):
+    for step, time_index in enumerate(time_indices):
         target = data.frame(case, time_index + stride).unsqueeze(0).to(state.device)
         steps_left = steps - step
         if reservation:
@@ -326,9 +333,174 @@ def evaluate_budget_oracles(data: OfficialShallowWater, refiner: HybridRefiner, 
     pd.DataFrame(rows).to_csv(result / "budget_oracle_headroom.csv", index=False)
 
 
+def load_utility_bundle(checkpoint: Path, device: torch.device) -> tuple[PatchUtilityNet, dict[str, torch.Tensor]]:
+    saved = torch.load(checkpoint, map_location=device)
+    model = PatchUtilityNet(int(saved["feature_dim"])).to(device)
+    model.load_state_dict(saved["model"])
+    model.eval()
+    return model, {key: saved[key].to(device) for key in ("feature_mean", "feature_std", "utility_mean", "utility_std")}
+
+
+def policy_observation(refiner: HybridRefiner, current: torch.Tensor, provisional: torch.Tensor, time_fraction: float, remaining: int, budget: int, selected: torch.Tensor, utility_stats: dict[str, torch.Tensor]) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+    inputs = refiner.patch_inputs(current, provisional, list(range(64)), time_fraction)
+    features = patch_features_from_inputs(inputs, current, time_fraction)
+    features = (features - utility_stats["feature_mean"]) / utility_stats["feature_std"]
+    field = F.interpolate(torch.cat([current, provisional], dim=1), size=(32, 32), mode="bilinear", align_corners=False)
+    context = torch.tensor([[remaining / max(budget, 1), 1.0 - time_fraction, float(selected.sum()) / 6.0]], device=current.device, dtype=current.dtype)
+    return field, features.unsqueeze(0), context, inputs
+
+
+def action_mask(selected: torch.Tensor, remaining: int, at_limit: bool) -> torch.Tensor:
+    mask = torch.zeros(65, dtype=torch.bool, device=selected.device)
+    if remaining <= 0 or at_limit:
+        mask[:64] = True
+    else:
+        mask[:64] = selected
+    return mask
+
+
+@torch.no_grad()
+def collect_ppo_episode(data: OfficialShallowWater, refiner: HybridRefiner, policy: AdaptivePatchPolicy, utility_stats: dict[str, torch.Tensor], c: dict, case: int, budget: int, sample: bool) -> tuple[list[dict[str, torch.Tensor | float | bool]], tuple[float, float, int]]:
+    device, stride = next(policy.parameters()).device, int(c["data"]["stride"])
+    state = data.frame(case, 0).unsqueeze(0).to(device)
+    states, targets, transitions, remaining, used = [state], [state], [], budget, 0
+    time_indices = list(range(0, 72 - stride, stride))
+    for step, time_index in enumerate(time_indices):
+        target = data.frame(case, time_index + stride).unsqueeze(0).to(device)
+        _, provisional = refiner.coarse_next(state, time_index / 71.0)
+        selected = torch.zeros(64, dtype=torch.bool, device=device)
+        while True:
+            field, features, context, inputs = policy_observation(refiner, state, provisional, time_index / 71.0, remaining, budget, selected, utility_stats)
+            logits, value = policy(field, features, context)
+            invalid = action_mask(selected, remaining, int(selected.sum()) >= int(c["oracle"]["max_refinements_per_time"]))
+            logits = logits.masked_fill(invalid[None], -1e9)
+            distribution = torch.distributions.Categorical(logits=logits)
+            action = int(distribution.sample().item()) if sample else int(logits.argmax(1).item())
+            record: dict[str, torch.Tensor | float | bool] = {"field": field.cpu(), "features": features.cpu(), "context": context.cpu(), "invalid": invalid.cpu(), "action": torch.tensor(action), "logprob": distribution.log_prob(torch.tensor([action], device=device)).cpu(), "value": value.cpu(), "done": False}
+            if action < 64:
+                correction = refiner.local_model(inputs[action : action + 1])
+                provisional = refiner.blend_corrections(provisional, [action], correction)
+                selected[action] = True; remaining -= 1; used += 1
+                record["reward"] = -float(c["ppo"]["refinement_penalty"])
+            else:
+                record["reward"] = -float(relative_l2(provisional, target)[0])
+                record["done"] = step == len(time_indices) - 1
+                state = provisional; states.append(state); targets.append(target)
+            transitions.append(record)
+            if action == 64:
+                break
+    trajectory, final = trajectory_error(states, targets)
+    return transitions, (trajectory, final, used)
+
+
+def ppo_advantages(transitions: list[dict[str, torch.Tensor | float | bool]], gamma: float, gae_lambda: float) -> tuple[torch.Tensor, torch.Tensor]:
+    values = torch.tensor([float(torch.as_tensor(row["value"]).item()) for row in transitions])
+    rewards = torch.tensor([float(row["reward"]) for row in transitions])
+    dones = torch.tensor([bool(row["done"]) for row in transitions])
+    advantages = torch.zeros_like(rewards)
+    running = torch.tensor(0.0)
+    for index in range(len(transitions) - 1, -1, -1):
+        next_value = torch.tensor(0.0) if dones[index] else values[index + 1]
+        delta = rewards[index] + gamma * next_value - values[index]
+        running = delta + gamma * gae_lambda * (0.0 if dones[index] else running)
+        advantages[index] = running
+    return advantages, advantages + values
+
+
+def train_ppo_seed42(data: OfficialShallowWater, refiner: HybridRefiner, c: dict, device: torch.device, utility_checkpoint: Path, checkpoint: Path, result: Path) -> AdaptivePatchPolicy:
+    utility_prior, utility_stats = load_utility_bundle(utility_checkpoint, device)
+    set_seed(int(c["seed"]))
+    policy = AdaptivePatchPolicy(int(utility_stats["feature_mean"].numel()), utility_prior).to(device)
+    if checkpoint.exists():
+        policy.load_state_dict(torch.load(checkpoint, map_location=device)["model"])
+        return policy.eval()
+    opt = torch.optim.AdamW([parameter for parameter in policy.parameters() if parameter.requires_grad], lr=float(c["ppo"]["lr"]))
+    generator, history = np.random.default_rng(int(c["seed"])), []
+    for update in tqdm(range(int(c["ppo"]["updates"])), desc="v3:ppo-seed42"):
+        transitions, episode_errors = [], []
+        for _ in range(int(c["ppo"]["episodes_per_update"])):
+            case = int(generator.choice(data.case_ids("train")))
+            budget = int(generator.choice(c["oracle"]["budgets"]))
+            episode, metrics = collect_ppo_episode(data, refiner, policy, utility_stats, c, case, budget, sample=True)
+            transitions.extend(episode); episode_errors.append(metrics[0])
+        advantages, returns = ppo_advantages(transitions, float(c["ppo"]["gamma"]), float(c["ppo"]["gae_lambda"]))
+        advantages = ((advantages - advantages.mean()) / advantages.std().clamp_min(1e-6)).to(device)
+        returns = returns.to(device)
+        fields = torch.cat([torch.as_tensor(row["field"]) for row in transitions]).to(device)
+        features = torch.cat([torch.as_tensor(row["features"]) for row in transitions]).to(device)
+        context = torch.cat([torch.as_tensor(row["context"]) for row in transitions]).to(device)
+        invalid = torch.stack([torch.as_tensor(row["invalid"]) for row in transitions]).to(device)
+        actions = torch.stack([torch.as_tensor(row["action"]) for row in transitions]).to(device)
+        old_logprob = torch.cat([torch.as_tensor(row["logprob"]) for row in transitions]).to(device)
+        for _ in range(int(c["ppo"]["epochs_per_update"])):
+            for indices in torch.randperm(len(transitions), device=device).split(int(c["ppo"]["minibatch_size"])):
+                logits, values = policy(fields[indices], features[indices], context[indices])
+                distribution = torch.distributions.Categorical(logits=logits.masked_fill(invalid[indices], -1e9))
+                ratio = (distribution.log_prob(actions[indices]) - old_logprob[indices]).exp()
+                clipped = ratio.clamp(1.0 - float(c["ppo"]["clip_ratio"]), 1.0 + float(c["ppo"]["clip_ratio"])) * advantages[indices]
+                actor = -torch.minimum(ratio * advantages[indices], clipped).mean()
+                critic = F.mse_loss(values, returns[indices])
+                loss = actor + 0.5 * critic - float(c["ppo"]["entropy_weight"]) * distribution.entropy().mean()
+                opt.zero_grad(set_to_none=True); loss.backward(); torch.nn.utils.clip_grad_norm_(policy.parameters(), 1.0); opt.step()
+        history.append({"Update": update + 1, "Transitions": len(transitions), "MeanTrainTrajectoryError": float(np.mean(episode_errors))})
+    pd.DataFrame(history).to_csv(result / "ppo_seed42_training.csv", index=False)
+    torch.save({"model": policy.state_dict()}, checkpoint)
+    return policy.eval()
+
+
+@torch.no_grad()
+def baseline_rollout(data: OfficialShallowWater, refiner: HybridRefiner, c: dict, case: int, budget: int, method: str, utility_model: PatchUtilityNet | None, utility_stats: dict[str, torch.Tensor] | None, policy: AdaptivePatchPolicy | None) -> tuple[float, float, int]:
+    if method == "PPO":
+        assert policy is not None and utility_stats is not None
+        _, metrics = collect_ppo_episode(data, refiner, policy, utility_stats, c, case, budget, sample=False)
+        return metrics
+    device = next(refiner.coarse_model.parameters()).device
+    stride = int(c["data"]["stride"])
+    generator = torch.Generator(device=device).manual_seed(case + budget)
+    state, states, targets, remaining, used = data.frame(case, 0).unsqueeze(0).to(device), [], [], budget, 0
+    states.append(state); targets.append(state)
+    time_indices = list(range(0, 72 - stride, stride))
+    for step, time_index in enumerate(time_indices):
+        target = data.frame(case, time_index + stride).unsqueeze(0).to(device)
+        _, provisional = refiner.coarse_next(state, time_index / 71.0)
+        count = min(remaining, int(np.ceil(remaining / (len(time_indices) - step))), int(c["oracle"]["max_refinements_per_time"]))
+        if count:
+            inputs = refiner.patch_inputs(state, provisional, list(range(64)), time_index / 71.0)
+            features = patch_features_from_inputs(inputs, state, time_index / 71.0)
+            if method == "Random":
+                scores = torch.rand(64, generator=generator, device=device)
+            elif method == "GradientHeuristic":
+                scores = features[:, 5] + features[:, 6] + features[:, 7]
+            else:
+                assert utility_model is not None and utility_stats is not None
+                scores = utility_model(((features - utility_stats["feature_mean"]) / utility_stats["feature_std"]))
+            selected = torch.topk(scores, count).indices.tolist()
+            corrections = refiner.local_model(inputs[selected])
+            state = refiner.blend_corrections(provisional, selected, corrections)
+            remaining -= len(selected); used += len(selected)
+        else:
+            state = provisional
+        states.append(state); targets.append(target)
+    trajectory, final = trajectory_error(states, targets)
+    return trajectory, final, used
+
+
+def evaluate_seed42(data: OfficialShallowWater, refiner: HybridRefiner, c: dict, device: torch.device, utility_checkpoint: Path, policy: AdaptivePatchPolicy, result: Path) -> None:
+    utility_model, utility_stats = load_utility_bundle(utility_checkpoint, device)
+    rows = []
+    for budget in c["oracle"]["budgets"]:
+        for method in ("Random", "GradientHeuristic", "SupervisedMyopic", "PPO"):
+            started = time.perf_counter()
+            metrics = [baseline_rollout(data, refiner, c, case, int(budget), method, utility_model, utility_stats, policy) for case in tqdm(data.case_ids("val"), desc=f"v3:{method}:B{budget}")]
+            rows.append({"Method": method, "Budget": int(budget), "Cases": len(metrics), "MeanTrajectoryError": float(np.mean([row[0] for row in metrics])), "FinalError": float(np.mean([row[1] for row in metrics])), "WallTime": time.perf_counter() - started, "LocalOperatorCalls": float(np.mean([row[2] for row in metrics]))})
+    table = pd.DataFrame(rows)
+    table.to_csv(result / "rl_seed42.csv", index=False)
+    table[["Method", "Budget", "MeanTrajectoryError", "FinalError", "WallTime", "LocalOperatorCalls"]].to_csv(result / "accuracy_compute_pareto.csv", index=False)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--stage", choices=["coarse", "local", "utility", "oracle", "all"], default="all")
+    parser.add_argument("--stage", choices=["coarse", "local", "utility", "oracle", "ppo", "all"], default="all")
     args = parser.parse_args()
     c, device = config(), get_device(str(config()["device"]))
     result, checkpoint = paths()
@@ -336,10 +508,10 @@ def main() -> None:
     stats = train_stats(data, c)
     model = train_coarse(data, c, stats, device, checkpoint / "coarse_transition.pt")
     write_coarse_results(data, model, stats, c, device, result)
-    if args.stage in {"local", "utility", "oracle", "all"}:
+    if args.stage in {"local", "utility", "oracle", "ppo", "all"}:
         local = train_local(data, model, c, stats, device, checkpoint / "local_corrector.pt")
         refiner = HybridRefiner(model, local, int(c["data"]["stride"]), int(c["model"]["patch_core"]), int(c["model"]["patch_halo"]), stats["mean"], stats["std"])
-        if args.stage in {"local", "utility", "oracle", "all"}:
+        if args.stage in {"local", "utility", "oracle", "ppo", "all"}:
             rows = []
             for case in tqdm(data.case_ids("val"), desc="v3:local-check"):
                 current, target = data.frame(case, 0).unsqueeze(0).to(device), data.frame(case, int(c["data"]["stride"])).unsqueeze(0).to(device)
@@ -347,10 +519,13 @@ def main() -> None:
                 refined = refiner.apply_patches(current, provisional, list(range(64)), 0.0)
                 rows.append({"Case": case, "ProvisionalRelativeL2": float(relative_l2(provisional, target)[0]), "AllPatchRelativeL2": float(relative_l2(refined, target)[0])})
             pd.DataFrame(rows).to_csv(result / "local_corrector_results.csv", index=False)
-        if args.stage in {"utility", "oracle", "all"}:
+        if args.stage in {"utility", "oracle", "ppo", "all"}:
             train_patch_utility(data, refiner, c, device, checkpoint / "patch_utility.pt", result)
         if args.stage in {"oracle", "all"}:
             evaluate_budget_oracles(data, refiner, c, result)
+        if args.stage in {"ppo", "all"}:
+            policy = train_ppo_seed42(data, refiner, c, device, checkpoint / "patch_utility.pt", checkpoint / "ppo_seed42.pt", result)
+            evaluate_seed42(data, refiner, c, device, checkpoint / "patch_utility.pt", policy, result)
     (result / "summary.json").write_text(json.dumps({"stage": args.stage, "metadata": data.metadata}, indent=2), encoding="utf-8")
     print(f"Solver V3 {args.stage} stage completed.")
 

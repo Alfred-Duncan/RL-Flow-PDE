@@ -40,3 +40,24 @@ The B=32 result meets the predefined strong gate: at least 5% beam-over-greedy
 gain and at least 65% positive cases. Seed-42 PPO evaluation therefore proceeds.
 The B=48 result is retained as negative diagnostic evidence; the oracle does
 not improve monotonically with a larger budget under this finite beam search.
+
+## Seed-42 PPO result
+
+The discrete PPO policy receives only a 32-by-32 encoding of the current and
+provisional numerical fields, GT-free local descriptors, selected-patch mask,
+remaining-budget fraction, and time fraction. Ground truth is used only for the
+training return and evaluation metric. The policy was trained for 20 updates of
+16 train trajectories each and evaluated on all 20 validation cases with exactly
+the same local-call budget as the baselines.
+
+| Budget | Random | Gradient heuristic | Supervised myopic | PPO |
+| --- | ---: | ---: | ---: | ---: |
+| 16 | 0.71152 | 0.72505 | 0.73741 | 0.77691 |
+| 32 | 0.71143 | 0.72285 | 0.79878 | 0.80514 |
+| 48 | 0.72033 | 0.73753 | 0.83994 | 0.82784 |
+
+Values are mean trajectory relative L2; lower is better. PPO does not exceed
+both the supervised-myopic and GT-free gradient baselines at any evaluated
+budget. Consequently, the required seed-42 feasibility condition is not met and
+the three-seed experiment is intentionally not run. The oracle headroom is an
+upper diagnostic, not evidence that the learned policy succeeded.
