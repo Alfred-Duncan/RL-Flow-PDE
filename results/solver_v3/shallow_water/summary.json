@@ -1,0 +1,20 @@
+{
+  "stage": "oracle",
+  "metadata": {
+    "channels": 1,
+    "nt": 72,
+    "nx": 256,
+    "ny": 256,
+    "raw_input_shape": [
+      150,
+      256,
+      256
+    ],
+    "raw_output_shape": [
+      150,
+      72,
+      256,
+      256
+    ]
+  }
+}

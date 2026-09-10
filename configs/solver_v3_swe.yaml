@@ -1,0 +1,31 @@
+seed: 42
+device: cuda
+data:
+  official_dir: data/official/shallow_water
+  stride: 4
+  coarse_size: 64
+  train_cases: 230
+  validation_cases: 20
+  test_cases: 50
+model:
+  coarse_width: 24
+  coarse_modes: 12
+  coarse_depth: 4
+  local_width: 24
+  local_modes: 8
+  local_depth: 3
+  patch_core: 32
+  patch_halo: 8
+training:
+  batch_size: 4
+  coarse_epochs: 30
+  local_epochs: 5
+  utility_epochs: 12
+  lr: 0.001
+  amp: true
+  local_patches_per_transition: 4
+oracle:
+  budgets: [16, 32, 48]
+  macro_actions: [0, 1, 2, 4]
+  beam_width: 8
+  max_refinements_per_time: 6
