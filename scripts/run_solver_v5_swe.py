@@ -374,7 +374,7 @@ def beam_teacher_actions(data: OfficialShallowWater, refiner: ConditionalRefiner
 
 
 def teacher_dataset(data: OfficialShallowWater, refiner: ConditionalRefiner, selector: SetAwareSelectorV5, stats: dict[str, torch.Tensor], c: dict, checkpoint: Path) -> dict:
-    path = checkpoint / "macro_teacher_dataset.pt"
+    path = checkpoint / "macro_teacher_dataset_v2.pt"
     if path.exists(): return torch.load(path, map_location="cpu")
     # Teacher uses train GT only to rank complete future trajectories. Spatial actions remain selector-only.
     samples = []; device = next(refiner.coarse_model.parameters()).device
