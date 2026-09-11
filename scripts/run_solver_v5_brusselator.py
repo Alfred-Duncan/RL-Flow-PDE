@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import sys
+import time
 from pathlib import Path
 
 import numpy as np
@@ -71,10 +73,20 @@ def train_local(d,coarse,c,s,dev,k):
    xs=[];ys=[]
    for i in ix.tolist():
     case,t=rows[i];prev=d.frame(case,max(t-1,0)).unsqueeze(0).to(dev);cur=d.frame(case,t).unsqueeze(0).to(dev);target=d.frame(case,t+1).unsqueeze(0).to(dev);force=d.forcing(case,t).reshape(1).to(dev)
+    # Teacher-forced, coarse-closed-loop, and locally corrected closed-loop states.
+    mode=rng.choice(('teacher','teacher','coarse','local'))
+    if mode!='teacher' and t>=2:
+     prev=d.frame(case,t-2).unsqueeze(0).to(dev);cur=d.frame(case,t-1).unsqueeze(0).to(dev)
+     with torch.no_grad():
+      first=FrozenBundle.create(r,d.forcing(case,t-2).reshape(1).to(dev),prev,cur,(t-2)/38)
+      if mode=='local':
+       chosen=rng.choice(49,2,replace=False).tolist();nxt=first.apply_set(chosen)
+      else:nxt=first.provisional
+      prev,cur=cur,nxt
     with torch.no_grad(): provisional=r.coarse_next(force,prev,cur,t/38)
     patches=torch.randperm(49)[:c['training']['local_patches_per_state']].tolist();all_inputs=r.inputs(force,prev,cur,provisional,t/38);xs.append(all_inputs[patches]);ys.append(torch.cat([r.extract(target-provisional,p) for p in patches]))
    loss=F.mse_loss(local(torch.cat(xs)),torch.cat(ys));opt.zero_grad(set_to_none=True);loss.backward();torch.nn.utils.clip_grad_norm_(local.parameters(),1);opt.step()
- torch.save({'model':local.state_dict(),'state_mix':'teacher-forced; deployment closed-loop states supplied to selector and macro policy'},path);return local.eval()
+ torch.save({'model':local.state_dict(),'state_mix':'50% teacher-forced, 25% coarse closed-loop, 25% locally corrected closed-loop'},path);return local.eval()
 
 def selector_fields(b):
  force=torch.full_like(b.current[:,:1],float(b.force.flatten()[0]));return torch.cat([force,b.previous,b.current,b.provisional,b.current-b.previous,b.provisional-b.current],1)
@@ -83,7 +95,9 @@ def selector_features(b,selected,time):
  return torch.stack([x.mean(1),x.std(1),x.square().mean(1).sqrt(),x.abs().amax(1),b.provisional.flatten(1).square().mean(1).sqrt().repeat(49),row,col,chosen,torch.full_like(row,time)],1)
 @torch.no_grad()
 def gains(b,target,selected):
- base=F.mse_loss(b.apply_set(selected),target);g=base-(b.candidate_fields(selected)-target.expand(49,-1,-1,-1)).square().flatten(1).mean(1);g[torch.tensor(selected,device=g.device)]=-torch.inf if selected else g.new_tensor(0.0);return g
+ base=F.mse_loss(b.apply_set(selected),target);g=base-(b.candidate_fields(selected)-target.expand(49,-1,-1,-1)).square().flatten(1).mean(1)
+ if selected:g[torch.tensor(selected,device=g.device)]=-torch.inf
+ return g
 
 @torch.no_grad()
 def build_selector_data(d,r,c,k):
@@ -125,3 +139,163 @@ def feasible(rem,after):
  return out
 def observe(sel,s,b,rem,step):
  _,score,emb=select(sel,s,b,0,step/38);stats=torch.stack([score.topk(1).values.mean(),score.topk(2).values.mean(),score.topk(4).values.mean(),score.std(),(score>0).float().mean()])[None];ctx=torch.tensor([[step/37,rem/76,(37-step)/37]],device=score.device);return selector_fields(b),stats,emb[None],ctx
+
+def action(policy,obs,allowed,method,rng):
+ if method=='RandomMacro':return int(rng.choice(allowed))
+ if method=='UniformMacro':return min(allowed,key=lambda q:(abs(q-2),-q))
+ if method=='SetAwareMyopicMacro':
+  top=float(obs[1][0,0]); return max(allowed) if top>0 else min(allowed)
+ if method=='GradientMacro':return max(allowed)
+ if method=='CoarseOnly':return 0
+ logits=policy(*obs)[0];mask=torch.tensor([q in allowed for q in ACTIONS],device=logits.device);return ACTIONS[int(logits.masked_fill(~mask,-torch.inf).argmax())]
+@torch.no_grad()
+def run_case(d,r,sel,s,policy,case,method,seed,keep=False):
+ dev=next(r.coarse.parameters()).device;rng=np.random.default_rng(seed+case);prev=cur=d.frame(case,0).unsqueeze(0).to(dev);states=[cur];truth=[cur];rem=76;trace=[]
+ for step in range(38):
+  force=d.forcing(case,step).reshape(1).to(dev);target=d.frame(case,step+1).unsqueeze(0).to(dev);b=FrozenBundle.create(r,force,prev,cur,step/38);obs=observe(sel,s,b,rem,step);allowed=[0] if method=='CoarseOnly' else feasible(rem,37-step);q=action(policy,obs,allowed,method,rng);chosen,_,_=select(sel,s,b,q,step/38);nxt=b.apply_set(chosen);trace.append({'case':case,'step':step,'q':q,'remaining':rem-q,'previous':prev.cpu(),'current':cur.cpu(),'obs':tuple(x.cpu() for x in obs),'error':float(relative_l2(nxt,target)[0]),'selected':chosen});prev,cur,rem=cur,nxt,rem-q;states.append(cur);truth.append(target)
+ a,b=torch.cat(states),torch.cat(truth);return float(torch.linalg.vector_norm(a-b)/torch.linalg.vector_norm(b).clamp_min(1e-8)),float(relative_l2(a[-1:],b[-1:])[0]),trace
+@torch.no_grad()
+def beam_teacher(d,r,sel,s,c,k):
+ path=k/'teacher.pt'
+ if path.exists():return torch.load(path,map_location='cpu')
+ dev=next(r.coarse.parameters()).device;records=[]
+ for case in tqdm(d.case_ids('train')[:c['macro']['teacher_cases']],desc='v5b:teacher'):
+  first=d.frame(case,0).unsqueeze(0).to(dev);beam=[(first,first,76,0.,[])]
+  for step in range(38):
+   target=d.frame(case,step+1).unsqueeze(0).to(dev);force=d.forcing(case,step).reshape(1).to(dev);cand=[]
+   for prev,cur,rem,cost,tr in beam:
+    b=FrozenBundle.create(r,force,prev,cur,step/38);obs=observe(sel,s,b,rem,step)
+    for q in feasible(rem,37-step):
+     chosen,_,_=select(sel,s,b,q,step/38);nxt=b.apply_set(chosen);cand.append((cur,nxt,rem-q,cost+float((nxt-target).square().sum()),tr+[(obs,q)]))
+   cand.sort(key=lambda x:x[3]);beam=cand[:c['macro']['teacher_beam_width']]
+  records.extend({'obs':tuple(x.cpu() for x in obs),'q':q} for obs,q in beam[0][4])
+ torch.save({'records':records,'beam_width':c['macro']['teacher_beam_width']},path);return {'records':records}
+def train_bc(teacher,c,dev,k):
+ path=k/'beam_bc.pt';m=MacroPolicy().to(dev)
+ if path.exists():m.load_state_dict(torch.load(path,map_location=dev)['model']);return m.eval()
+ opt=torch.optim.AdamW(m.parameters(),lr=c['macro']['policy_lr']);rows=teacher['records']
+ for _ in tqdm(range(c['macro']['beam_bc_epochs']),desc='v5b:beam-bc'):
+  for ix in torch.randperm(len(rows)).split(c['macro']['policy_batch_size']):
+   b=[rows[i] for i in ix.tolist()];obs=tuple(torch.cat([x['obs'][j] for x in b]).to(dev) for j in range(4));y=torch.tensor([ACTIONS.index(x['q']) for x in b],device=dev);loss=F.cross_entropy(m(*obs),y);opt.zero_grad(set_to_none=True);loss.backward();opt.step()
+ torch.save({'model':m.state_dict()},path);return m.eval()
+def future_return(d,r,sel,s,policy,state,q,immediate=False):
+ dev=next(r.coarse.parameters()).device;case,step,rem=state['case'],state['step'],state['remaining']+state['q'];prev=state['previous'].to(dev);cur=state['current'].to(dev);num=den=0.
+ for t in range(step,38):
+  force=d.forcing(case,t).reshape(1).to(dev);target=d.frame(case,t+1).unsqueeze(0).to(dev);b=FrozenBundle.create(r,force,prev,cur,t/38);allowed=feasible(rem,37-t);a=q if t==step else action(policy,observe(sel,s,b,rem,t),allowed,'RVPI',np.random.default_rng(case+t));chosen,_,_=select(sel,s,b,a,t/38);nxt=b.apply_set(chosen);num+=float((nxt-target).square().sum());den+=float(target.square().sum());prev,cur,rem=cur,nxt,rem-a
+  if immediate:break
+ return -num/max(den,1e-12)
+
+@torch.no_grad()
+def policy_states(d,r,sel,s,policy,bc,c,seed):
+    """Collect real closed-loop states from several non-oracle macro policies."""
+    rng=np.random.default_rng(seed); rows=[]
+    sources=('RVPI','BeamBC','SetAwareMyopicMacro','RandomMacro')
+    pool=np.asarray(d.case_ids('train'))
+    for source in sources:
+        for case in rng.choice(pool,c['macro']['rvpi_cases_per_source'],replace=False):
+            source_policy=bc if source=='BeamBC' else policy
+            _,_,trace=run_case(d,r,sel,s,source_policy,int(case),source,seed+len(rows),keep=True)
+            rows.extend(trace)
+    return rows
+
+@torch.no_grad()
+def evaluate(d,r,sel,s,policy,method,split,seed):
+    rows=[]
+    for case in tqdm(d.case_ids(split),desc=f'v5b:{method}:{split}',leave=False):
+        trajectory,final,_=run_case(d,r,sel,s,policy,int(case),method,seed)
+        rows.append({'Case':int(case),'Method':method,'TrajectoryRelativeL2':trajectory,'FinalFrameRelativeL2':final,'LocalCalls':0 if method=='CoarseOnly' else 76})
+    return pd.DataFrame(rows)
+
+def train_rvpi(d,r,sel,s,bc,c,dev,k,seed,immediate=False):
+    label='immediate' if immediate else 'rvpi'; path=k/(f'{label}.pt' if seed==42 else f'{label}_seed{seed}.pt')
+    policy=MacroPolicy().to(dev); policy.load_state_dict(bc.state_dict())
+    if path.exists():
+        policy.load_state_dict(torch.load(path,map_location=dev)['model']); return policy.eval()
+    cycles=c['macro']['immediate_cycles'] if immediate else c['macro']['rvpi_cycles']
+    opt=torch.optim.AdamW(policy.parameters(),lr=c['macro']['policy_lr'])
+    best=float('inf')
+    for cycle in range(cycles):
+        old=copy.deepcopy(policy).eval(); states=policy_states(d,r,sel,s,old,bc,c,seed+cycle*1000)
+        losses=[]
+        for state in tqdm(states,desc=f'v5b:{label}:{seed}:cycle{cycle+1}',leave=False):
+            rem=state['remaining']+state['q']; allowed=feasible(rem,37-state['step'])
+            values=torch.tensor([future_return(d,r,sel,s,old,state,q,immediate) for q in allowed],device=dev)
+            margin=max(float(values.std(unbiased=False))*0.1,1e-4); target=torch.softmax((values-values.max())/margin,0)
+            obs=tuple(x.to(dev) for x in state['obs']); logits=policy(*obs)[0]
+            mask=torch.tensor([q in allowed for q in ACTIONS],device=dev); available=logits[mask]
+            old_logits=old(*obs)[0].detach()[mask]
+            loss=F.kl_div(F.log_softmax(available,0),target,reduction='batchmean')+0.03*F.mse_loss(F.log_softmax(available,0),F.log_softmax(old_logits,0))
+            opt.zero_grad(set_to_none=True); loss.backward();torch.nn.utils.clip_grad_norm_(policy.parameters(),1.0);opt.step();losses.append(float(loss))
+        validation=evaluate(d,r,sel,s,policy,'RVPI','val',seed)['TrajectoryRelativeL2'].mean()
+        if validation < best:
+            best=float(validation); torch.save({'model':policy.state_dict(),'validation_trajectory':best,'cycle':cycle+1,'immediate_only':immediate},path)
+        else:
+            policy.load_state_dict(old.state_dict())
+        print(f'{label} seed={seed} cycle={cycle+1}: validation trajectory={validation:.6f}, best={best:.6f}, loss={np.mean(losses):.6f}')
+    policy.load_state_dict(torch.load(path,map_location=dev)['model']); return policy.eval()
+
+def random_distribution(d,r,sel,s,policy,out):
+    rows=[]
+    for random_seed in tqdm(range(20),desc='v5b:random-distribution'):
+        frame=evaluate(d,r,sel,s,policy,'RandomMacro','test',10000+random_seed)
+        rows.append({'RandomSeed':random_seed,'TrajectoryRelativeL2':frame['TrajectoryRelativeL2'].mean(),'FinalFrameRelativeL2':frame['FinalFrameRelativeL2'].mean()})
+    result=pd.DataFrame(rows);result.to_csv(out/'random_macro_distribution.csv',index=False);return result
+
+def final_tables(all_rows,random_dist,out):
+    cases=pd.concat(all_rows,ignore_index=True); cases.to_csv(out/'per_case_comparison.csv',index=False)
+    seed_rows=cases.groupby(['Seed','Method'],as_index=False).agg(TrajectoryRelativeL2=('TrajectoryRelativeL2','mean'),FinalFrameRelativeL2=('FinalFrameRelativeL2','mean'),LocalCalls=('LocalCalls','mean'))
+    seed_rows.to_csv(out/'final_comparison_3seed.csv',index=False)
+    summary=seed_rows.groupby('Method',as_index=False).agg(MeanTrajectoryRelativeL2=('TrajectoryRelativeL2','mean'),StdTrajectoryRelativeL2=('TrajectoryRelativeL2','std'),MeanFinalFrameRelativeL2=('FinalFrameRelativeL2','mean'),StdFinalFrameRelativeL2=('FinalFrameRelativeL2','std'),MeanLocalCalls=('LocalCalls','mean')).fillna(0)
+    summary.to_csv(out/'three_seed_summary.csv',index=False)
+    random_by_case=cases[cases.Method=='RandomMacro'].groupby('Case').TrajectoryRelativeL2.mean()
+    wins=[]
+    for baseline,label in [('ImmediateOnlyPI','RVPI_vs_Immediate_case_win_rate'),('SetAwareMyopicMacro','RVPI_vs_Myopic_case_win_rate'),('BeamBC','RVPI_vs_BeamBC_case_win_rate')]:
+        joined=cases[cases.Method=='RVPI'].merge(cases[cases.Method==baseline],on=['Case','Seed'],suffixes=('_rvpi','_base'))
+        wins.append({'Comparison':label,'WinRate':float((joined.TrajectoryRelativeL2_rvpi<joined.TrajectoryRelativeL2_base).mean())})
+    rvpi=cases[cases.Method=='RVPI'].groupby('Case').TrajectoryRelativeL2.mean()
+    wins.append({'Comparison':'RVPI_vs_Random_case_win_rate','WinRate':float((rvpi<random_by_case).mean())})
+    pd.DataFrame(wins).to_csv(out/'win_rates.csv',index=False)
+    return summary
+
+def cross_pde(summary,c,out):
+    swe=pd.read_csv(ROOT/'results/solver_v5/shallow_water/three_seed_summary.csv')
+    def rows(frame,pde,budget,steps):
+        lookup={x.Method:x.MeanTrajectoryRelativeL2 for _,x in frame.iterrows()}; random=lookup.get('RandomMacro',np.nan);myopic=lookup.get('SetAwareMyopicMacro',np.nan);immediate=lookup.get('ImmediateOnlyPI',np.nan)
+        return [{'PDE':pde,'Method':x.Method,'TrajectoryMean':x.MeanTrajectoryRelativeL2,'TrajectoryStd':x.StdTrajectoryRelativeL2,'GainVsRandom':100*(random-x.MeanTrajectoryRelativeL2)/random if random else np.nan,'GainVsMyopic':100*(myopic-x.MeanTrajectoryRelativeL2)/myopic if myopic else np.nan,'GainVsImmediate':100*(immediate-x.MeanTrajectoryRelativeL2)/immediate if immediate else np.nan,'Budget':budget,'PhysicalSteps':steps} for _,x in frame.iterrows()]
+    table=pd.DataFrame(rows(swe,'ShallowWater',32,16)+rows(summary,'Brusselator',c['macro']['budget'],38));table.to_csv(ROOT/'results/solver_v5/cross_pde_summary.csv',index=False);return table
+
+def write_docs(summary,random_dist,table):
+    rvp=summary[summary.Method=='RVPI'].iloc[0] if (summary.Method=='RVPI').any() else None
+    immediate=summary[summary.Method=='ImmediateOnlyPI'].iloc[0] if (summary.Method=='ImmediateOnlyPI').any() else None
+    statement='The Brusselator result does not support the requested full-horizon advantage.'
+    if rvp is not None and immediate is not None and rvp.MeanTrajectoryRelativeL2 < immediate.MeanTrajectoryRelativeL2: statement='Full-horizon rollout-based policy improvement outperformed immediate-only refinement policy improvement on the evaluated Brusselator seeds.'
+    lines=['# Cross-PDE Result','','## Shallow Water','Frozen three-seed Shallow-Water V5 results are retained without retraining.','','## Brusselator','Official data: a forcing-driven 2D field trajectory with 39 physical frames at 28x28 and one state channel. The adopted formulation has no separate static condition channel; the known time-varying scalar forcing is supplied at every transition.','',summary.to_markdown(index=False),'',f'RandomMacro schedule distribution: mean={random_dist.TrajectoryRelativeL2.mean():.6f}, std={random_dist.TrajectoryRelativeL2.std():.6f}, median={random_dist.TrajectoryRelativeL2.median():.6f}, best={random_dist.TrajectoryRelativeL2.min():.6f}, worst={random_dist.TrajectoryRelativeL2.max():.6f}.','','## Cross-PDE conclusion',statement]
+    (ROOT/'docs/solver_v5_cross_pde_results.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
+
+def main():
+    parser=argparse.ArgumentParser();parser.add_argument('--stage',choices=('all','coarse','local','selector','teacher','policy','evaluate'),default='all');parser.add_argument('--seed',type=int,default=42);args=parser.parse_args();c=cfg();c['seed']=args.seed;dev=get_device(c['device']);set_seed(args.seed);out,k=paths();d=data(c);s=stats(d);coarse=train_coarse(d,c,s,dev,k)
+    if args.stage=='coarse':return
+    local=train_local(d,coarse,c,s,dev,k);r=refiner(coarse,local,c,s);coarse_eval(d,r,out)
+    if args.stage=='local':return
+    selector_data=build_selector_data(d,r,c,k);sel,selector_stats=train_selector(selector_data,c,dev,k)
+    if args.stage=='selector':return
+    teacher=beam_teacher(d,r,sel,selector_stats,c,k);bc=train_bc(teacher,c,dev,k)
+    if args.stage=='teacher':return
+    immediate=train_rvpi(d,r,sel,selector_stats,bc,c,dev,k,args.seed,immediate=True);rvpi=train_rvpi(d,r,sel,selector_stats,bc,c,dev,k,args.seed,immediate=False)
+    if args.stage=='policy':return
+    methods=[('CoarseOnly',None),('RandomMacro',bc),('UniformMacro',bc),('GradientMacro',bc),('SetAwareMyopicMacro',bc),('BeamBC',bc),('ImmediateOnlyPI',immediate),('RVPI',rvpi)]
+    frames=[]
+    for name,policy in methods:
+        frame=evaluate(d,r,sel,selector_stats,policy,name,'test',args.seed);frame.insert(1,'Seed',args.seed);frames.append(frame)
+    pd.concat(frames,ignore_index=True).to_csv(out/f'per_case_comparison_seed{args.seed}.csv',index=False)
+    print(f'Brusselator seed {args.seed} evaluation written to {out}')
+    if args.seed==42:
+        return
+    existing=[]
+    for seed in (42,123,2026):
+        path=out/f'per_case_comparison_seed{seed}.csv'
+        if path.exists():existing.append(pd.read_csv(path))
+    if len(existing)==3:
+        random_dist=random_distribution(d,r,sel,selector_stats,bc,out);summary=final_tables(existing,random_dist,out);table=cross_pde(summary,c,out);write_docs(summary,random_dist,table)
+
+if __name__=='__main__': main()
