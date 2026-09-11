@@ -5,7 +5,6 @@ import copy
 import json
 import sys
 import time
-from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import numpy as np
@@ -221,17 +220,16 @@ def train_rvpi(d,r,sel,s,bc,c,dev,k,seed,immediate=False):
     for cycle in range(cycles):
         old=copy.deepcopy(policy).eval(); states=policy_states(d,r,sel,s,old,bc,c,seed+cycle*1000)
         losses=[]
-        with ThreadPoolExecutor(max_workers=4,thread_name_prefix='rvpi-return') as workers:
-            for state in tqdm(states,desc=f'v5b:{label}:{seed}:cycle{cycle+1}',leave=False):
-                rem=state['remaining']+state['q']; allowed=feasible(rem,37-state['step'])
-                values=torch.nan_to_num(torch.tensor(list(workers.map(lambda q:future_return(d,r,sel,s,old,state,q,immediate),allowed)),device=dev),nan=-1e6,posinf=-1e6,neginf=-1e6)
-                margin=max(float(values.std(unbiased=False))*0.1,1e-4); target=torch.softmax((values-values.max())/margin,0)
-                obs=tuple(x.to(dev) for x in state['obs']); logits=policy(*obs)[0]
-                mask=torch.tensor([q in allowed for q in ACTIONS],device=dev); available=logits[mask]
-                old_logits=old(*obs)[0].detach()[mask]
-                loss=F.kl_div(F.log_softmax(available,0),target,reduction='batchmean')+0.03*F.mse_loss(F.log_softmax(available,0),F.log_softmax(old_logits,0))
-                if torch.isfinite(loss):
-                    opt.zero_grad(set_to_none=True); loss.backward();torch.nn.utils.clip_grad_norm_(policy.parameters(),1.0);opt.step();losses.append(float(loss))
+        for state in tqdm(states,desc=f'v5b:{label}:{seed}:cycle{cycle+1}',leave=False):
+            rem=state['remaining']+state['q']; allowed=feasible(rem,37-state['step'])
+            values=torch.nan_to_num(torch.tensor([future_return(d,r,sel,s,old,state,q,immediate) for q in allowed],device=dev),nan=-1e6,posinf=-1e6,neginf=-1e6)
+            margin=max(float(values.std(unbiased=False))*0.1,1e-4); target=torch.softmax((values-values.max())/margin,0)
+            obs=tuple(x.to(dev) for x in state['obs']); logits=policy(*obs)[0]
+            mask=torch.tensor([q in allowed for q in ACTIONS],device=dev); available=logits[mask]
+            old_logits=old(*obs)[0].detach()[mask]
+            loss=F.kl_div(F.log_softmax(available,0),target,reduction='batchmean')+0.03*F.mse_loss(F.log_softmax(available,0),F.log_softmax(old_logits,0))
+            if torch.isfinite(loss):
+                opt.zero_grad(set_to_none=True); loss.backward();torch.nn.utils.clip_grad_norm_(policy.parameters(),1.0);opt.step();losses.append(float(loss))
         validation=evaluate(d,r,sel,s,policy,'RVPI','val',seed)['TrajectoryRelativeL2'].mean()
         if np.isfinite(validation) and validation < best:
             best=float(validation); torch.save({'model':policy.state_dict(),'validation_trajectory':best,'cycle':cycle+1,'immediate_only':immediate,'completed':False},path)
