@@ -133,28 +133,45 @@ def selector_features_batch(bundle: BatchedFrozenBundle, selected_mask: torch.Te
 
 
 @torch.no_grad()
+def selector_zero_set_batch(selector, selector_stats: dict[str, torch.Tensor], bundle: BatchedFrozenBundle, time: torch.Tensor):
+    """One zero-set selector forward shared by observation and selection paths."""
+    batch, patches = bundle.contributions.shape[:2]
+    selected_mask = torch.zeros((batch, patches), device=bundle.current.device, dtype=torch.bool)
+    features = selector_features_batch(bundle, selected_mask, time)
+    context = torch.stack([time, torch.zeros_like(time), torch.ones_like(time)], dim=1)
+    scores, embedding = selector(
+        selector_fields_batch(bundle),
+        (features - selector_stats["mean"]) / selector_stats["std"],
+        selected_mask,
+        context,
+        return_embedding=True,
+    )
+    return scores, embedding, selected_mask
+
+
+@torch.no_grad()
 def select_batch(selector, selector_stats: dict[str, torch.Tensor], bundle: BatchedFrozenBundle, counts: torch.Tensor, time: torch.Tensor):
     """Run greedy patch selection for many trajectories in parallel."""
     batch, patches = bundle.contributions.shape[:2]
     counts = counts.to(bundle.current.device, dtype=torch.long).reshape(batch)
-    selected_mask = torch.zeros((batch, patches), device=bundle.current.device, dtype=torch.bool)
     chosen = [[] for _ in range(batch)]
-    fields = selector_fields_batch(bundle)
     max_count = int(counts.max().item()) if batch else 0
-    embedding = None
-    for selection_index in range(max_count + 1):
-        features = selector_features_batch(bundle, selected_mask, time)
-        context = torch.stack([time, selected_mask.float().mean(1) * 49.0 / 4.0, torch.ones_like(time)], dim=1)
-        score, embedding = selector(
-            fields,
-            (features - selector_stats["mean"]) / selector_stats["std"],
-            selected_mask,
-            context,
-            return_embedding=True,
-        )
+    score, embedding, selected_mask = selector_zero_set_batch(selector, selector_stats, bundle, time)
+    if max_count == 0:
+        return chosen, embedding
+    fields = selector_fields_batch(bundle)
+    for selection_index in range(max_count):
+        if selection_index:
+            features = selector_features_batch(bundle, selected_mask, time)
+            context = torch.stack([time, selected_mask.float().sum(1) / 4.0, torch.ones_like(time)], dim=1)
+            score, embedding = selector(
+                fields,
+                (features - selector_stats["mean"]) / selector_stats["std"],
+                selected_mask,
+                context,
+                return_embedding=True,
+            )
         active = selection_index < counts
-        if not active.any():
-            break
         score = score.masked_fill(selected_mask, -torch.inf)
         indices = score.argmax(1)
         for row in torch.nonzero(active, as_tuple=False).flatten().tolist():
@@ -168,11 +185,9 @@ def select_batch(selector, selector_stats: dict[str, torch.Tensor], bundle: Batc
 def observe_batch(selector, selector_stats: dict[str, torch.Tensor], bundle: BatchedFrozenBundle, remaining: torch.Tensor, step: int):
     batch = bundle.current.shape[0]
     time = torch.full((batch,), step / 38, device=bundle.current.device, dtype=bundle.current.dtype)
-    _, embedding = select_batch(selector, selector_stats, bundle, torch.zeros(batch, device=time.device, dtype=torch.long), time)
-    features = selector_features_batch(bundle, torch.zeros((batch, bundle.contributions.shape[1]), device=time.device, dtype=torch.bool), time)
+    scores, embedding, _ = selector_zero_set_batch(selector, selector_stats, bundle, time)
     fields = selector_fields_batch(bundle)
     context = torch.stack([torch.full_like(time, step / 37), remaining / 76.0, torch.full_like(time, (37 - step) / 37)], dim=1)
-    scores = selector(fields, (features - selector_stats["mean"]) / selector_stats["std"], torch.zeros_like(features[:, :, 0], dtype=torch.bool), torch.stack([time, torch.zeros_like(time), torch.ones_like(time)], dim=1))
     stats = torch.stack([scores.topk(1).values.mean(1), scores.topk(2).values.mean(1), scores.topk(4).values.mean(1), scores.std(1), (scores > 0).float().mean(1)], dim=1)
     return fields, stats, embedding, context
 
