@@ -1,0 +1,44 @@
+seed: 42
+device: cuda
+data:
+  official_npz: data/official/brusselator/Brusselator_force_train.npz
+  train_cases: 800
+  validation_cases: 100
+  test_cases: 100
+  split_seed: 2026
+model:
+  coarse_width: 32
+  coarse_modes: 10
+  coarse_depth: 4
+  local_width: 32
+  local_modes: 8
+  local_depth: 3
+  patch_grid: 7
+  patch_core: 4
+  patch_halo: 1
+  selector_dim: 64
+  selector_heads: 4
+  selector_layers: 2
+training:
+  coarse_epochs: 16
+  coarse_batch_size: 24
+  coarse_lr: 0.0005
+  local_epochs: 8
+  local_batch_size: 12
+  local_patches_per_state: 4
+  local_lr: 0.0005
+  selector_cases: 320
+  selector_epochs: 18
+  selector_batch_size: 24
+  selector_lr: 0.0005
+macro:
+  actions: [0, 1, 2, 4]
+  budget: 76
+  teacher_cases: 80
+  teacher_beam_width: 16
+  beam_bc_epochs: 30
+  policy_batch_size: 48
+  policy_lr: 0.0005
+  rvpi_cycles: 5
+  rvpi_cases_per_source: 12
+  immediate_cycles: 3

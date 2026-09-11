@@ -1,0 +1,29 @@
+{
+  "input_shape": [
+    800,
+    39
+  ],
+  "output_shape": [
+    800,
+    39,
+    28,
+    28
+  ],
+  "physical_time_axis": 1,
+  "state_channels": 1,
+  "static_condition": false,
+  "spatial_shape": [
+    28,
+    28
+  ],
+  "train_cases": 800,
+  "validation_cases": 100,
+  "test_cases": 100,
+  "forcing_at_one_time_shape": [],
+  "frame_shape": [
+    1,
+    28,
+    28
+  ],
+  "interpretation": "The 39-axis is physical time. Official inputs are time-varying scalar forcing values, not a separate static condition field."
+}
