@@ -178,6 +178,7 @@ def train_bc(teacher,c,dev,k):
   for ix in torch.randperm(len(rows)).split(c['macro']['policy_batch_size']):
    b=[rows[i] for i in ix.tolist()];obs=tuple(torch.cat([x['obs'][j] for x in b]).to(dev) for j in range(4));y=torch.tensor([ACTIONS.index(x['q']) for x in b],device=dev);loss=F.cross_entropy(m(*obs),y);opt.zero_grad(set_to_none=True);loss.backward();opt.step()
  torch.save({'model':m.state_dict()},path);return m.eval()
+@torch.no_grad()
 def future_return(d,r,sel,s,policy,state,q,immediate=False):
  dev=next(r.coarse.parameters()).device;case,step,rem=state['case'],state['step'],state['remaining']+state['q'];prev=state['previous'].to(dev);cur=state['current'].to(dev);num=den=0.
  for t in range(step,38):
@@ -210,11 +211,12 @@ def train_rvpi(d,r,sel,s,bc,c,dev,k,seed,immediate=False):
     label='immediate' if immediate else 'rvpi'; path=k/(f'{label}.pt' if seed==42 else f'{label}_seed{seed}.pt')
     policy=MacroPolicy().to(dev); policy.load_state_dict(bc.state_dict())
     if path.exists():
-        policy.load_state_dict(torch.load(path,map_location=dev)['model']); return policy.eval()
+        saved=torch.load(path,map_location=dev); policy.load_state_dict(saved['model'])
+        if saved.get('completed',False): return policy.eval()
     cycles=c['macro']['immediate_cycles'] if immediate else c['macro']['rvpi_cycles']
     opt=torch.optim.AdamW(policy.parameters(),lr=c['macro']['policy_lr'])
     best=float(evaluate(d,r,sel,s,policy,'RVPI','val',seed)['TrajectoryRelativeL2'].mean())
-    torch.save({'model':policy.state_dict(),'validation_trajectory':best,'cycle':0,'immediate_only':immediate},path)
+    torch.save({'model':policy.state_dict(),'validation_trajectory':best,'cycle':0,'immediate_only':immediate,'completed':False},path)
     for cycle in range(cycles):
         old=copy.deepcopy(policy).eval(); states=policy_states(d,r,sel,s,old,bc,c,seed+cycle*1000)
         losses=[]
@@ -230,12 +232,12 @@ def train_rvpi(d,r,sel,s,bc,c,dev,k,seed,immediate=False):
                 opt.zero_grad(set_to_none=True); loss.backward();torch.nn.utils.clip_grad_norm_(policy.parameters(),1.0);opt.step();losses.append(float(loss))
         validation=evaluate(d,r,sel,s,policy,'RVPI','val',seed)['TrajectoryRelativeL2'].mean()
         if np.isfinite(validation) and validation < best:
-            best=float(validation); torch.save({'model':policy.state_dict(),'validation_trajectory':best,'cycle':cycle+1,'immediate_only':immediate},path)
+            best=float(validation); torch.save({'model':policy.state_dict(),'validation_trajectory':best,'cycle':cycle+1,'immediate_only':immediate,'completed':False},path)
         else:
             policy.load_state_dict(old.state_dict())
         mean_loss=float(np.mean(losses)) if losses else float('nan')
         print(f'{label} seed={seed} cycle={cycle+1}: validation trajectory={validation:.6f}, best={best:.6f}, loss={mean_loss:.6f}')
-    policy.load_state_dict(torch.load(path,map_location=dev)['model']); return policy.eval()
+    saved=torch.load(path,map_location=dev); saved['completed']=True; saved['cycles']=cycles; torch.save(saved,path); policy.load_state_dict(saved['model']); return policy.eval()
 
 def random_distribution(d,r,sel,s,policy,out):
     rows=[]
