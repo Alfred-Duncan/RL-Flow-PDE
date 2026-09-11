@@ -112,14 +112,27 @@ def build_selector_data(d,r,c,k):
    q=int(rng.choice(ACTIONS)); selected=rng.choice(49,q,replace=False).tolist() if q else [];prev,cur=cur,b.apply_set(selected)
  out={q:torch.cat(v) if q=='field' else torch.stack(v) for q,v in rows.items()};torch.save(out,path);return out
 def selector_loss(score,gain,mask):
- valid=~mask;target=(torch.where(valid,gain,torch.zeros_like(gain))-gain[valid].mean())/gain[valid].std().clamp_min(1e-8);reg=F.huber_loss(score[valid],target[valid]);delta=target[:,:,None]-target[:,None,:];pred=score[:,:,None]-score[:,None,:];pairs=valid[:,:,None]&valid[:,None,:]&(delta.abs()>1e-7);rank=F.softplus(-delta.sign()*pred)[pairs].mean();top=target.masked_fill(~valid,-torch.inf).argmax(1);b=torch.arange(len(score),device=score.device);margin=F.relu(.1-(score[b,top,None]-score));topmask=valid&(torch.arange(49,device=score.device)[None]!=top[:,None]);return reg+.5*rank+margin[topmask].mean()
+    valid=~mask;target=(torch.where(valid,gain,torch.zeros_like(gain))-gain[valid].mean())/gain[valid].std().clamp_min(1e-8);reg=F.huber_loss(score[valid],target[valid]);delta=target[:,:,None]-target[:,None,:];pred=score[:,:,None]-score[:,None,:];pairs=valid[:,:,None]&valid[:,None,:]&(delta.abs()>1e-7);rank=F.softplus(-delta.sign()*pred)[pairs].mean();top=target.masked_fill(~valid,-torch.inf).argmax(1);b=torch.arange(len(score),device=score.device);margin=F.relu(.1-(score[b,top,None]-score));topmask=valid&(torch.arange(49,device=score.device)[None]!=top[:,None]);return reg+.5*rank+margin[topmask].mean()
+
+def validate_selector_data(ds):
+    """Reject corrupted cached labels before they can poison selector/BC policy checkpoints."""
+    invalid=[]
+    for name in ('field','feature','mask','context'):
+        if not torch.isfinite(ds[name]).all(): invalid.append(name)
+    # ``-inf`` is an intentional sentinel for already-selected patch gains.
+    if not torch.isfinite(ds['gain'][~ds['mask']]).all(): invalid.append('gain(valid patches)')
+    if invalid: raise RuntimeError(f'Non-finite selector-label tensors: {", ".join(invalid)}. Archive and rebuild selector_labels.pt.')
 def train_selector(ds,c,dev,k):
- path=k/'selector.pt';f=ds['feature'];m=SetAwareSelectorV5(f.shape[-1],width=64,heads=4,layers=2).to(dev);s={'mean':f.mean((0,1)),'std':f.std((0,1)).clamp_min(1e-6)}
+ validate_selector_data(ds);path=k/'selector.pt';f=ds['feature'];m=SetAwareSelectorV5(f.shape[-1],width=64,heads=4,layers=2).to(dev);s={'mean':f.mean((0,1)),'std':f.std((0,1)).clamp_min(1e-6)}
  if path.exists():x=torch.load(path,map_location=dev);m.load_state_dict(x['model']);return m.eval(),{q:x[q].to(dev) for q in s}
  opt=torch.optim.AdamW(m.parameters(),lr=c['training']['selector_lr']);
  for _ in tqdm(range(c['training']['selector_epochs']),desc='v5b:selector'):
   for ix in torch.randperm(len(f)).split(c['training']['selector_batch_size']):
-   field,feature,mask,context,gain=(ds[q][ix].to(dev) for q in ('field','feature','mask','context','gain'));loss=selector_loss(m(field,(feature-s['mean'].to(dev))/s['std'].to(dev),mask,context),gain,mask);opt.zero_grad(set_to_none=True);loss.backward();torch.nn.utils.clip_grad_norm_(m.parameters(),1);opt.step()
+   field,feature,mask,context,gain=(ds[q][ix].to(dev) for q in ('field','feature','mask','context','gain'));loss=selector_loss(m(field,(feature-s['mean'].to(dev))/s['std'].to(dev),mask,context),gain,mask)
+   if not torch.isfinite(loss): raise RuntimeError('Non-finite selector loss; checkpoint was not written.')
+   opt.zero_grad(set_to_none=True);loss.backward();torch.nn.utils.clip_grad_norm_(m.parameters(),1)
+   if not all(torch.isfinite(p.grad).all() for p in m.parameters() if p.grad is not None): raise RuntimeError('Non-finite selector gradients; checkpoint was not written.')
+   opt.step()
  torch.save({'model':m.state_dict(),**{q:x.cpu() for q,x in s.items()}},path);return m.eval(),{q:x.to(dev) for q,x in s.items()}
 def select(selector,s,b,q,time):
  chosen=[];last=None;embedding=None
@@ -176,7 +189,13 @@ def train_bc(teacher,c,dev,k):
  opt=torch.optim.AdamW(m.parameters(),lr=c['macro']['policy_lr']);rows=teacher['records']
  for _ in tqdm(range(c['macro']['beam_bc_epochs']),desc='v5b:beam-bc'):
   for ix in torch.randperm(len(rows)).split(c['macro']['policy_batch_size']):
-   b=[rows[i] for i in ix.tolist()];obs=tuple(torch.cat([x['obs'][j] for x in b]).to(dev) for j in range(4));y=torch.tensor([ACTIONS.index(x['q']) for x in b],device=dev);loss=F.cross_entropy(m(*obs),y);opt.zero_grad(set_to_none=True);loss.backward();opt.step()
+   b=[rows[i] for i in ix.tolist()];obs=tuple(torch.cat([x['obs'][j] for x in b]).to(dev) for j in range(4));y=torch.tensor([ACTIONS.index(x['q']) for x in b],device=dev)
+   if not all(torch.isfinite(value).all() for value in obs): raise RuntimeError('Non-finite BC observation; checkpoint was not written.')
+   loss=F.cross_entropy(m(*obs),y)
+   if not torch.isfinite(loss): raise RuntimeError('Non-finite BC loss; checkpoint was not written.')
+   opt.zero_grad(set_to_none=True);loss.backward();torch.nn.utils.clip_grad_norm_(m.parameters(),1)
+   if not all(torch.isfinite(p.grad).all() for p in m.parameters() if p.grad is not None): raise RuntimeError('Non-finite BC gradients; checkpoint was not written.')
+   opt.step()
  torch.save({'model':m.state_dict()},path);return m.eval()
 @torch.no_grad()
 def future_return(d,r,sel,s,policy,state,q,immediate=False):
