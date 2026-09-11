@@ -18,10 +18,16 @@ class BrusselatorRefiner:
         self.mean, self.std, self.force_mean, self.force_std = mean, std, force_mean, force_std
 
     def norm(self, value: torch.Tensor) -> torch.Tensor: return (value - self.mean.to(value.device)) / self.std.to(value.device)
+    def stabilize(self, value: torch.Tensor) -> torch.Tensor:
+        """Keep autoregressive operator states finite without tightening the solver range."""
+        mean, std = self.mean.to(value.device), self.std.to(value.device)
+        limit = 8.0 * std
+        return torch.nan_to_num(value, nan=float(mean), posinf=float(mean + limit), neginf=float(mean - limit)).clamp(mean - limit, mean + limit)
     def coarse_next(self, force: torch.Tensor, previous: torch.Tensor, current: torch.Tensor, time: float) -> torch.Tensor:
         f = ((force.to(current.device) - self.force_mean.to(current.device)) / self.force_std.to(current.device)).view(-1, 1, 1, 1).expand_as(current[:, :1])
         t = torch.full_like(current[:, :1], time)
-        return self.coarse(torch.cat([f, self.norm(previous), self.norm(current), self.norm(current - previous), t], 1)) * self.std.to(current.device) + self.mean.to(current.device)
+        value = self.coarse(torch.cat([f, self.norm(previous), self.norm(current), self.norm(current - previous), t], 1)) * self.std.to(current.device) + self.mean.to(current.device)
+        return self.stabilize(value)
     def bounds(self, patch: int) -> tuple[int, int, int, int]:
         row, col = divmod(patch, self.grid); return row * self.core - self.halo, (row + 1) * self.core + self.halo, col * self.core - self.halo, (col + 1) * self.core + self.halo
     def extract(self, value: torch.Tensor, patch: int) -> torch.Tensor:
@@ -49,12 +55,12 @@ class FrozenBundle:
     @classmethod
     @torch.no_grad()
     def create(cls, refiner: BrusselatorRefiner, force: torch.Tensor, previous: torch.Tensor, current: torch.Tensor, time: float) -> "FrozenBundle":
-        provisional=refiner.coarse_next(force,previous,current,time); inputs=refiner.inputs(force,previous,current,provisional,time); corrections=refiner.local(inputs); contributions,weights=refiner.canvases(provisional,corrections); return cls(force,previous,current,provisional,inputs,corrections,contributions,weights,refiner)
+        provisional=refiner.coarse_next(force,previous,current,time); inputs=refiner.inputs(force,previous,current,provisional,time); corrections=torch.nan_to_num(refiner.local(inputs)); contributions,weights=refiner.canvases(provisional,corrections); return cls(force,previous,current,provisional,inputs,corrections,contributions,weights,refiner)
     def apply_set(self, selected: list[int]) -> torch.Tensor:
         if not selected:return self.provisional
-        ids=torch.tensor(selected,device=self.provisional.device); return self.provisional+self.contributions[ids].sum(0,keepdim=True)/self.weights[ids].sum(0,keepdim=True).clamp_min(1e-6)
+        ids=torch.tensor(selected,device=self.provisional.device); return self.refiner.stabilize(self.provisional+self.contributions[ids].sum(0,keepdim=True)/self.weights[ids].sum(0,keepdim=True).clamp_min(1e-6))
     def candidate_fields(self, selected: list[int]) -> torch.Tensor:
         if selected:
             ids=torch.tensor(selected,device=self.provisional.device); value,weight=self.contributions[ids].sum(0,keepdim=True),self.weights[ids].sum(0,keepdim=True)
         else:value,weight=torch.zeros_like(self.provisional),torch.zeros_like(self.provisional[:,:1])
-        return self.provisional+(value+self.contributions)/(weight+self.weights).clamp_min(1e-6)
+        return self.refiner.stabilize(self.provisional+(value+self.contributions)/(weight+self.weights).clamp_min(1e-6))

@@ -183,7 +183,7 @@ def future_return(d,r,sel,s,policy,state,q,immediate=False):
  for t in range(step,38):
   force=d.forcing(case,t).reshape(1).to(dev);target=d.frame(case,t+1).unsqueeze(0).to(dev);b=FrozenBundle.create(r,force,prev,cur,t/38);allowed=feasible(rem,37-t);a=q if t==step else action(policy,observe(sel,s,b,rem,t),allowed,'RVPI',np.random.default_rng(case+t));chosen,_,_=select(sel,s,b,a,t/38);nxt=b.apply_set(chosen);num+=float((nxt-target).square().sum());den+=float(target.square().sum());prev,cur,rem=cur,nxt,rem-a
   if immediate:break
- return -num/max(den,1e-12)
+ return float(np.nan_to_num(-num/max(den,1e-12),nan=-1e6,posinf=-1e6,neginf=-1e6))
 
 @torch.no_grad()
 def policy_states(d,r,sel,s,policy,bc,c,seed):
@@ -213,25 +213,28 @@ def train_rvpi(d,r,sel,s,bc,c,dev,k,seed,immediate=False):
         policy.load_state_dict(torch.load(path,map_location=dev)['model']); return policy.eval()
     cycles=c['macro']['immediate_cycles'] if immediate else c['macro']['rvpi_cycles']
     opt=torch.optim.AdamW(policy.parameters(),lr=c['macro']['policy_lr'])
-    best=float('inf')
+    best=float(evaluate(d,r,sel,s,policy,'RVPI','val',seed)['TrajectoryRelativeL2'].mean())
+    torch.save({'model':policy.state_dict(),'validation_trajectory':best,'cycle':0,'immediate_only':immediate},path)
     for cycle in range(cycles):
         old=copy.deepcopy(policy).eval(); states=policy_states(d,r,sel,s,old,bc,c,seed+cycle*1000)
         losses=[]
         for state in tqdm(states,desc=f'v5b:{label}:{seed}:cycle{cycle+1}',leave=False):
             rem=state['remaining']+state['q']; allowed=feasible(rem,37-state['step'])
-            values=torch.tensor([future_return(d,r,sel,s,old,state,q,immediate) for q in allowed],device=dev)
+            values=torch.nan_to_num(torch.tensor([future_return(d,r,sel,s,old,state,q,immediate) for q in allowed],device=dev),nan=-1e6,posinf=-1e6,neginf=-1e6)
             margin=max(float(values.std(unbiased=False))*0.1,1e-4); target=torch.softmax((values-values.max())/margin,0)
             obs=tuple(x.to(dev) for x in state['obs']); logits=policy(*obs)[0]
             mask=torch.tensor([q in allowed for q in ACTIONS],device=dev); available=logits[mask]
             old_logits=old(*obs)[0].detach()[mask]
             loss=F.kl_div(F.log_softmax(available,0),target,reduction='batchmean')+0.03*F.mse_loss(F.log_softmax(available,0),F.log_softmax(old_logits,0))
-            opt.zero_grad(set_to_none=True); loss.backward();torch.nn.utils.clip_grad_norm_(policy.parameters(),1.0);opt.step();losses.append(float(loss))
+            if torch.isfinite(loss):
+                opt.zero_grad(set_to_none=True); loss.backward();torch.nn.utils.clip_grad_norm_(policy.parameters(),1.0);opt.step();losses.append(float(loss))
         validation=evaluate(d,r,sel,s,policy,'RVPI','val',seed)['TrajectoryRelativeL2'].mean()
-        if validation < best:
+        if np.isfinite(validation) and validation < best:
             best=float(validation); torch.save({'model':policy.state_dict(),'validation_trajectory':best,'cycle':cycle+1,'immediate_only':immediate},path)
         else:
             policy.load_state_dict(old.state_dict())
-        print(f'{label} seed={seed} cycle={cycle+1}: validation trajectory={validation:.6f}, best={best:.6f}, loss={np.mean(losses):.6f}')
+        mean_loss=float(np.mean(losses)) if losses else float('nan')
+        print(f'{label} seed={seed} cycle={cycle+1}: validation trajectory={validation:.6f}, best={best:.6f}, loss={mean_loss:.6f}')
     policy.load_state_dict(torch.load(path,map_location=dev)['model']); return policy.eval()
 
 def random_distribution(d,r,sel,s,policy,out):
