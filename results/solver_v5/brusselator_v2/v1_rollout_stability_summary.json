@@ -1,0 +1,10 @@
+{
+  "OneStepRelativeL2": 0.3411626282334328,
+  "TrajectoryRelativeL2": 8.250487332344056,
+  "TrajectoryRMSE": 16.127845827677657,
+  "FinalFrameRelativeL2": 84.71490356445312,
+  "FinalFrameRMSE": 18.152377568349788,
+  "PredictionRMSRatio": 79.79404583018349,
+  "MaxAmplitudeRatio": 82.58432848094016,
+  "Cases": 100
+}

@@ -1,0 +1,13 @@
+{
+  "states": 36,
+  "candidate_continuations": 92,
+  "batch_size": 4,
+  "field_max_abs_diff": 0.00019502639770507812,
+  "field_diff_over_train_state_std": 7.890437513184893e-05,
+  "best_action_agreement": 0.9166666666666666,
+  "pairwise_action_order_agreement": 0.918918918918919,
+  "exact_patch_set_agreement": 1.0,
+  "mean_jaccard_agreement": 1.0,
+  "max_return_abs_difference": 1.406676144728749,
+  "passed": false
+}
