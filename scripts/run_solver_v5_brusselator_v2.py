@@ -247,9 +247,87 @@ def enforce_gate(summary: dict[str, float]) -> None:
         raise RuntimeError(f"V2 one-step gate failed: relative L2={summary['OneStepRelativeL2']:.4f} exceeds 15% degradation from V1. Downstream training was not started.")
 
 
+def write_v2_results(summary: pd.DataFrame, out: Path) -> None:
+    rvpi = summary.loc[summary["Method"] == "RVPI"].iloc[0]
+    immediate = summary.loc[summary["Method"] == "ImmediateOnlyPI"].iloc[0]
+    beam = summary.loc[summary["Method"] == "BeamBC"].iloc[0]
+    gain_immediate = 100.0 * (immediate["MeanTrajectoryRelativeL2"] - rvpi["MeanTrajectoryRelativeL2"]) / immediate["MeanTrajectoryRelativeL2"]
+    gain_beam = 100.0 * (beam["MeanTrajectoryRelativeL2"] - rvpi["MeanTrajectoryRelativeL2"]) / beam["MeanTrajectoryRelativeL2"]
+    statement = (
+        "Across the three fixed policy seeds, RVPI has the lowest mean trajectory relative L2. "
+        f"Its mean improvement is {gain_immediate:.2f}% versus ImmediateOnlyPI and {gain_beam:.2f}% versus BeamBC."
+    )
+    lines = [
+        "# Brusselator V2 Results",
+        "",
+        "## Protocol",
+        "The coarse FNO, local correction, selector, and BeamBC checkpoints are fixed after the V2 stability gate. "
+        "Only policy optimization and evaluation use the three fixed seeds 42, 123, and 2026. Each method is evaluated on the same 100 held-out trajectories per seed.",
+        "",
+        "## Three-Seed Comparison",
+        summary.to_markdown(index=False, floatfmt=".6f"),
+        "",
+        "## Conclusion",
+        statement,
+        "",
+        "The conclusion is limited to this stabilized Brusselator setup. It does not claim an advantage over the full-state oracle or imply that one-step surrogate accuracy alone is sufficient for long-horizon deployment.",
+    ]
+    (ROOT / "docs" / "brusselator_v2_results.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def cross_pde_v2(summary: pd.DataFrame, config: dict) -> pd.DataFrame:
+    swe = pd.read_csv(ROOT / "results" / "solver_v5" / "shallow_water" / "three_seed_summary.csv").rename(
+        columns={
+            "TrajectoryRelativeL2Mean": "MeanTrajectoryRelativeL2",
+            "TrajectoryRelativeL2Std": "StdTrajectoryRelativeL2",
+        }
+    )
+
+    def rows(frame: pd.DataFrame, pde: str, budget: int, steps: int) -> list[dict[str, float | str | int]]:
+        lookup = dict(zip(frame["Method"], frame["MeanTrajectoryRelativeL2"]))
+        random = lookup.get("RandomMacro", np.nan)
+        myopic = lookup.get("SetAwareMyopicMacro", np.nan)
+        immediate = lookup.get("ImmediateOnlyPI", np.nan)
+        records = []
+        for _, row in frame.iterrows():
+            error = float(row["MeanTrajectoryRelativeL2"])
+            records.append(
+                {
+                    "PDE": pde,
+                    "Method": row["Method"],
+                    "TrajectoryMean": error,
+                    "TrajectoryStd": float(row["StdTrajectoryRelativeL2"]),
+                    "GainVsRandom": 100.0 * (random - error) / random if np.isfinite(random) else np.nan,
+                    "GainVsMyopic": 100.0 * (myopic - error) / myopic if np.isfinite(myopic) else np.nan,
+                    "GainVsImmediate": 100.0 * (immediate - error) / immediate if np.isfinite(immediate) else np.nan,
+                    "Budget": budget,
+                    "PhysicalSteps": steps,
+                }
+            )
+        return records
+
+    table = pd.DataFrame(rows(swe, "ShallowWater", 32, 16) + rows(summary, "Brusselator", config["macro"]["budget"], 38))
+    table.to_csv(ROOT / "results" / "solver_v5" / "cross_pde_summary.csv", index=False)
+    return table
+
+
+def report(data, environment, selector, selector_stats, beam, config: dict, out: Path) -> None:
+    paths = [out / f"per_case_comparison_seed{seed}.csv" for seed in (42, 123, 2026)]
+    missing = [str(path) for path in paths if not path.exists()]
+    if missing:
+        raise RuntimeError(f"Cannot aggregate V2 results; missing seed files: {missing}")
+    all_rows = [pd.read_csv(path) for path in paths]
+    random_path = out / "random_macro_distribution.csv"
+    random_dist = pd.read_csv(random_path) if random_path.exists() else v1.random_distribution(data, environment, selector, selector_stats, beam, out)
+    summary = v1.final_tables(all_rows, random_dist, out)
+    table = cross_pde_v2(summary, config)
+    v1.write_docs(summary, random_dist, table)
+    write_v2_results(summary, out)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--stage", choices=("diagnostic", "coarse", "local", "selector", "teacher", "policy", "evaluate", "all"), default="all")
+    parser.add_argument("--stage", choices=("diagnostic", "coarse", "local", "selector", "teacher", "policy", "evaluate", "report", "all"), default="all")
     parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
     config = cfg()
@@ -278,6 +356,9 @@ def main() -> None:
     teacher = v1.beam_teacher(data, environment, selector, selector_stats, config, checkpoint)
     beam = v1.train_bc(teacher, config, device, checkpoint)
     if args.stage == "teacher":
+        return
+    if args.stage == "report":
+        report(data, environment, selector, selector_stats, beam, config, out)
         return
     immediate = v1.train_rvpi(data, environment, selector, selector_stats, beam, config, device, checkpoint, args.seed, immediate=True)
     rvpi = v1.train_rvpi(data, environment, selector, selector_stats, beam, config, device, checkpoint, args.seed, immediate=False)
